@@ -36,7 +36,14 @@
             textBoxContato = new TextBox();
             textBoxDocumentoCliente = new TextBox();
             textBoxNomeCliente = new TextBox();
+            dataGridViewProdutosLocacao = new DataGridView();
+            ProdutoId = new DataGridViewTextBoxColumn();
+            Estoque = new DataGridViewTextBoxColumn();
+            Quantidade = new DataGridViewTextBoxColumn();
+            ValorUnitario = new DataGridViewTextBoxColumn();
+            ValorTotal = new DataGridViewTextBoxColumn();
             InformacoesCliente.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
             // 
             // InformacoesCliente
@@ -108,17 +115,58 @@
             textBoxNomeCliente.Size = new Size(433, 23);
             textBoxNomeCliente.TabIndex = 2;
             // 
+            // dataGridViewProdutosLocacao
+            // 
+            dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoId, Estoque, Quantidade, ValorUnitario, ValorTotal });
+            dataGridViewProdutosLocacao.Location = new Point(12, 163);
+            dataGridViewProdutosLocacao.Name = "dataGridViewProdutosLocacao";
+            dataGridViewProdutosLocacao.Size = new Size(753, 150);
+            dataGridViewProdutosLocacao.TabIndex = 1;
+            dataGridViewProdutosLocacao.CellClick += dataGridViewProdutosLocacao_CellClick;
+            dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
+            // 
+            // ProdutoId
+            // 
+            ProdutoId.HeaderText = "Produto";
+            ProdutoId.Name = "ProdutoId";
+            // 
+            // Estoque
+            // 
+            Estoque.HeaderText = "Estoque";
+            Estoque.Name = "Estoque";
+            Estoque.ReadOnly = true;
+            // 
+            // Quantidade
+            // 
+            Quantidade.HeaderText = "Quantidade";
+            Quantidade.Name = "Quantidade";
+            // 
+            // ValorUnitario
+            // 
+            ValorUnitario.HeaderText = "Valor Unitario";
+            ValorUnitario.Name = "ValorUnitario";
+            ValorUnitario.ReadOnly = true;
+            // 
+            // ValorTotal
+            // 
+            ValorTotal.HeaderText = "Valor Total";
+            ValorTotal.Name = "ValorTotal";
+            ValorTotal.ReadOnly = true;
+            // 
             // TelaPedido
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 749);
+            Controls.Add(dataGridViewProdutosLocacao);
             Controls.Add(InformacoesCliente);
             Name = "TelaPedido";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "TelaPedido";
             InformacoesCliente.ResumeLayout(false);
             InformacoesCliente.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).EndInit();
             ResumeLayout(false);
         }
 
@@ -132,5 +180,11 @@
         private TextBox textBoxNomeCliente;
         private TextBox textBoxIDCliente;
         private Button bntBuscarCliente;
+        private DataGridView dataGridViewProdutosLocacao;
+        private DataGridViewTextBoxColumn ProdutoId;
+        private DataGridViewTextBoxColumn Estoque;
+        private DataGridViewTextBoxColumn Quantidade;
+        private DataGridViewTextBoxColumn ValorUnitario;
+        private DataGridViewTextBoxColumn ValorTotal;
     }
 }

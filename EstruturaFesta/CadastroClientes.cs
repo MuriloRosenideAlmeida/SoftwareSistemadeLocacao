@@ -77,10 +77,14 @@ namespace EstruturaFesta
                 textBoxNumero.Focus(); // Redefine o foco para a TextBox
             }
         }
-        private void textBoxDataNascimento_TextChanged(object sender, EventArgs e)
+        private void textBoxDataNascimento_Validated(object sender, EventArgs e)
         {
-            MessageBox.Show("A data de nascimento não pode estar vazia.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            textBoxDataNascimento.Focus(); // Redefine o foco para a TextBox
+            if (string.IsNullOrWhiteSpace(textBoxDataNascimento.Text))
+            {
+                MessageBox.Show("A data de nascimento não pode estar vazia.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                textBoxDataNascimento.Focus(); // Redefine o foco para a TextBox
+            }
+
         }
         //Adicionar Clientes
         private void buttonAdicionarCliente_Click(object sender, EventArgs e)
@@ -160,5 +164,7 @@ namespace EstruturaFesta
                 MessageBox.Show("Cliente adicionado com sucesso!");
             }
         }
+
+      
     }
 }

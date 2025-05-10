@@ -492,7 +492,7 @@
             textBoxDataNascimento.Name = "textBoxDataNascimento";
             textBoxDataNascimento.Size = new Size(143, 23);
             textBoxDataNascimento.TabIndex = 41;
-            textBoxDataNascimento.TextChanged += textBoxDataNascimento_TextChanged;
+            textBoxDataNascimento.Validated += textBoxDataNascimento_Validated;
             // 
             // cpf
             // 
