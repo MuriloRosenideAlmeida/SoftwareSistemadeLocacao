@@ -12,6 +12,8 @@ namespace EstruturaFesta.DataBase
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Cliente> Contatos { get; set; }
+        public DbSet<SaldoEstoqueData> SaldosPorData { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

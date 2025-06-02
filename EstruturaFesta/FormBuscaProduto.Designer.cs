@@ -29,19 +29,21 @@
         private void InitializeComponent()
         {
             panelFiltros = new Panel();
-            textBoxFiltroMaterial = new TextBox();
-            textBoxFiltroModelo = new TextBox();
+            buttonFiltrar = new Button();
+            textBoxFiltroNomeProduto = new TextBox();
             textBoxFiltroEspecificacao = new TextBox();
-            textBoxNomeProduto = new TextBox();
-            dataGridView1 = new DataGridView();
+            textBoxFiltroModelo = new TextBox();
+            textBoxFiltroMaterial = new TextBox();
+            dataGridViewFiltroProdutos = new DataGridView();
             panelFiltros.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroProdutos).BeginInit();
             SuspendLayout();
             // 
             // panelFiltros
             // 
             panelFiltros.BackColor = SystemColors.MenuBar;
-            panelFiltros.Controls.Add(textBoxNomeProduto);
+            panelFiltros.Controls.Add(buttonFiltrar);
+            panelFiltros.Controls.Add(textBoxFiltroNomeProduto);
             panelFiltros.Controls.Add(textBoxFiltroEspecificacao);
             panelFiltros.Controls.Add(textBoxFiltroModelo);
             panelFiltros.Controls.Add(textBoxFiltroMaterial);
@@ -51,19 +53,22 @@
             panelFiltros.Size = new Size(800, 24);
             panelFiltros.TabIndex = 0;
             // 
-            // textBoxFiltroMaterial
+            // buttonFiltrar
             // 
-            textBoxFiltroMaterial.Location = new Point(100, 0);
-            textBoxFiltroMaterial.Name = "textBoxFiltroMaterial";
-            textBoxFiltroMaterial.Size = new Size(100, 23);
-            textBoxFiltroMaterial.TabIndex = 0;
+            buttonFiltrar.Location = new Point(725, 0);
+            buttonFiltrar.Name = "buttonFiltrar";
+            buttonFiltrar.Size = new Size(75, 23);
+            buttonFiltrar.TabIndex = 4;
+            buttonFiltrar.Text = "Filtrar";
+            buttonFiltrar.UseVisualStyleBackColor = true;
+            buttonFiltrar.Click += buttonFiltrar_Click;
             // 
-            // textBoxFiltroModelo
+            // textBoxFiltroNomeProduto
             // 
-            textBoxFiltroModelo.Location = new Point(200, 0);
-            textBoxFiltroModelo.Name = "textBoxFiltroModelo";
-            textBoxFiltroModelo.Size = new Size(100, 23);
-            textBoxFiltroModelo.TabIndex = 1;
+            textBoxFiltroNomeProduto.Location = new Point(0, 0);
+            textBoxFiltroNomeProduto.Name = "textBoxFiltroNomeProduto";
+            textBoxFiltroNomeProduto.Size = new Size(100, 23);
+            textBoxFiltroNomeProduto.TabIndex = 3;
             // 
             // textBoxFiltroEspecificacao
             // 
@@ -72,34 +77,42 @@
             textBoxFiltroEspecificacao.Size = new Size(85, 23);
             textBoxFiltroEspecificacao.TabIndex = 2;
             // 
-            // textBoxNomeProduto
+            // textBoxFiltroModelo
             // 
-            textBoxNomeProduto.Location = new Point(0, 0);
-            textBoxNomeProduto.Name = "textBoxNomeProduto";
-            textBoxNomeProduto.Size = new Size(100, 23);
-            textBoxNomeProduto.TabIndex = 3;
+            textBoxFiltroModelo.Location = new Point(200, 0);
+            textBoxFiltroModelo.Name = "textBoxFiltroModelo";
+            textBoxFiltroModelo.Size = new Size(100, 23);
+            textBoxFiltroModelo.TabIndex = 1;
             // 
-            // dataGridView1
+            // textBoxFiltroMaterial
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 24);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(800, 426);
-            dataGridView1.TabIndex = 1;
+            textBoxFiltroMaterial.Location = new Point(100, 0);
+            textBoxFiltroMaterial.Name = "textBoxFiltroMaterial";
+            textBoxFiltroMaterial.Size = new Size(100, 23);
+            textBoxFiltroMaterial.TabIndex = 0;
+            // 
+            // dataGridViewFiltroProdutos
+            // 
+            dataGridViewFiltroProdutos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewFiltroProdutos.Dock = DockStyle.Fill;
+            dataGridViewFiltroProdutos.Location = new Point(0, 24);
+            dataGridViewFiltroProdutos.Name = "dataGridViewFiltroProdutos";
+            dataGridViewFiltroProdutos.Size = new Size(800, 426);
+            dataGridViewFiltroProdutos.TabIndex = 1;
+            dataGridViewFiltroProdutos.CellDoubleClick += dataGridViewFiltroProdutos_CellDoubleClick;
             // 
             // FormBuscaProduto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(dataGridView1);
+            Controls.Add(dataGridViewFiltroProdutos);
             Controls.Add(panelFiltros);
             Name = "FormBuscaProduto";
             Text = "FormBuscaProduto";
             panelFiltros.ResumeLayout(false);
             panelFiltros.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroProdutos).EndInit();
             ResumeLayout(false);
         }
 
@@ -107,9 +120,10 @@
 
         private Panel panelFiltros;
         private TextBox textBoxFiltroMaterial;
-        private TextBox textBoxNomeProduto;
+        private TextBox textBoxFiltroNomeProduto;
         private TextBox textBoxFiltroEspecificacao;
         private TextBox textBoxFiltroModelo;
-        private DataGridView dataGridView1;
+        private DataGridView dataGridViewFiltroProdutos;
+        private Button buttonFiltrar;
     }
 }

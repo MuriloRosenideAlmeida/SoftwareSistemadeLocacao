@@ -37,11 +37,12 @@
             textBoxDocumentoCliente = new TextBox();
             textBoxNomeCliente = new TextBox();
             dataGridViewProdutosLocacao = new DataGridView();
-            ProdutoId = new DataGridViewTextBoxColumn();
+            Produto = new DataGridViewTextBoxColumn();
             Estoque = new DataGridViewTextBoxColumn();
             Quantidade = new DataGridViewTextBoxColumn();
             ValorUnitario = new DataGridViewTextBoxColumn();
             ValorTotal = new DataGridViewTextBoxColumn();
+            dateTimePickerDataPedido = new DateTimePicker();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
@@ -71,6 +72,7 @@
             bntBuscarCliente.Text = "▼";
             bntBuscarCliente.UseVisualStyleBackColor = true;
             bntBuscarCliente.Click += bntBuscarCliente_Click;
+            bntBuscarCliente.PreviewKeyDown += bntBuscarCliente_PreviewKeyDown;
             // 
             // textBoxIDCliente
             // 
@@ -118,18 +120,19 @@
             // dataGridViewProdutosLocacao
             // 
             dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoId, Estoque, Quantidade, ValorUnitario, ValorTotal });
-            dataGridViewProdutosLocacao.Location = new Point(12, 163);
+            dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { Produto, Estoque, Quantidade, ValorUnitario, ValorTotal });
+            dataGridViewProdutosLocacao.Location = new Point(12, 187);
             dataGridViewProdutosLocacao.Name = "dataGridViewProdutosLocacao";
             dataGridViewProdutosLocacao.Size = new Size(753, 150);
             dataGridViewProdutosLocacao.TabIndex = 1;
-            dataGridViewProdutosLocacao.CellClick += dataGridViewProdutosLocacao_CellClick;
             dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
+            dataGridViewProdutosLocacao.CellFormatting += dataGridViewProdutosLocacao_CellFormatting;
+            dataGridViewProdutosLocacao.KeyDown += dataGridViewProdutosLocacao_KeyDown;
             // 
-            // ProdutoId
+            // Produto
             // 
-            ProdutoId.HeaderText = "Produto";
-            ProdutoId.Name = "ProdutoId";
+            Produto.HeaderText = "Produto";
+            Produto.Name = "Produto";
             // 
             // Estoque
             // 
@@ -154,11 +157,19 @@
             ValorTotal.Name = "ValorTotal";
             ValorTotal.ReadOnly = true;
             // 
+            // dateTimePickerDataPedido
+            // 
+            dateTimePickerDataPedido.Location = new Point(73, 158);
+            dateTimePickerDataPedido.Name = "dateTimePickerDataPedido";
+            dateTimePickerDataPedido.Size = new Size(200, 23);
+            dateTimePickerDataPedido.TabIndex = 2;
+            // 
             // TelaPedido
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 749);
+            Controls.Add(dateTimePickerDataPedido);
             Controls.Add(dataGridViewProdutosLocacao);
             Controls.Add(InformacoesCliente);
             Name = "TelaPedido";
@@ -181,10 +192,11 @@
         private TextBox textBoxIDCliente;
         private Button bntBuscarCliente;
         private DataGridView dataGridViewProdutosLocacao;
-        private DataGridViewTextBoxColumn ProdutoId;
+        private DataGridViewTextBoxColumn Produto;
         private DataGridViewTextBoxColumn Estoque;
         private DataGridViewTextBoxColumn Quantidade;
         private DataGridViewTextBoxColumn ValorUnitario;
         private DataGridViewTextBoxColumn ValorTotal;
+        private DateTimePicker dateTimePickerDataPedido;
     }
 }
