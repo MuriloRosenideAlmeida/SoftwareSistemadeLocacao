@@ -43,6 +43,7 @@
             ValorUnitario = new DataGridViewTextBoxColumn();
             ValorTotal = new DataGridViewTextBoxColumn();
             dateTimePickerDataPedido = new DateTimePicker();
+            buttonFinalizarPedido = new Button();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
@@ -127,6 +128,7 @@
             dataGridViewProdutosLocacao.TabIndex = 1;
             dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
             dataGridViewProdutosLocacao.CellFormatting += dataGridViewProdutosLocacao_CellFormatting;
+            dataGridViewProdutosLocacao.RowsAdded += dataGridViewProdutosLocacao_RowsAdded;
             dataGridViewProdutosLocacao.KeyDown += dataGridViewProdutosLocacao_KeyDown;
             // 
             // Produto
@@ -164,11 +166,22 @@
             dateTimePickerDataPedido.Size = new Size(200, 23);
             dateTimePickerDataPedido.TabIndex = 2;
             // 
+            // buttonFinalizarPedido
+            // 
+            buttonFinalizarPedido.Location = new Point(647, 352);
+            buttonFinalizarPedido.Name = "buttonFinalizarPedido";
+            buttonFinalizarPedido.Size = new Size(118, 23);
+            buttonFinalizarPedido.TabIndex = 3;
+            buttonFinalizarPedido.Text = "Finalizar Pedido";
+            buttonFinalizarPedido.UseVisualStyleBackColor = true;
+            buttonFinalizarPedido.Click += buttonFinalizarPedido_Click;
+            // 
             // TelaPedido
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 749);
+            Controls.Add(buttonFinalizarPedido);
             Controls.Add(dateTimePickerDataPedido);
             Controls.Add(dataGridViewProdutosLocacao);
             Controls.Add(InformacoesCliente);
@@ -198,5 +211,6 @@
         private DataGridViewTextBoxColumn ValorUnitario;
         private DataGridViewTextBoxColumn ValorTotal;
         private DateTimePicker dateTimePickerDataPedido;
+        private Button buttonFinalizarPedido;
     }
 }

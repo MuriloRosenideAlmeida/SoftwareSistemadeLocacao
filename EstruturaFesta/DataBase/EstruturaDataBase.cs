@@ -13,6 +13,9 @@ namespace EstruturaFesta.DataBase
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Cliente> Contatos { get; set; }
         public DbSet<SaldoEstoqueData> SaldosPorData { get; set; }
+        public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<ProdutoPedido> ProdutosPedidos { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +36,20 @@ namespace EstruturaFesta.DataBase
             modelBuilder.Entity<ClientePJ>()
                 .Property(c => c.Nome)
                 .IsRequired(false);  // Nome não é obrigatório para ClientePJ
+
+            modelBuilder.Entity<ProdutoPedido>()
+    .HasKey(pp => new { pp.PedidoId, pp.ProdutoId });
+
+            modelBuilder.Entity<ProdutoPedido>()
+                .HasOne(pp => pp.Pedido)
+                .WithMany(p => p.Produtos)
+                .HasForeignKey(pp => pp.PedidoId);
+
+            modelBuilder.Entity<ProdutoPedido>()
+                .HasOne(pp => pp.Produto)
+                .WithMany()
+                .HasForeignKey(pp => pp.ProdutoId);
+
         }
     }
 }

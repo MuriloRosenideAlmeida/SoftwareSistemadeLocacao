@@ -14,11 +14,9 @@ namespace EstruturaFesta
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            //Application.Run(new CadastroProdutos());
-            //Application.Run(new CadastroClientes());
-            Application.Run(new TelaPedido());
-            
-           
+            Application.Run(new FormMenuPrincipal());
+
+
         }
        
     }

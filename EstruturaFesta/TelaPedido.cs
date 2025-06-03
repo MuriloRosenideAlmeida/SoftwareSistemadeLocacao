@@ -23,6 +23,9 @@ namespace EstruturaFesta
             dataGridViewProdutosLocacao.RowsAdded += (s, e) => AtualizarPosicaoBotao();
             dataGridViewProdutosLocacao.RowsRemoved += (s, e) => AtualizarPosicaoBotao();
             this.Shown += TelaPedido_Shown;
+            dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
+            dataGridViewProdutosLocacao.StandardTab = false;
+            dataGridViewProdutosLocacao.KeyDown += dataGridViewProdutosLocacao_KeyDown;
         }
 
         private void TelaPedido_Shown(object sender, EventArgs e)
@@ -160,6 +163,13 @@ namespace EstruturaFesta
                 row.Cells["Estoque"].Value = produto.QuantidadeEstoque;
                 row.Cells["ValorUnitario"].Value = produto.ValorUnitario;
 
+                // Move o foco para a célula de quantidade
+                this.BeginInvoke((Action)(() =>
+                {
+                    dataGridViewProdutosLocacao.CurrentCell = row.Cells["Quantidade"];
+                    dataGridViewProdutosLocacao.BeginEdit(true);
+                }));
+                
                 AtualizarPosicaoBotao();
             }
         }
@@ -184,6 +194,23 @@ namespace EstruturaFesta
                         row.Cells["Produto"].Value = descricaoCompleta;
                         row.Cells["Estoque"].Value = produto.Quantidade;
                         row.Cells["ValorUnitario"].Value = produto.PrecoLocacao;
+
+                        // Verifica quantidade disponível na data
+                        var dataPedido = dateTimePickerDataPedido.Value.Date;
+                        int quantidadeReservada = db.SaldosPorData
+                            .Where(s => s.ProdutoId == produto.ID && s.Data == dataPedido)
+                            .Sum(s => s.QuantidadeReservada);
+
+                        int disponivel = produto.Quantidade - quantidadeReservada;
+
+                        // Atualiza célula de estoque disponível (se houver coluna específica)
+                        if (dataGridViewProdutosLocacao.Columns.Contains("QuantidadeDisponivel"))
+                        {
+                            row.Cells["QuantidadeDisponivel"].Value = disponivel;
+                        }
+
+                        // Se desejar, preencher automaticamente a quantidade disponível:
+                        // row.Cells["Quantidade"].Value = disponivel;
                     }
                     else
                     {
@@ -197,10 +224,12 @@ namespace EstruturaFesta
             else if (coluna == "Quantidade")
             {
                 int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int quantidade);
-                int.TryParse(row.Cells["Estoque"].Value?.ToString(), out int estoque);
                 decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
 
                 string descricaoProduto = row.Cells["Produto"].Value?.ToString();
+
+                if (string.IsNullOrWhiteSpace(descricaoProduto))
+                    return;
 
                 using var db = new EstruturaDataBase();
                 var dataPedido = dateTimePickerDataPedido.Value.Date;
@@ -219,22 +248,12 @@ namespace EstruturaFesta
                     if (quantidade > disponivel)
                     {
                         MessageBox.Show($"Quantidade maior que disponível ({disponivel})!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        row.Cells["Quantidade"].Value = disponivel; // Corrige visualmente
+                        quantidade = disponivel;
                     }
-                    else
-                    {
-                        // Grava a reserva
-                        db.SaldosPorData.Add(new SaldoEstoqueData
-                        {
-                            ProdutoId = produto.ID,
-                            Data = dataPedido,
-                            QuantidadeReservada = quantidade
-                        });
 
-                        db.SaveChanges();
-                    }
+                    row.Cells["ValorTotal"].Value = quantidade * preco;
                 }
-
-                row.Cells["ValorTotal"].Value = quantidade * preco;
             }
         }
 
@@ -254,32 +273,37 @@ namespace EstruturaFesta
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.Handled = true;
+                e.SuppressKeyPress = true; // Impede comportamento padrão
 
                 var dgv = dataGridViewProdutosLocacao;
                 int col = dgv.CurrentCell.ColumnIndex;
                 int row = dgv.CurrentCell.RowIndex;
+                string nomeColunaAtual = dgv.Columns[col].Name;
 
-                dgv.EndEdit(); // Finaliza edição atual
+                if (nomeColunaAtual == "Quantidade")
+                {
+                    // Volta para a célula "Produto" da MESMA linha
+                    dgv.CurrentCell = dgv.Rows[row].Cells["Produto"];
 
-                // Tenta ir para próxima célula
+                    // Atualiza o botão para essa célula
+                    BeginInvoke((Action)(() =>
+                    {
+                        AtualizarPosicaoBotao();
+                        dgv.BeginEdit(true); // já começa a editar a célula "Produto"
+                    }));
+
+                    return;
+                }
+
+                // Comportamento padrão para outras células (vai para a próxima célula da linha)
                 if (col < dgv.ColumnCount - 1)
                 {
-                    col++;
+                    dgv.CurrentCell = dgv.Rows[row].Cells[col + 1];
                 }
-                else
+                else if (row + 1 < dgv.RowCount)
                 {
-                    // Vai para a primeira célula da próxima linha
-                    col = 0;
-                    row++;
-                    if (row >= dgv.RowCount)
-                    {
-                        dgv.Rows.Add(); // adiciona nova linha se estiver na última
-                    }
+                    dgv.CurrentCell = dgv.Rows[row + 1].Cells[0];
                 }
-
-                dgv.CurrentCell = dgv[col, row];
-                dgv.BeginEdit(true);
             }
         }
 
@@ -312,6 +336,94 @@ namespace EstruturaFesta
             {
                 e.IsInputKey = true; // Previne que Enter seja tratado como click
             }
+        }
+
+        private void buttonFinalizarPedido_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBoxIDCliente.Text))
+            {
+                MessageBox.Show("Selecione um cliente antes de finalizar o pedido.", "Cliente obrigatório", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(textBoxIDCliente.Text, out int clienteId))
+            {
+                MessageBox.Show("ID do cliente inválido.");
+                return;
+            }
+
+            var dataPedido = dateTimePickerDataPedido.Value.Date;
+
+            var listaProdutos = new List<ProdutoPedido>();
+
+            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                string descricao = row.Cells["Produto"].Value?.ToString();
+                int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int quantidade);
+                decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal valorUnitario);
+
+                if (string.IsNullOrWhiteSpace(descricao) || quantidade <= 0) continue;
+
+                using var dbBusca = new EstruturaDataBase();
+                var produto = dbBusca.Produtos.FirstOrDefault(p =>
+                    (p.Nome + " " + p.Material + " " + p.Modelo + " " + p.Especificacao).Trim() == descricao);
+
+                if (produto != null)
+                {
+                    listaProdutos.Add(new ProdutoPedido
+                    {
+                        ProdutoId = produto.ID,
+                        Quantidade = quantidade,
+                        ValorUnitario = valorUnitario
+                    });
+                }
+            }
+
+            if (!listaProdutos.Any())
+            {
+                MessageBox.Show("Adicione ao menos um produto válido ao pedido.");
+                return;
+            }
+
+            using (var db = new EstruturaDataBase())
+            {
+                var pedido = new Pedido
+                {
+                    ClienteId = clienteId,
+                    DataPedido = dataPedido,
+                    Produtos = listaProdutos
+                };
+
+                db.Pedidos.Add(pedido);
+                db.SaveChanges();
+
+                foreach (var item in listaProdutos)
+                {
+                    db.SaldosPorData.Add(new SaldoEstoqueData
+                    {
+                        ProdutoId = item.ProdutoId,
+                        Data = dataPedido,
+                        QuantidadeReservada = item.Quantidade
+                    });
+                }
+
+                db.SaveChanges();
+            }
+
+            MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Reabre a tela limpa
+            this.Hide();
+            var novoPedido = new TelaPedido();
+            novoPedido.Show();
+            this.Close();
+        }
+
+        private void dataGridViewProdutosLocacao_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
         }
     }
 }
