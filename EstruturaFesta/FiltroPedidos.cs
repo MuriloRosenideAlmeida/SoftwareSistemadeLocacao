@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace EstruturaFesta
 {
-    public partial class FormFiltroPedidos : Form
+    public partial class FiltroPedidos : Form
     {
-        public FormFiltroPedidos()
+        public FiltroPedidos()
         {
             InitializeComponent();
         }

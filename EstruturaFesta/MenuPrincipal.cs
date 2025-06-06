@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace EstruturaFesta
 {
-    public partial class FormMenuPrincipal : Form
+    public partial class MenuPrincipal : Form
     {
-        public FormMenuPrincipal()
+        public MenuPrincipal()
         {
             InitializeComponent();
         }
@@ -44,7 +44,7 @@ namespace EstruturaFesta
 
         private void filtroDePedidosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = new FormFiltroPedidos();
+            var form = new FiltroPedidos();
             form.MdiParent = this;
             form.Show();
         }

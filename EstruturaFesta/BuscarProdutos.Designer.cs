@@ -1,6 +1,6 @@
 ﻿namespace EstruturaFesta
 {
-    partial class FormBuscaProduto
+    partial class BuscarProdutos
     {
         /// <summary>
         /// Required designer variable.

@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace EstruturaFesta
 {
-    public partial class FormBuscaProduto : Form
+    public partial class BuscarProdutos : Form
     {
-        public FormBuscaProduto()
+        public BuscarProdutos()
         {
             InitializeComponent();
         }

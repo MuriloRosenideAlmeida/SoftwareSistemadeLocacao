@@ -1,6 +1,6 @@
 ﻿namespace EstruturaFesta
 {
-    partial class FormFiltroPedidos
+    partial class FiltroPedidos
     {
         /// <summary>
         /// Required designer variable.

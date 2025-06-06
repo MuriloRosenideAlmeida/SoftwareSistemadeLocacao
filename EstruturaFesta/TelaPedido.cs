@@ -150,7 +150,7 @@ namespace EstruturaFesta
 
         private void AbrirBuscaProduto(int linha)
         {
-            using var buscaForm = new FormBuscaProduto();
+            using var buscaForm = new BuscarProdutos();
             if (buscaForm.ShowDialog() == DialogResult.OK)
             {
                 var produto = buscaForm.ProdutoSelecionado;
@@ -271,42 +271,57 @@ namespace EstruturaFesta
 
         private void dataGridViewProdutosLocacao_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true; // Impede comportamento padrão
+            //if (e.KeyCode == Keys.Enter)
+            //{
+            //    e.SuppressKeyPress = true; // Impede comportamento padrão
+            //    var dgv = dataGridViewProdutosLocacao;
+            //    int col = dgv.CurrentCell.ColumnIndex;
+            //    int row = dgv.CurrentCell.RowIndex;
+            //    string nomeColunaAtual = dgv.Columns[col].Name;
 
-                var dgv = dataGridViewProdutosLocacao;
-                int col = dgv.CurrentCell.ColumnIndex;
-                int row = dgv.CurrentCell.RowIndex;
-                string nomeColunaAtual = dgv.Columns[col].Name;
+            //    if (nomeColunaAtual == "Quantidade")
+            //    {
+            //        // Se não é a última linha, vai para a primeira coluna da próxima linha
+            //        if (row + 1 < dgv.RowCount)
+            //        {
+            //            dgv.CurrentCell = dgv.Rows[row + 1].Cells[0]; // Primeira coluna da próxima linha
+            //                                                          // Atualiza o botão para essa célula
+            //            BeginInvoke((Action)(() =>
+            //            {
+            //                AtualizarPosicaoBotao();
+            //                dgv.BeginEdit(true); // já começa a editar a célula
+            //            }));
+            //        }
+            //        else
+            //        {
+            //            // Se é a última linha, você pode adicionar uma nova linha ou fazer outro comportamento
+            //            // Por exemplo, ficar na mesma célula ou voltar para o início
+            //            dgv.CurrentCell = dgv.Rows[row].Cells[0]; // Volta para primeira coluna da mesma linha
+            //            BeginInvoke((Action)(() =>
+            //            {
+            //                AtualizarPosicaoBotao();
+            //            }));
+            //        }
+            //        return;
+            //    }
 
-                if (nomeColunaAtual == "Quantidade")
-                {
-                    // Volta para a célula "Produto" da MESMA linha
-                    dgv.CurrentCell = dgv.Rows[row].Cells["Produto"];
+            //    // Comportamento padrão para outras células (vai para a próxima célula da linha)
+            //    if (col < dgv.ColumnCount - 1)
+            //    {
+            //        dgv.CurrentCell = dgv.Rows[row].Cells[col + 1];
+            //    }
+            //    else if (row + 1 < dgv.RowCount)
+            //    {
+            //        dgv.CurrentCell = dgv.Rows[row + 1].Cells[0];
+            //    }
 
-                    // Atualiza o botão para essa célula
-                    BeginInvoke((Action)(() =>
-                    {
-                        AtualizarPosicaoBotao();
-                        dgv.BeginEdit(true); // já começa a editar a célula "Produto"
-                    }));
-
-                    return;
-                }
-
-                // Comportamento padrão para outras células (vai para a próxima célula da linha)
-                if (col < dgv.ColumnCount - 1)
-                {
-                    dgv.CurrentCell = dgv.Rows[row].Cells[col + 1];
-                }
-                else if (row + 1 < dgv.RowCount)
-                {
-                    dgv.CurrentCell = dgv.Rows[row + 1].Cells[0];
-                }
-            }
+            //    // Atualiza a posição do botão para qualquer mudança de célula
+            //    BeginInvoke((Action)(() =>
+            //    {
+            //        AtualizarPosicaoBotao();
+            //    }));
+            //}
         }
-
         private void dataGridViewProdutosLocacao_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "Quantidade" ||

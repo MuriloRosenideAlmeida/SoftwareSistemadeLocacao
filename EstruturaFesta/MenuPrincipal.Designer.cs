@@ -1,6 +1,6 @@
 ﻿namespace EstruturaFesta
 {
-    partial class FormMenuPrincipal
+    partial class MenuPrincipal
     {
         /// <summary>
         /// Required designer variable.
