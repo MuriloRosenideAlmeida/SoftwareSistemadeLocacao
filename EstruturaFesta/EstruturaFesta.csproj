@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\UseCases\" />
+    <Folder Include="Domain\Interfaces\" />
+    <Folder Include="Domain\ValueObjects\" />
+    <Folder Include="Presentation\Resorces\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
 
