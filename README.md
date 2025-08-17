@@ -19,7 +19,7 @@ Tela para cadastro de clientes, alterando os dados de cadastro de pessoa fisica 
 
 **Print do Form:**  
 ![Cadastro de Clientes](EstruturaFesta/Images/TelaClientesPF.PNG)
-![Cadastro de Clientes](EstruturaFesta/Images/TelaClientesPJ.png)
+![Cadastro de Clientes](EstruturaFesta/Images/TelaClientesPJ.PNG)
 
 ---
 
@@ -30,7 +30,7 @@ Data da locação para controle dinamico de estoque com verificação de disponi
 
 
 **Print do Form:**  
-![Tela de Criação de Contratos](EstruturaFesta/Images/TelaPedidoPreenchida.png)
+![Tela de Criação de Contratos](EstruturaFesta/Images/TelaPedidoPreenchida.PNG)
 
 ---
 
@@ -40,7 +40,7 @@ Tela para cadastro de produtos com informações uteis para controle financeiro 
 
 
 **Prints:**  
-![Tela de Cadastro de Produtos](EstruturaFesta/Images/TelaCadastroProdutos.png)
+![Tela de Cadastro de Produtos](EstruturaFesta/Images/TelaCadastroProdutos.PNG)
 
 ---
 
