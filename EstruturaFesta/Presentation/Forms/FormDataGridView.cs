@@ -1,4 +1,4 @@
-﻿using EstruturaFesta.DataBase;
+﻿using EstruturaFesta.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -53,7 +53,7 @@ namespace EstruturaFesta
                 int id = clienteSelecionado.ID;
                 string nome = clienteSelecionado.Nome;
                 string documento = clienteSelecionado.Documento;
-                TelaPedidoForm formCadastro = (TelaPedidoForm)Application.OpenForms["TelaPedido"];
+                TelaPedidoForm formCadastro = (TelaPedidoForm)Application.OpenForms["TelaPedidoForm"];
                 if (formCadastro != null)
                 {
                     // Chamar o método da instância do formulário

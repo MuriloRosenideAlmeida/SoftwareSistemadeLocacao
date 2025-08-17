@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EstruturaFesta.Application.DTOs
+namespace EstruturaFesta.AppServices.DTOs
 {
     public class ProdutoDTO
     {

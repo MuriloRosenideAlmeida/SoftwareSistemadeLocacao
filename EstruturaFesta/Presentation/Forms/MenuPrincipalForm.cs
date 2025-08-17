@@ -42,14 +42,9 @@ namespace EstruturaFesta
             form.Show();
         }
 
-        private void InitializeComponent()
-        {
-
-        }
-
         private void filtroDePedidosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = new FiltroPedidosForm();
+            var form = new FiltroPedidos();
             form.MdiParent = this;
             form.Show();
         }

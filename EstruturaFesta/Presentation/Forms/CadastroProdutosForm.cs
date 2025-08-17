@@ -1,4 +1,5 @@
-﻿using EstruturaFesta.DataBase;
+﻿using EstruturaFesta.Domain.Entities;
+using EstruturaFesta.Infrastructure.Data;
 using System.Data;
 
 

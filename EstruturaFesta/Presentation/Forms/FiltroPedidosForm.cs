@@ -1,5 +1,4 @@
-﻿using EstruturaFesta.Clientes;
-using EstruturaFesta.DataBase;
+﻿using EstruturaFesta.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

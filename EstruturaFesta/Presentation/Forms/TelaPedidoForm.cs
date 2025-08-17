@@ -1,5 +1,4 @@
-﻿using EstruturaFesta.Clientes;
-using EstruturaFesta.DataBase;
+﻿using EstruturaFesta.Infrastructure.Data;
 using EstruturaFesta.Domain.Entities;
 using System;
 using System.Data;
@@ -26,7 +25,7 @@ namespace EstruturaFesta
             this.Shown += TelaPedido_Shown;
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
             dataGridViewProdutosLocacao.StandardTab = false;
-            dataGridViewProdutosLocacao.KeyDown += dataGridViewProdutosLocacao_KeyDown;
+
         }
 
         private void TelaPedido_Shown(object sender, EventArgs e)
@@ -34,7 +33,26 @@ namespace EstruturaFesta
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
         }
+        // Parte do cliente
+        private void bntBuscarCliente_Click(object sender, EventArgs e)
+        {
+            new FormDataGridView().ShowDialog();
+        }
 
+        private void bntBuscarCliente_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.IsInputKey = true; // Previne que Enter seja tratado como click
+            }
+        }
+        public void PreencherCamposCliente(int id, string nome, string documento)
+        {
+            textBoxIDCliente.Text = id.ToString();
+            textBoxNomeCliente.Text = nome;
+            textBoxDocumentoCliente.Text = documento;
+        }
+        // Parte do Produto
         private void ConfigurarBotaoBuscaProduto()
         {
             botaoBuscarProduto = new Button
@@ -52,77 +70,6 @@ namespace EstruturaFesta
         private void BotaoBuscarProduto_Click(object sender, EventArgs e)
         {
             AbrirBuscaProduto(linhaAtualComBotao);
-        }
-
-        private void AtualizarPosicaoBotao()
-        {
-            if (dataGridViewProdutosLocacao.Rows.Count == 0)
-            {
-                botaoBuscarProduto.Visible = false;
-                return;
-            }
-
-            int linhaDisponivel = -1;
-
-            for (int i = 0; i < dataGridViewProdutosLocacao.Rows.Count; i++)
-            {
-                var row = dataGridViewProdutosLocacao.Rows[i];
-                if (row.IsNewRow) continue;
-
-                if (ProdutoIdEstaVazio(row))
-                {
-                    linhaDisponivel = i;
-                    break;
-                }
-            }
-
-            if (linhaDisponivel == -1)
-            {
-                if (dataGridViewProdutosLocacao.AllowUserToAddRows &&
-                    !dataGridViewProdutosLocacao.Rows[^1].IsNewRow)
-                {
-                    dataGridViewProdutosLocacao.Rows.Add();
-                    linhaDisponivel = dataGridViewProdutosLocacao.Rows.Count - 2;
-                }
-                else
-                {
-                    botaoBuscarProduto.Visible = false;
-                    return;
-                }
-            }
-
-            linhaAtualComBotao = linhaDisponivel;
-
-            if (!dataGridViewProdutosLocacao.Columns.Contains("Produto"))
-            {
-                botaoBuscarProduto.Visible = false;
-                return;
-            }
-
-            if (EstaLinhaVisivel(linhaDisponivel))
-            {
-                var cellRect = dataGridViewProdutosLocacao.GetCellDisplayRectangle(
-                    dataGridViewProdutosLocacao.Columns["Produto"].Index, linhaDisponivel, false);
-
-                if (cellRect.Width > 0 && cellRect.Height > 0)
-                {
-                    Point cellLocation = dataGridViewProdutosLocacao.PointToScreen(
-                        new Point(cellRect.Right - botaoBuscarProduto.Width - 3,
-                                  cellRect.Y + (cellRect.Height - botaoBuscarProduto.Height) / 2));
-
-                    botaoBuscarProduto.Location = PointToClient(cellLocation);
-                    botaoBuscarProduto.Visible = true;
-                    botaoBuscarProduto.BringToFront();
-                }
-                else
-                {
-                    botaoBuscarProduto.Visible = false;
-                }
-            }
-            else
-            {
-                botaoBuscarProduto.Visible = false;
-            }
         }
 
         private bool ProdutoIdEstaVazio(DataGridViewRow row)
@@ -170,8 +117,6 @@ namespace EstruturaFesta
                     dataGridViewProdutosLocacao.CurrentCell = row.Cells["Quantidade"];
                     dataGridViewProdutosLocacao.BeginEdit(true);
                 }));
-                
-                AtualizarPosicaoBotao();
             }
         }
 
@@ -189,14 +134,12 @@ namespace EstruturaFesta
 
                     if (produto != null)
                     {
-                        // Monta a descrição completa do produto
                         string descricaoCompleta = $"{produto.Nome} {produto.Material} {produto.Modelo} {produto.Especificacao}".Trim();
 
                         row.Cells["Produto"].Value = descricaoCompleta;
                         row.Cells["Estoque"].Value = produto.Quantidade;
                         row.Cells["ValorUnitario"].Value = produto.PrecoLocacao;
 
-                        // Verifica quantidade disponível na data
                         var dataPedido = dateTimePickerDataPedido.Value.Date;
                         int quantidadeReservada = db.SaldosPorData
                             .Where(s => s.ProdutoId == produto.ID && s.Data == dataPedido)
@@ -204,14 +147,10 @@ namespace EstruturaFesta
 
                         int disponivel = produto.Quantidade - quantidadeReservada;
 
-                        // Atualiza célula de estoque disponível (se houver coluna específica)
                         if (dataGridViewProdutosLocacao.Columns.Contains("QuantidadeDisponivel"))
                         {
                             row.Cells["QuantidadeDisponivel"].Value = disponivel;
                         }
-
-                        // Se desejar, preencher automaticamente a quantidade disponível:
-                        // row.Cells["Quantidade"].Value = disponivel;
                     }
                     else
                     {
@@ -220,10 +159,10 @@ namespace EstruturaFesta
                     }
                 }
 
-                AtualizarPosicaoBotao();
             }
             else if (coluna == "Quantidade")
             {
+                // ... resto do código mantido sem alteração ...
                 int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int quantidade);
                 decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
 
@@ -249,7 +188,7 @@ namespace EstruturaFesta
                     if (quantidade > disponivel)
                     {
                         MessageBox.Show($"Quantidade maior que disponível ({disponivel})!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        row.Cells["Quantidade"].Value = disponivel; // Corrige visualmente
+                        row.Cells["Quantidade"].Value = disponivel;
                         quantidade = disponivel;
                     }
 
@@ -258,71 +197,6 @@ namespace EstruturaFesta
             }
         }
 
-        public void PreencherCamposCliente(int id, string nome, string documento)
-        {
-            textBoxIDCliente.Text = id.ToString();
-            textBoxNomeCliente.Text = nome;
-            textBoxDocumentoCliente.Text = documento;
-        }
-
-        private void bntBuscarCliente_Click(object sender, EventArgs e)
-        {
-            new FormDataGridView().ShowDialog();
-        }
-
-        private void dataGridViewProdutosLocacao_KeyDown(object sender, KeyEventArgs e)
-        {
-            //if (e.KeyCode == Keys.Enter)
-            //{
-            //    e.SuppressKeyPress = true; // Impede comportamento padrão
-            //    var dgv = dataGridViewProdutosLocacao;
-            //    int col = dgv.CurrentCell.ColumnIndex;
-            //    int row = dgv.CurrentCell.RowIndex;
-            //    string nomeColunaAtual = dgv.Columns[col].Name;
-
-            //    if (nomeColunaAtual == "Quantidade")
-            //    {
-            //        // Se não é a última linha, vai para a primeira coluna da próxima linha
-            //        if (row + 1 < dgv.RowCount)
-            //        {
-            //            dgv.CurrentCell = dgv.Rows[row + 1].Cells[0]; // Primeira coluna da próxima linha
-            //                                                          // Atualiza o botão para essa célula
-            //            BeginInvoke((Action)(() =>
-            //            {
-            //                AtualizarPosicaoBotao();
-            //                dgv.BeginEdit(true); // já começa a editar a célula
-            //            }));
-            //        }
-            //        else
-            //        {
-            //            // Se é a última linha, você pode adicionar uma nova linha ou fazer outro comportamento
-            //            // Por exemplo, ficar na mesma célula ou voltar para o início
-            //            dgv.CurrentCell = dgv.Rows[row].Cells[0]; // Volta para primeira coluna da mesma linha
-            //            BeginInvoke((Action)(() =>
-            //            {
-            //                AtualizarPosicaoBotao();
-            //            }));
-            //        }
-            //        return;
-            //    }
-
-            //    // Comportamento padrão para outras células (vai para a próxima célula da linha)
-            //    if (col < dgv.ColumnCount - 1)
-            //    {
-            //        dgv.CurrentCell = dgv.Rows[row].Cells[col + 1];
-            //    }
-            //    else if (row + 1 < dgv.RowCount)
-            //    {
-            //        dgv.CurrentCell = dgv.Rows[row + 1].Cells[0];
-            //    }
-
-            //    // Atualiza a posição do botão para qualquer mudança de célula
-            //    BeginInvoke((Action)(() =>
-            //    {
-            //        AtualizarPosicaoBotao();
-            //    }));
-            //}
-        }
         private void dataGridViewProdutosLocacao_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "Quantidade" ||
@@ -346,12 +220,9 @@ namespace EstruturaFesta
             }
         }
 
-        private void bntBuscarCliente_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        private void dataGridViewProdutosLocacao_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.IsInputKey = true; // Previne que Enter seja tratado como click
-            }
+            BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
         }
 
         private void buttonFinalizarPedido_Click(object sender, EventArgs e)
@@ -437,9 +308,126 @@ namespace EstruturaFesta
             this.Close();
         }
 
-        private void dataGridViewProdutosLocacao_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void dataGridViewProdutosLocacao_CurrentCellChanged(object sender, EventArgs e)
         {
-            BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
+            AtualizarVisibilidadeBotao();
+        }
+
+        private void AtualizarPosicaoBotao()
+        {
+            AtualizarVisibilidadeBotao();
+        }
+
+        private void AtualizarVisibilidadeBotao()
+        {
+            // Verifica se deve mostrar o botão
+            if (!DeveMostrarBotao())
+            {
+                botaoBuscarProduto.Visible = false;
+                return;
+            }
+
+            // Posiciona o botão na célula atual
+            PosicionarBotaoNaCelulaAtual();
+        }
+
+        private bool DeveMostrarBotao()
+        {
+            // Verifica se há DataGridView e células válidas
+            if (dataGridViewProdutosLocacao.CurrentCell == null ||
+                dataGridViewProdutosLocacao.Rows.Count == 0)
+                return false;
+
+            // Verifica se a coluna atual é "Produto"
+            string nomeColunaAtual = dataGridViewProdutosLocacao.CurrentCell.OwningColumn.Name;
+            if (nomeColunaAtual != "Produto")
+                return false;
+
+            // Verifica se a linha atual tem produto vazio
+            int linhaAtual = dataGridViewProdutosLocacao.CurrentCell.RowIndex;
+            var row = dataGridViewProdutosLocacao.Rows[linhaAtual];
+
+            return ProdutoIdEstaVazio(row);
+        }
+
+        private void PosicionarBotaoNaCelulaAtual()
+        {
+            int linhaAtual = dataGridViewProdutosLocacao.CurrentCell.RowIndex;
+            int colunaAtual = dataGridViewProdutosLocacao.CurrentCell.ColumnIndex;
+
+            // Atualiza a linha atual para o click do botão
+            linhaAtualComBotao = linhaAtual;
+
+            // Verifica se a linha está visível
+            if (!EstaLinhaVisivel(linhaAtual))
+            {
+                botaoBuscarProduto.Visible = false;
+                return;
+            }
+
+            // Calcula a posição do botão
+            var cellRect = dataGridViewProdutosLocacao.GetCellDisplayRectangle(colunaAtual, linhaAtual, false);
+
+            if (cellRect.Width > 0 && cellRect.Height > 0)
+            {
+                Point cellLocation = dataGridViewProdutosLocacao.PointToScreen(
+                    new Point(cellRect.Right - botaoBuscarProduto.Width - 3,
+                              cellRect.Y + (cellRect.Height - botaoBuscarProduto.Height) / 2));
+
+                botaoBuscarProduto.Location = PointToClient(cellLocation);
+                botaoBuscarProduto.Visible = true;
+                botaoBuscarProduto.BringToFront();
+            }
+            else
+            {
+                botaoBuscarProduto.Visible = false;
+            }
+        }
+
+        private void dataGridViewProdutosLocacao_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            e.Control.PreviewKeyDown += EditingControl_PreviewKeyDown;   
+        }
+        private void EditingControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            // Isso garante que o Enter não seja ignorado
+            if (e.KeyCode == Keys.Enter)
+                e.IsInputKey = true;
+            if (e.KeyCode == Keys.Enter)
+            {
+                var dgv = dataGridViewProdutosLocacao;
+                if (dgv.CurrentCell == null) return;
+
+                string nomeColunaAtual = dgv.CurrentCell.OwningColumn.Name;
+
+                if (nomeColunaAtual == "Quantidade")
+                {
+                    e.IsInputKey = true;
+
+                    // Força o fim da edição da célula atual
+                    dgv.EndEdit();
+
+                    int row = dgv.CurrentCell.RowIndex;
+
+                    // Vai para a coluna "Produto" da próxima linha
+                    BeginInvoke((Action)(() =>
+                    {
+                        if (row + 1 < dgv.RowCount)
+                        {
+                            int colunaProduto = dgv.Columns["Produto"].Index;
+                            dgv.CurrentCell = dgv.Rows[row + 1].Cells[colunaProduto];
+                        }
+                        else
+                        {
+                            // Adiciona nova linha e vai para coluna Produto
+                            dgv.Rows.Add();
+                            int colunaProduto = dgv.Columns["Produto"].Index;
+                            dgv.CurrentCell = dgv.Rows[row + 1].Cells[colunaProduto];
+                        }
+                        dgv.BeginEdit(true);
+                    }));
+                }
+            }
         }
     }
-}
+}    

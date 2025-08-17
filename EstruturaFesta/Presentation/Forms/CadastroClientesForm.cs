@@ -1,5 +1,5 @@
 ﻿using ViaCep;
-using EstruturaFesta.DataBase;
+using EstruturaFesta.Infrastructure.Data;
 using EstruturaFesta.Domain.Entities;
 
 namespace EstruturaFesta

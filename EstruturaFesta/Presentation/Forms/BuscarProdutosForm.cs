@@ -1,5 +1,5 @@
-﻿using EstruturaFesta.Application.DTOs;
-using EstruturaFesta.DataBase;
+﻿using EstruturaFesta.AppServices.DTOs;
+using EstruturaFesta.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace EstruturaFesta
 {
