@@ -18,8 +18,8 @@ Sistema de locação de materiais para festas, desenvolvido em **C# WinForms** c
 Tela para cadastro de clientes, alterando os dados de cadastro de pessoa fisica para pessoa juridica atravez de RadioButton
 
 **Print do Form:**  
-![Cadastro de Clientes](Images/TelaClientesPF.png)
-![Cadastro de Clientes](Images/TelaClientesPJ.png)
+![Cadastro de Clientes](EstruturaFesta/Images/TelaClientesPF.PNG)
+![Cadastro de Clientes](EstruturaFesta/Images/TelaClientesPJ.png)
 
 ---
 
@@ -30,7 +30,7 @@ Data da locação para controle dinamico de estoque com verificação de disponi
 
 
 **Print do Form:**  
-![Tela de Criação de Contratos](Images/TelaPedidoPreenchida.png)
+![Tela de Criação de Contratos](EstruturaFesta/Images/TelaPedidoPreenchida.png)
 
 ---
 
@@ -40,7 +40,7 @@ Tela para cadastro de produtos com informações uteis para controle financeiro 
 
 
 **Prints:**  
-![Tela de Cadastro de Produtos](Images/TelaCadastroProdutos.png)
+![Tela de Cadastro de Produtos](EstruturaFesta/Images/TelaCadastroProdutos.png)
 
 ---
 
