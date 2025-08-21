@@ -40,16 +40,17 @@
             textBoxDocumentoCliente = new TextBox();
             textBoxNomeCliente = new TextBox();
             dataGridViewProdutosLocacao = new DataGridView();
-            Produto = new DataGridViewTextBoxColumn();
-            Estoque = new DataGridViewTextBoxColumn();
-            Quantidade = new DataGridViewTextBoxColumn();
-            ValorUnitario = new DataGridViewTextBoxColumn();
-            ValorTotal = new DataGridViewTextBoxColumn();
             dateTimePickerDataPedido = new DateTimePicker();
             buttonFinalizarPedido = new Button();
             labelCliente = new Label();
             labelNome = new Label();
             labelDocumentos = new Label();
+            ProdutoID = new DataGridViewTextBoxColumn();
+            Produto = new DataGridViewTextBoxColumn();
+            Estoque = new DataGridViewTextBoxColumn();
+            Quantidade = new DataGridViewTextBoxColumn();
+            ValorUnitario = new DataGridViewTextBoxColumn();
+            ValorTotal = new DataGridViewTextBoxColumn();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
@@ -157,7 +158,7 @@
             // dataGridViewProdutosLocacao
             // 
             dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { Produto, Estoque, Quantidade, ValorUnitario, ValorTotal });
+            dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoID, Produto, Estoque, Quantidade, ValorUnitario, ValorTotal });
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
             dataGridViewProdutosLocacao.Location = new Point(12, 187);
             dataGridViewProdutosLocacao.MultiSelect = false;
@@ -171,45 +172,14 @@
             dataGridViewProdutosLocacao.EditingControlShowing += dataGridViewProdutosLocacao_EditingControlShowing;
             dataGridViewProdutosLocacao.RowsAdded += dataGridViewProdutosLocacao_RowsAdded;
             // 
-            // Produto
-            // 
-            Produto.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Produto.HeaderText = "Produto";
-            Produto.Name = "Produto";
-            // 
-            // Estoque
-            // 
-            Estoque.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Estoque.HeaderText = "Estoque";
-            Estoque.Name = "Estoque";
-            Estoque.ReadOnly = true;
-            // 
-            // Quantidade
-            // 
-            Quantidade.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Quantidade.HeaderText = "Quantidade";
-            Quantidade.Name = "Quantidade";
-            // 
-            // ValorUnitario
-            // 
-            ValorUnitario.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            ValorUnitario.HeaderText = "Valor Unitario";
-            ValorUnitario.Name = "ValorUnitario";
-            ValorUnitario.ReadOnly = true;
-            // 
-            // ValorTotal
-            // 
-            ValorTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            ValorTotal.HeaderText = "Valor Total";
-            ValorTotal.Name = "ValorTotal";
-            ValorTotal.ReadOnly = true;
-            // 
             // dateTimePickerDataPedido
             // 
+            dateTimePickerDataPedido.CustomFormat = "";
             dateTimePickerDataPedido.Location = new Point(73, 158);
             dateTimePickerDataPedido.Name = "dateTimePickerDataPedido";
             dateTimePickerDataPedido.Size = new Size(200, 23);
             dateTimePickerDataPedido.TabIndex = 2;
+            dateTimePickerDataPedido.Value = new DateTime(2025, 8, 19, 21, 44, 54, 0);
             // 
             // buttonFinalizarPedido
             // 
@@ -247,6 +217,45 @@
             labelDocumentos.Size = new Size(60, 15);
             labelDocumentos.TabIndex = 6;
             labelDocumentos.Text = "CFP/CNPJ";
+            // 
+            // ProdutoID
+            // 
+            ProdutoID.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ProdutoID.HeaderText = "Codigo";
+            ProdutoID.Name = "ProdutoID";
+            // 
+            // Produto
+            // 
+            Produto.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Produto.HeaderText = "Produto";
+            Produto.Name = "Produto";
+            // 
+            // Estoque
+            // 
+            Estoque.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Estoque.HeaderText = "Estoque";
+            Estoque.Name = "Estoque";
+            Estoque.ReadOnly = true;
+            // 
+            // Quantidade
+            // 
+            Quantidade.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Quantidade.HeaderText = "Quantidade";
+            Quantidade.Name = "Quantidade";
+            // 
+            // ValorUnitario
+            // 
+            ValorUnitario.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorUnitario.HeaderText = "Valor Unitario";
+            ValorUnitario.Name = "ValorUnitario";
+            ValorUnitario.ReadOnly = true;
+            // 
+            // ValorTotal
+            // 
+            ValorTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorTotal.HeaderText = "Valor Total";
+            ValorTotal.Name = "ValorTotal";
+            ValorTotal.ReadOnly = true;
             // 
             // TelaPedidoForm
             // 
@@ -289,6 +298,7 @@
         private Label labelNomeContato;
         private Label labelObservacoes;
         private Label labelNumeroContato;
+        private DataGridViewTextBoxColumn ProdutoID;
         private DataGridViewTextBoxColumn Produto;
         private DataGridViewTextBoxColumn Estoque;
         private DataGridViewTextBoxColumn Quantidade;

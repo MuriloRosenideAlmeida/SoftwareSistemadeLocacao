@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using EstruturaFesta.AppServices.DTOs;
 
 namespace EstruturaFesta
 {
@@ -20,7 +21,6 @@ namespace EstruturaFesta
 
             dataGridViewProdutosLocacao.Resize += (s, e) => AtualizarPosicaoBotao();
             dataGridViewProdutosLocacao.Scroll += (s, e) => AtualizarPosicaoBotao();
-            dataGridViewProdutosLocacao.RowsAdded += (s, e) => AtualizarPosicaoBotao();
             dataGridViewProdutosLocacao.RowsRemoved += (s, e) => AtualizarPosicaoBotao();
             this.Shown += TelaPedido_Shown;
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
@@ -107,6 +107,10 @@ namespace EstruturaFesta
                 // Junta as características em uma descrição única
                 string descricaoCompleta = $"{produto.Nome} {produto.Material} {produto.Modelo} {produto.Especificacao}".Trim();
 
+                var dataPedido = dateTimePickerDataPedido.Value.Date;
+                int estoqueDisponivel = CalcularEstoqueDisponivel(produto.ProdutoId, dataPedido, produto.QuantidadeEstoque);
+                
+                row.Cells["ProdutoID"].Value = produto.ProdutoId;
                 row.Cells["Produto"].Value = descricaoCompleta;
                 row.Cells["Estoque"].Value = produto.QuantidadeEstoque;
                 row.Cells["ValorUnitario"].Value = produto.ValorUnitario;
@@ -119,84 +123,114 @@ namespace EstruturaFesta
                 }));
             }
         }
-
+        
+        //Evento que contem a logica de preencher todas as informações do produto selecionado
         private void dataGridViewProdutosLocacao_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            var row = dataGridViewProdutosLocacao.Rows[e.RowIndex];
+        {//Isso serve para não pegar o index do cabeçalho
+            if (e.RowIndex < 0) return;
+
+            //Isso pega o nome da coluna que foi editada e consigo criar If para cada coluna
             string coluna = dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name;
 
-            if (coluna == "Produto")
+            // Quando o usuário digitar o código na coluna "Codigo"
+            if (coluna == "ProdutoID")
             {
-                if (int.TryParse(row.Cells["Produto"].Value?.ToString(), out int idProduto))
+                var cellValue = dataGridViewProdutosLocacao.Rows[e.RowIndex].Cells["ProdutoID"].Value?.ToString();
+                if (int.TryParse(cellValue, out int produtoId) && produtoId > 0)
                 {
-                    using var db = new EstruturaDataBase();
-                    var produto = db.Produtos.FirstOrDefault(p => p.ID == idProduto);
-
-                    if (produto != null)
-                    {
-                        string descricaoCompleta = $"{produto.Nome} {produto.Material} {produto.Modelo} {produto.Especificacao}".Trim();
-
-                        row.Cells["Produto"].Value = descricaoCompleta;
-                        row.Cells["Estoque"].Value = produto.Quantidade;
-                        row.Cells["ValorUnitario"].Value = produto.PrecoLocacao;
-
-                        var dataPedido = dateTimePickerDataPedido.Value.Date;
-                        int quantidadeReservada = db.SaldosPorData
-                            .Where(s => s.ProdutoId == produto.ID && s.Data == dataPedido)
-                            .Sum(s => s.QuantidadeReservada);
-
-                        int disponivel = produto.Quantidade - quantidadeReservada;
-
-                        if (dataGridViewProdutosLocacao.Columns.Contains("QuantidadeDisponivel"))
-                        {
-                            row.Cells["QuantidadeDisponivel"].Value = disponivel;
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Produto não encontrado.");
-                        row.Cells["Produto"].Value = null;
-                    }
+                    PreencherProdutoNoDataGridView(produtoId, e.RowIndex);
                 }
-
             }
+            
             else if (coluna == "Quantidade")
             {
-                // ... resto do código mantido sem alteração ...
+                var row = dataGridViewProdutosLocacao.Rows[e.RowIndex];
                 int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int quantidade);
-                decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
+                int disponivel = 0;
+                int.TryParse(row.Cells["Estoque"].Value?.ToString(), out disponivel);
 
-                string descricaoProduto = row.Cells["Produto"].Value?.ToString();
-
-                if (string.IsNullOrWhiteSpace(descricaoProduto))
-                    return;
-
-                using var db = new EstruturaDataBase();
-                var dataPedido = dateTimePickerDataPedido.Value.Date;
-
-                var produto = db.Produtos.FirstOrDefault(p =>
-                    (p.Nome + " " + p.Material + " " + p.Modelo + " " + p.Especificacao).Trim() == descricaoProduto);
-
-                if (produto != null)
+                if (quantidade > disponivel)
                 {
-                    int quantidadeJaReservada = db.SaldosPorData
-                        .Where(s => s.ProdutoId == produto.ID && s.Data == dataPedido)
-                        .Sum(s => s.QuantidadeReservada);
-
-                    int disponivel = produto.Quantidade - quantidadeJaReservada;
-
-                    if (quantidade > disponivel)
-                    {
-                        MessageBox.Show($"Quantidade maior que disponível ({disponivel})!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        row.Cells["Quantidade"].Value = disponivel;
-                        quantidade = disponivel;
-                    }
-
-                    row.Cells["ValorTotal"].Value = quantidade * preco;
+                    MessageBox.Show($"Quantidade maior que disponível ({disponivel})!", "Atenção",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    row.Cells["Quantidade"].Value = disponivel;
+                    quantidade = disponivel;
                 }
+
+                decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
+                row.Cells["ValorTotal"].Value = quantidade * preco;
+            }
+
+        }
+
+        private void PreencherProdutoNoDataGridView(int produtoId, int rowIndex)
+        {
+            using (var db = new EstruturaDataBase())
+            {
+                // Busca e converte para DTO 
+                var produtoDTO = db.Produtos
+                    .Where(p => p.ID == produtoId)
+                    .Select(p => new ProdutoDTO
+                    {
+                        ProdutoId = p.ID,
+                        Nome = p.Nome,
+                        Material = p.Material,
+                        Modelo = p.Modelo,
+                        Especificacao = p.Especificacao,
+                        QuantidadeEstoque = p.Quantidade,
+                        ValorUnitario = p.PrecoLocacao
+                    })
+                    .FirstOrDefault();
+
+                if (produtoDTO == null)
+                {
+                    MessageBox.Show("Produto não encontrado!");
+                    dataGridViewProdutosLocacao.Rows[rowIndex].Cells["ProdutoID"].Value = "";
+                    return;
+                }
+
+                // Monta a descrição
+                string descricaoCompleta = $"{produtoDTO.Nome} {produtoDTO.Material} {produtoDTO.Modelo} {produtoDTO.Especificacao}".Trim();
+
+                // Calcula o estoque disponível para a data selecionada
+                var dataPedido = dateTimePickerDataPedido.Value.Date;
+                int estoqueDisponivel = CalcularEstoqueDisponivel(produtoDTO.ProdutoId, dataPedido, produtoDTO.QuantidadeEstoque);
+
+                // Preenche no DataGridView
+                var row = dataGridViewProdutosLocacao.Rows[rowIndex];
+                row.Cells["ProdutoID"].Value = produtoDTO.ProdutoId;
+                row.Cells["Produto"].Value = descricaoCompleta;
+                row.Cells["Estoque"].Value = estoqueDisponivel;
+                row.Cells["ValorUnitario"].Value = produtoDTO.ValorUnitario;
+
+                // Move o foco para a célula de quantidade após preencher
+                this.BeginInvoke((Action)(() =>
+                {
+                    dataGridViewProdutosLocacao.CurrentCell = row.Cells["Quantidade"];
+                    dataGridViewProdutosLocacao.BeginEdit(true);
+                }));
             }
         }
 
+        // Método para calcular o estoque disponível considerando as reservas da data
+        private int CalcularEstoqueDisponivel(int produtoId, DateTime data, int quantidadeEstoque)
+        {
+            using (var db = new EstruturaDataBase())
+            {
+                // Soma todas as quantidades reservadas para este produto na data específica
+                int quantidadeReservada = db.SaldosPorData
+                    .Where(s => s.ProdutoId == produtoId && s.Data.Date == data.Date)
+                    .Sum(s => s.QuantidadeReservada);
+
+                // Retorna a quantidade disponível (estoque total - reservado)
+                int disponivel = quantidadeEstoque - quantidadeReservada;
+
+                // Garante que não retorne valor negativo
+                return Math.Max(0, disponivel);
+            }
+        }
+
+        //Evento para formatar valores dos produtos (Precisa de alteraçoes)
         private void dataGridViewProdutosLocacao_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "Quantidade" ||
@@ -224,7 +258,8 @@ namespace EstruturaFesta
         {
             BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
         }
-
+        
+        //Logica do botão para finalizar um pedido
         private void buttonFinalizarPedido_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBoxIDCliente.Text))
@@ -307,17 +342,20 @@ namespace EstruturaFesta
             novoPedido.Show();
             this.Close();
         }
-
+        
+        //Evento vinculado ao datagrid que quando troca de celula chama o metodo de visualização do botão
         private void dataGridViewProdutosLocacao_CurrentCellChanged(object sender, EventArgs e)
         {
             AtualizarVisibilidadeBotao();
         }
-
+        
+        //Torna o botão visivel chamando o metodo
         private void AtualizarPosicaoBotao()
         {
             AtualizarVisibilidadeBotao();
         }
-
+        
+        //Logica para tornar visivel 
         private void AtualizarVisibilidadeBotao()
         {
             // Verifica se deve mostrar o botão
@@ -330,7 +368,8 @@ namespace EstruturaFesta
             // Posiciona o botão na célula atual
             PosicionarBotaoNaCelulaAtual();
         }
-
+        
+        //Logica para a aparição do botão
         private bool DeveMostrarBotao()
         {
             // Verifica se há DataGridView e células válidas
@@ -383,11 +422,14 @@ namespace EstruturaFesta
                 botaoBuscarProduto.Visible = false;
             }
         }
-
+       
+        //Evento vinculado ao datagrid que faz implementa o previewKeyDown
         private void dataGridViewProdutosLocacao_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             e.Control.PreviewKeyDown += EditingControl_PreviewKeyDown;   
         }
+        
+        //logica para fazer o foco voltar para a primeira celula
         private void EditingControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             // Isso garante que o Enter não seja ignorado
