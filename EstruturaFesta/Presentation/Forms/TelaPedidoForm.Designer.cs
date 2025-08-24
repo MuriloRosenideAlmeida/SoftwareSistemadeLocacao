@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             InformacoesCliente = new Panel();
+            maskedTextBoxNumeroContato = new MaskedTextBox();
             GerarLink = new Button();
             linkLabelWhatsApp = new LinkLabel();
             labelObservacoes = new Label();
@@ -37,7 +38,6 @@
             bntBuscarCliente = new Button();
             textBoxIDCliente = new TextBox();
             textBoxDescrição = new TextBox();
-            textBoxNumeroContato = new TextBox();
             textBoxContato = new TextBox();
             textBoxDocumentoCliente = new TextBox();
             textBoxNomeCliente = new TextBox();
@@ -59,6 +59,7 @@
             // 
             // InformacoesCliente
             // 
+            InformacoesCliente.Controls.Add(maskedTextBoxNumeroContato);
             InformacoesCliente.Controls.Add(GerarLink);
             InformacoesCliente.Controls.Add(linkLabelWhatsApp);
             InformacoesCliente.Controls.Add(labelObservacoes);
@@ -67,7 +68,6 @@
             InformacoesCliente.Controls.Add(bntBuscarCliente);
             InformacoesCliente.Controls.Add(textBoxIDCliente);
             InformacoesCliente.Controls.Add(textBoxDescrição);
-            InformacoesCliente.Controls.Add(textBoxNumeroContato);
             InformacoesCliente.Controls.Add(textBoxContato);
             InformacoesCliente.Controls.Add(textBoxDocumentoCliente);
             InformacoesCliente.Controls.Add(textBoxNomeCliente);
@@ -75,6 +75,14 @@
             InformacoesCliente.Name = "InformacoesCliente";
             InformacoesCliente.Size = new Size(756, 124);
             InformacoesCliente.TabIndex = 0;
+            // 
+            // maskedTextBoxNumeroContato
+            // 
+            maskedTextBoxNumeroContato.Location = new Point(195, 72);
+            maskedTextBoxNumeroContato.Mask = "(00)00000-0000";
+            maskedTextBoxNumeroContato.Name = "maskedTextBoxNumeroContato";
+            maskedTextBoxNumeroContato.Size = new Size(81, 23);
+            maskedTextBoxNumeroContato.TabIndex = 7;
             // 
             // GerarLink
             // 
@@ -89,7 +97,7 @@
             // linkLabelWhatsApp
             // 
             linkLabelWhatsApp.AutoSize = true;
-            linkLabelWhatsApp.Location = new Point(194, 102);
+            linkLabelWhatsApp.Location = new Point(281, 75);
             linkLabelWhatsApp.Name = "linkLabelWhatsApp";
             linkLabelWhatsApp.Size = new Size(91, 15);
             linkLabelWhatsApp.TabIndex = 7;
@@ -110,7 +118,7 @@
             // labelNumeroContato
             // 
             labelNumeroContato.AutoSize = true;
-            labelNumeroContato.Location = new Point(195, 55);
+            labelNumeroContato.Location = new Point(192, 55);
             labelNumeroContato.Name = "labelNumeroContato";
             labelNumeroContato.Size = new Size(114, 15);
             labelNumeroContato.TabIndex = 7;
@@ -153,13 +161,6 @@
             textBoxDescrição.Size = new Size(375, 63);
             textBoxDescrição.TabIndex = 6;
             // 
-            // textBoxNumeroContato
-            // 
-            textBoxNumeroContato.Location = new Point(194, 72);
-            textBoxNumeroContato.Name = "textBoxNumeroContato";
-            textBoxNumeroContato.Size = new Size(162, 23);
-            textBoxNumeroContato.TabIndex = 5;
-            // 
             // textBoxContato
             // 
             textBoxContato.Location = new Point(3, 72);
@@ -192,6 +193,7 @@
             dataGridViewProdutosLocacao.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dataGridViewProdutosLocacao.Size = new Size(753, 150);
             dataGridViewProdutosLocacao.TabIndex = 1;
+            dataGridViewProdutosLocacao.CellBeginEdit += dataGridViewProdutosLocacao_CellBeginEdit;
             dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
             dataGridViewProdutosLocacao.CellFormatting += dataGridViewProdutosLocacao_CellFormatting;
             dataGridViewProdutosLocacao.CurrentCellChanged += dataGridViewProdutosLocacao_CurrentCellChanged;
@@ -310,7 +312,6 @@
 
         private Panel InformacoesCliente;
         private TextBox textBoxDescrição;
-        private TextBox textBoxNumeroContato;
         private TextBox textBoxContato;
         private TextBox textBoxDocumentoCliente;
         private TextBox textBoxNomeCliente;
@@ -325,13 +326,14 @@
         private Label labelNomeContato;
         private Label labelObservacoes;
         private Label labelNumeroContato;
+        private Button GerarLink;
+        private LinkLabel linkLabelWhatsApp;
+        private MaskedTextBox maskedTextBoxNumeroContato;
         private DataGridViewTextBoxColumn ProdutoID;
         private DataGridViewTextBoxColumn Produto;
         private DataGridViewTextBoxColumn Estoque;
         private DataGridViewTextBoxColumn Quantidade;
         private DataGridViewTextBoxColumn ValorUnitario;
         private DataGridViewTextBoxColumn ValorTotal;
-        private Button GerarLink;
-        private LinkLabel linkLabelWhatsApp;
     }
 }

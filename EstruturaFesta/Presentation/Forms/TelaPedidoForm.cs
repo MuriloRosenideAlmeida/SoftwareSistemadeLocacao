@@ -47,7 +47,7 @@ namespace EstruturaFesta
                 e.IsInputKey = true; // Previne que Enter seja tratado como click
             }
         }
-        
+
         public void PreencherCamposCliente(int id, string nome, string documento)
         {
             textBoxIDCliente.Text = id.ToString();
@@ -57,7 +57,7 @@ namespace EstruturaFesta
 
         private void GerarLink_Click(object sender, EventArgs e)
         {
-            string numero = textBoxNumeroContato.Text.Trim();
+            string numero = maskedTextBoxNumeroContato.Text.Trim();
 
             // Remove espaços e caracteres não numéricos
             numero = new string(numero.Where(char.IsDigit).ToArray());
@@ -88,7 +88,7 @@ namespace EstruturaFesta
                 });
             }
         }
-        
+
         // Parte do Produto
         private void ConfigurarBotaoBuscaProduto()
         {
@@ -200,6 +200,30 @@ namespace EstruturaFesta
 
         }
 
+        private bool VerificarProdutoDuplicado(int produtoId, int linhaAtual)
+        {
+            for (int i = 0; i < dataGridViewProdutosLocacao.Rows.Count; i++)
+            {
+                if (i == linhaAtual) continue; // Ignora a linha atual
+
+                var cellValue = dataGridViewProdutosLocacao.Rows[i].Cells["ProdutoID"].Value;
+                if (cellValue != null && int.TryParse(cellValue.ToString(), out int id))
+                {
+                    if (id == produtoId)
+                    {
+                        MessageBox.Show(
+                            $"Produto já adicionado na linha {i + 1}.",
+                            "Produto duplicado",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                        return true; // encontrou duplicado
+                    }
+                }
+            }
+            return false; // não encontrou duplicado
+        }
+
         //Metodo que centraliza a logica de preencher o produto e converte tudo para DTO
         private void PreencherProdutoNoDataGridView(int produtoId, int rowIndex)
         {
@@ -241,12 +265,15 @@ namespace EstruturaFesta
                 row.Cells["Estoque"].Value = estoqueDisponivel;
                 row.Cells["ValorUnitario"].Value = produtoDTO.ValorUnitario;
 
-                // Move o foco para a célula de quantidade após preencher
-                this.BeginInvoke((Action)(() =>
+                //Verificação de duplicação de Produtos pelo ID
+                if (VerificarProdutoDuplicado(produtoDTO.ProdutoId, rowIndex))
                 {
-                    dataGridViewProdutosLocacao.CurrentCell = row.Cells["Quantidade"];
-                    dataGridViewProdutosLocacao.BeginEdit(true);
-                }));
+                    // Se quiser, limpa a célula duplicada para evitar repetição
+                    row.Cells["ProdutoID"].Value = null;
+                    row.Cells["Produto"].Value = null;
+                    return;
+                }
+
             }
         }
 
@@ -416,14 +443,8 @@ namespace EstruturaFesta
 
             // Verifica se a coluna atual é "Produto"
             string nomeColunaAtual = dataGridViewProdutosLocacao.CurrentCell.OwningColumn.Name;
-            if (nomeColunaAtual != "Produto")
-                return false;
 
-            // Verifica se a linha atual tem produto vazio
-            int linhaAtual = dataGridViewProdutosLocacao.CurrentCell.RowIndex;
-            var row = dataGridViewProdutosLocacao.Rows[linhaAtual];
-
-            return ProdutoIdEstaVazio(row);
+            return nomeColunaAtual == "Produto";
         }
 
         private void PosicionarBotaoNaCelulaAtual()
@@ -463,52 +484,122 @@ namespace EstruturaFesta
         //Evento vinculado ao datagrid que faz implementa o previewKeyDown
         private void dataGridViewProdutosLocacao_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
+            e.Control.PreviewKeyDown -= EditingControl_PreviewKeyDown;
             e.Control.PreviewKeyDown += EditingControl_PreviewKeyDown;
         }
 
         //logica para fazer o foco voltar para a primeira celula
+
         private void EditingControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            // Isso garante que o Enter não seja ignorado
-            if (e.KeyCode == Keys.Enter)
-                e.IsInputKey = true;
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode != Keys.Enter) return;
+
+            e.IsInputKey = true;
+
+            var dgv = dataGridViewProdutosLocacao;
+            if (dgv.CurrentCell == null) return;
+
+            string nomeColunaAtual = dgv.CurrentCell.OwningColumn.Name;
+            int rowAtual = dgv.CurrentCell.RowIndex;
+
+            // Finaliza a edição da célula atual
+            dgv.EndEdit();
+
+            switch (nomeColunaAtual)
             {
-                var dgv = dataGridViewProdutosLocacao;
-                if (dgv.CurrentCell == null) return;
-
-                string nomeColunaAtual = dgv.CurrentCell.OwningColumn.Name;
-
-                if (nomeColunaAtual == "Quantidade")
-                {
-                    e.IsInputKey = true;
-
-                    // Força o fim da edição da célula atual
-                    dgv.EndEdit();
-
-                    int row = dgv.CurrentCell.RowIndex;
-
-                    // Vai para a coluna Codigo da próxima linha
+                case "ProdutoID":
                     BeginInvoke((Action)(() =>
                     {
-                        if (row + 1 < dgv.RowCount)
+                        var row = dgv.Rows[rowAtual];
+                        var produtoValue = row.Cells["Produto"].Value;
+
+                        if (produtoValue != null && !string.IsNullOrEmpty(produtoValue.ToString()))
                         {
-                            int colunaProduto = dgv.Columns["ProdutoID"].Index;
-                            dgv.CurrentCell = dgv.Rows[row + 1].Cells[colunaProduto];
+                            // Se produto foi preenchido, pula direto para Quantidade
+                            NavigateToColumn(dgv, rowAtual, "Quantidade");
                         }
                         else
                         {
-                            // Adiciona nova linha e vai para coluna Codigo
-                            dgv.Rows.Add();
-                            int colunaProduto = dgv.Columns["ProdutoID"].Index;
-                            dgv.CurrentCell = dgv.Rows[row + 1].Cells[colunaProduto];
+                            // Se não tem produto, vai para a coluna Produto para aparecer o botão
+                            NavigateToColumn(dgv, rowAtual, "Produto");
                         }
-                        dgv.BeginEdit(true);
                     }));
+                    break;
+                case "Produto":
+                    NavigateToColumn(dgv, rowAtual, "Quantidade");
+                    break;
+
+                case "Quantidade":
+                    NavigateToNextRowOrReuse(dgv, rowAtual);
+                    break;
+            }
+        }
+        private void NavigateToColumn(DataGridView dgv, int row, string columnName)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                if (dgv.Columns.Contains(columnName))
+                {
+                    int columnIndex = dgv.Columns[columnName].Index;
+                    dgv.CurrentCell = dgv.Rows[row].Cells[columnIndex];
+                    dgv.BeginEdit(true);
                 }
+            }));
+        }
+
+        private void NavigateToNextRowOrReuse(DataGridView dgv, int currentRow)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                int targetRow = currentRow + 1;
+
+                // Se está na última linha visível, cria nova
+                if (currentRow == dgv.RowCount - 1)
+                {
+                    dgv.Rows.Add();
+                    targetRow = dgv.RowCount - 1;
+                }
+                else
+                {
+                    // Caso contrário, só navega para a próxima linha existente
+                    targetRow = Math.Min(targetRow, dgv.RowCount - 1);
+                }
+
+                // Navega para ProdutoID da linha alvo
+                if (dgv.Columns.Contains("ProdutoID"))
+                {
+                    int columnIndex = dgv.Columns["ProdutoID"].Index;
+                    dgv.CurrentCell = dgv.Rows[targetRow].Cells[columnIndex];
+                    dgv.BeginEdit(true);
+                }
+            }));
+        }
+
+        private void ConfigurarColunaProdutoReadOnly()
+        {
+            // Não torna a coluna inteira ReadOnly, será controlado por célula
+            if (dataGridViewProdutosLocacao.Columns.Contains("Produto"))
+            {
+                // Opcional: Mantém cor padrão, será alterada por célula quando necessário
+                dataGridViewProdutosLocacao.Columns["Produto"].DefaultCellStyle.BackColor = Color.White;
             }
         }
 
-       
+        private void dataGridViewProdutosLocacao_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            // Se é a coluna Produto e já tem um produto selecionado, cancela a edição
+            if (dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "Produto")
+            {
+                var row = dataGridViewProdutosLocacao.Rows[e.RowIndex];
+                var produtoId = row.Cells["ProdutoID"].Value;
+
+                // Se já tem um produto selecionado (ProdutoID preenchido), não permite editar
+                if (produtoId != null && !string.IsNullOrEmpty(produtoId.ToString()) &&
+                    int.TryParse(produtoId.ToString(), out int id) && id > 0)
+                {
+                    e.Cancel = true; // Cancela a edição
+                }
+            }
+        }
     }
 }    
