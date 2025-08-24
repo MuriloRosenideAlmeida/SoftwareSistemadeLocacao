@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             InformacoesCliente = new Panel();
+            GerarLink = new Button();
+            linkLabelWhatsApp = new LinkLabel();
             labelObservacoes = new Label();
             labelNumeroContato = new Label();
             labelNomeContato = new Label();
@@ -40,23 +42,25 @@
             textBoxDocumentoCliente = new TextBox();
             textBoxNomeCliente = new TextBox();
             dataGridViewProdutosLocacao = new DataGridView();
-            dateTimePickerDataPedido = new DateTimePicker();
-            buttonFinalizarPedido = new Button();
-            labelCliente = new Label();
-            labelNome = new Label();
-            labelDocumentos = new Label();
             ProdutoID = new DataGridViewTextBoxColumn();
             Produto = new DataGridViewTextBoxColumn();
             Estoque = new DataGridViewTextBoxColumn();
             Quantidade = new DataGridViewTextBoxColumn();
             ValorUnitario = new DataGridViewTextBoxColumn();
             ValorTotal = new DataGridViewTextBoxColumn();
+            dateTimePickerDataPedido = new DateTimePicker();
+            buttonFinalizarPedido = new Button();
+            labelCliente = new Label();
+            labelNome = new Label();
+            labelDocumentos = new Label();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
             // 
             // InformacoesCliente
             // 
+            InformacoesCliente.Controls.Add(GerarLink);
+            InformacoesCliente.Controls.Add(linkLabelWhatsApp);
             InformacoesCliente.Controls.Add(labelObservacoes);
             InformacoesCliente.Controls.Add(labelNumeroContato);
             InformacoesCliente.Controls.Add(labelNomeContato);
@@ -71,6 +75,28 @@
             InformacoesCliente.Name = "InformacoesCliente";
             InformacoesCliente.Size = new Size(756, 124);
             InformacoesCliente.TabIndex = 0;
+            // 
+            // GerarLink
+            // 
+            GerarLink.Location = new Point(56, 98);
+            GerarLink.Name = "GerarLink";
+            GerarLink.Size = new Size(132, 23);
+            GerarLink.TabIndex = 9;
+            GerarLink.Text = "Gerar Link de Contato";
+            GerarLink.UseVisualStyleBackColor = true;
+            GerarLink.Click += GerarLink_Click;
+            // 
+            // linkLabelWhatsApp
+            // 
+            linkLabelWhatsApp.AutoSize = true;
+            linkLabelWhatsApp.Location = new Point(194, 102);
+            linkLabelWhatsApp.Name = "linkLabelWhatsApp";
+            linkLabelWhatsApp.Size = new Size(91, 15);
+            linkLabelWhatsApp.TabIndex = 7;
+            linkLabelWhatsApp.TabStop = true;
+            linkLabelWhatsApp.Text = "Abrir WhatsApp";
+            linkLabelWhatsApp.Visible = false;
+            linkLabelWhatsApp.LinkClicked += linkLabelWhatsApp_LinkClicked;
             // 
             // labelObservacoes
             // 
@@ -172,52 +198,6 @@
             dataGridViewProdutosLocacao.EditingControlShowing += dataGridViewProdutosLocacao_EditingControlShowing;
             dataGridViewProdutosLocacao.RowsAdded += dataGridViewProdutosLocacao_RowsAdded;
             // 
-            // dateTimePickerDataPedido
-            // 
-            dateTimePickerDataPedido.CustomFormat = "";
-            dateTimePickerDataPedido.Location = new Point(73, 158);
-            dateTimePickerDataPedido.Name = "dateTimePickerDataPedido";
-            dateTimePickerDataPedido.Size = new Size(200, 23);
-            dateTimePickerDataPedido.TabIndex = 2;
-            dateTimePickerDataPedido.Value = new DateTime(2025, 8, 19, 21, 44, 54, 0);
-            // 
-            // buttonFinalizarPedido
-            // 
-            buttonFinalizarPedido.Location = new Point(647, 352);
-            buttonFinalizarPedido.Name = "buttonFinalizarPedido";
-            buttonFinalizarPedido.Size = new Size(118, 23);
-            buttonFinalizarPedido.TabIndex = 3;
-            buttonFinalizarPedido.Text = "Finalizar Pedido";
-            buttonFinalizarPedido.UseVisualStyleBackColor = true;
-            buttonFinalizarPedido.Click += buttonFinalizarPedido_Click;
-            // 
-            // labelCliente
-            // 
-            labelCliente.AutoSize = true;
-            labelCliente.Location = new Point(16, 0);
-            labelCliente.Name = "labelCliente";
-            labelCliente.Size = new Size(44, 15);
-            labelCliente.TabIndex = 4;
-            labelCliente.Text = "Cliente";
-            // 
-            // labelNome
-            // 
-            labelNome.AutoSize = true;
-            labelNome.Location = new Point(142, 0);
-            labelNome.Name = "labelNome";
-            labelNome.Size = new Size(40, 15);
-            labelNome.TabIndex = 5;
-            labelNome.Text = "Nome";
-            // 
-            // labelDocumentos
-            // 
-            labelDocumentos.AutoSize = true;
-            labelDocumentos.Location = new Point(594, 0);
-            labelDocumentos.Name = "labelDocumentos";
-            labelDocumentos.Size = new Size(60, 15);
-            labelDocumentos.TabIndex = 6;
-            labelDocumentos.Text = "CFP/CNPJ";
-            // 
             // ProdutoID
             // 
             ProdutoID.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -256,6 +236,53 @@
             ValorTotal.HeaderText = "Valor Total";
             ValorTotal.Name = "ValorTotal";
             ValorTotal.ReadOnly = true;
+            // 
+            // dateTimePickerDataPedido
+            // 
+            dateTimePickerDataPedido.CustomFormat = "";
+            dateTimePickerDataPedido.Format = DateTimePickerFormat.Short;
+            dateTimePickerDataPedido.Location = new Point(103, 158);
+            dateTimePickerDataPedido.Name = "dateTimePickerDataPedido";
+            dateTimePickerDataPedido.Size = new Size(97, 23);
+            dateTimePickerDataPedido.TabIndex = 2;
+            dateTimePickerDataPedido.Value = new DateTime(2025, 8, 20, 0, 0, 0, 0);
+            // 
+            // buttonFinalizarPedido
+            // 
+            buttonFinalizarPedido.Location = new Point(647, 352);
+            buttonFinalizarPedido.Name = "buttonFinalizarPedido";
+            buttonFinalizarPedido.Size = new Size(118, 23);
+            buttonFinalizarPedido.TabIndex = 3;
+            buttonFinalizarPedido.Text = "Finalizar Pedido";
+            buttonFinalizarPedido.UseVisualStyleBackColor = true;
+            buttonFinalizarPedido.Click += buttonFinalizarPedido_Click;
+            // 
+            // labelCliente
+            // 
+            labelCliente.AutoSize = true;
+            labelCliente.Location = new Point(16, 0);
+            labelCliente.Name = "labelCliente";
+            labelCliente.Size = new Size(44, 15);
+            labelCliente.TabIndex = 4;
+            labelCliente.Text = "Cliente";
+            // 
+            // labelNome
+            // 
+            labelNome.AutoSize = true;
+            labelNome.Location = new Point(142, 0);
+            labelNome.Name = "labelNome";
+            labelNome.Size = new Size(40, 15);
+            labelNome.TabIndex = 5;
+            labelNome.Text = "Nome";
+            // 
+            // labelDocumentos
+            // 
+            labelDocumentos.AutoSize = true;
+            labelDocumentos.Location = new Point(594, 0);
+            labelDocumentos.Name = "labelDocumentos";
+            labelDocumentos.Size = new Size(60, 15);
+            labelDocumentos.TabIndex = 6;
+            labelDocumentos.Text = "CFP/CNPJ";
             // 
             // TelaPedidoForm
             // 
@@ -304,5 +331,7 @@
         private DataGridViewTextBoxColumn Quantidade;
         private DataGridViewTextBoxColumn ValorUnitario;
         private DataGridViewTextBoxColumn ValorTotal;
+        private Button GerarLink;
+        private LinkLabel linkLabelWhatsApp;
     }
 }

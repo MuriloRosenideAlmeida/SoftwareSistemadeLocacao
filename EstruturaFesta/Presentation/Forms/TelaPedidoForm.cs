@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using EstruturaFesta.AppServices.DTOs;
+using System.Diagnostics;
 
 namespace EstruturaFesta
 {
@@ -46,12 +47,48 @@ namespace EstruturaFesta
                 e.IsInputKey = true; // Previne que Enter seja tratado como click
             }
         }
+        
         public void PreencherCamposCliente(int id, string nome, string documento)
         {
             textBoxIDCliente.Text = id.ToString();
             textBoxNomeCliente.Text = nome;
             textBoxDocumentoCliente.Text = documento;
         }
+
+        private void GerarLink_Click(object sender, EventArgs e)
+        {
+            string numero = textBoxNumeroContato.Text.Trim();
+
+            // Remove espaços e caracteres não numéricos
+            numero = new string(numero.Where(char.IsDigit).ToArray());
+
+            if (string.IsNullOrWhiteSpace(numero))
+            {
+                MessageBox.Show("Digite um número de contato válido.");
+                return;
+            }
+
+            // Monta link no formato do WhatsApp
+            string linkWhatsApp = $"https://wa.me/55{numero}"; // 55 = código do Brasil
+
+            // Exibe no LinkLabel
+            linkLabelWhatsApp.Tag = linkWhatsApp; // guarda o link dentro do Tag
+            linkLabelWhatsApp.Visible = true;
+        }
+
+        private void linkLabelWhatsApp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (linkLabelWhatsApp.Tag != null)
+            {
+                string link = linkLabelWhatsApp.Tag.ToString();
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = link,
+                    UseShellExecute = true // abre no navegador padrão
+                });
+            }
+        }
+        
         // Parte do Produto
         private void ConfigurarBotaoBuscaProduto()
         {
@@ -109,7 +146,7 @@ namespace EstruturaFesta
 
                 var dataPedido = dateTimePickerDataPedido.Value.Date;
                 int estoqueDisponivel = CalcularEstoqueDisponivel(produto.ProdutoId, dataPedido, produto.QuantidadeEstoque);
-                
+
                 row.Cells["ProdutoID"].Value = produto.ProdutoId;
                 row.Cells["Produto"].Value = descricaoCompleta;
                 row.Cells["Estoque"].Value = produto.QuantidadeEstoque;
@@ -123,7 +160,7 @@ namespace EstruturaFesta
                 }));
             }
         }
-        
+
         //Evento que contem a logica de preencher todas as informações do produto selecionado
         private void dataGridViewProdutosLocacao_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {//Isso serve para não pegar o index do cabeçalho
@@ -141,7 +178,7 @@ namespace EstruturaFesta
                     PreencherProdutoNoDataGridView(produtoId, e.RowIndex);
                 }
             }
-            
+
             else if (coluna == "Quantidade")
             {
                 var row = dataGridViewProdutosLocacao.Rows[e.RowIndex];
@@ -163,6 +200,7 @@ namespace EstruturaFesta
 
         }
 
+        //Metodo que centraliza a logica de preencher o produto e converte tudo para DTO
         private void PreencherProdutoNoDataGridView(int produtoId, int rowIndex)
         {
             using (var db = new EstruturaDataBase())
@@ -230,7 +268,6 @@ namespace EstruturaFesta
             }
         }
 
-        //Evento para formatar valores dos produtos (Precisa de alteraçoes)
         private void dataGridViewProdutosLocacao_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "Quantidade" ||
@@ -238,7 +275,7 @@ namespace EstruturaFesta
             {
                 if (e.Value != null && int.TryParse(e.Value.ToString(), out int valorInt))
                 {
-                    e.Value = valorInt.ToString();
+                    e.Value = valorInt.ToString("N0");
                     e.FormattingApplied = true;
                 }
             }
@@ -248,7 +285,7 @@ namespace EstruturaFesta
             {
                 if (e.Value != null && decimal.TryParse(e.Value.ToString(), out decimal valorDecimal))
                 {
-                    e.Value = valorDecimal.ToString("N2"); // Duas casas decimais, com vírgula
+                    e.Value = valorDecimal.ToString("C2"); // Duas casas decimais, com vírgula
                     e.FormattingApplied = true;
                 }
             }
@@ -258,7 +295,7 @@ namespace EstruturaFesta
         {
             BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
         }
-        
+
         //Logica do botão para finalizar um pedido
         private void buttonFinalizarPedido_Click(object sender, EventArgs e)
         {
@@ -342,19 +379,19 @@ namespace EstruturaFesta
             novoPedido.Show();
             this.Close();
         }
-        
+
         //Evento vinculado ao datagrid que quando troca de celula chama o metodo de visualização do botão
         private void dataGridViewProdutosLocacao_CurrentCellChanged(object sender, EventArgs e)
         {
             AtualizarVisibilidadeBotao();
         }
-        
+
         //Torna o botão visivel chamando o metodo
         private void AtualizarPosicaoBotao()
         {
             AtualizarVisibilidadeBotao();
         }
-        
+
         //Logica para tornar visivel 
         private void AtualizarVisibilidadeBotao()
         {
@@ -368,7 +405,7 @@ namespace EstruturaFesta
             // Posiciona o botão na célula atual
             PosicionarBotaoNaCelulaAtual();
         }
-        
+
         //Logica para a aparição do botão
         private bool DeveMostrarBotao()
         {
@@ -422,13 +459,13 @@ namespace EstruturaFesta
                 botaoBuscarProduto.Visible = false;
             }
         }
-       
+
         //Evento vinculado ao datagrid que faz implementa o previewKeyDown
         private void dataGridViewProdutosLocacao_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            e.Control.PreviewKeyDown += EditingControl_PreviewKeyDown;   
+            e.Control.PreviewKeyDown += EditingControl_PreviewKeyDown;
         }
-        
+
         //logica para fazer o foco voltar para a primeira celula
         private void EditingControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -451,19 +488,19 @@ namespace EstruturaFesta
 
                     int row = dgv.CurrentCell.RowIndex;
 
-                    // Vai para a coluna "Produto" da próxima linha
+                    // Vai para a coluna Codigo da próxima linha
                     BeginInvoke((Action)(() =>
                     {
                         if (row + 1 < dgv.RowCount)
                         {
-                            int colunaProduto = dgv.Columns["Produto"].Index;
+                            int colunaProduto = dgv.Columns["ProdutoID"].Index;
                             dgv.CurrentCell = dgv.Rows[row + 1].Cells[colunaProduto];
                         }
                         else
                         {
-                            // Adiciona nova linha e vai para coluna Produto
+                            // Adiciona nova linha e vai para coluna Codigo
                             dgv.Rows.Add();
-                            int colunaProduto = dgv.Columns["Produto"].Index;
+                            int colunaProduto = dgv.Columns["ProdutoID"].Index;
                             dgv.CurrentCell = dgv.Rows[row + 1].Cells[colunaProduto];
                         }
                         dgv.BeginEdit(true);
@@ -471,5 +508,7 @@ namespace EstruturaFesta
                 }
             }
         }
+
+       
     }
 }    
