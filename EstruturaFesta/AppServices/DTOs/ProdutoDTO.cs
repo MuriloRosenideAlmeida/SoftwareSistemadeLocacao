@@ -15,5 +15,6 @@ namespace EstruturaFesta.AppServices.DTOs
         public string Especificacao { get; set; }
         public int QuantidadeEstoque { get; set; }
         public decimal ValorUnitario { get; set; }
+        public decimal ValorReposicao { get; set; }
     }
 }

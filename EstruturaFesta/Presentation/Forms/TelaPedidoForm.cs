@@ -1,11 +1,7 @@
-﻿using EstruturaFesta.Infrastructure.Data;
+﻿using EstruturaFesta.AppServices.DTOs;
 using EstruturaFesta.Domain.Entities;
-using System;
+using EstruturaFesta.Infrastructure.Data;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using EstruturaFesta.AppServices.DTOs;
 using System.Diagnostics;
 
 namespace EstruturaFesta
@@ -240,7 +236,8 @@ namespace EstruturaFesta
                         Modelo = p.Modelo,
                         Especificacao = p.Especificacao,
                         QuantidadeEstoque = p.Quantidade,
-                        ValorUnitario = p.PrecoLocacao
+                        ValorUnitario = p.PrecoLocacao,
+                        ValorReposicao = p.PrecoReposicao
                     })
                     .FirstOrDefault();
 
@@ -264,6 +261,7 @@ namespace EstruturaFesta
                 row.Cells["Produto"].Value = descricaoCompleta;
                 row.Cells["Estoque"].Value = estoqueDisponivel;
                 row.Cells["ValorUnitario"].Value = produtoDTO.ValorUnitario;
+                row.Cells["ValorReposicao"].Value = produtoDTO.ValorReposicao;
 
                 //Verificação de duplicação de Produtos pelo ID
                 if (VerificarProdutoDuplicado(produtoDTO.ProdutoId, rowIndex))
@@ -308,7 +306,8 @@ namespace EstruturaFesta
             }
 
             if (dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "ValorUnitario" ||
-                dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "ValorTotal")
+                dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "ValorTotal" ||
+                dataGridViewProdutosLocacao.Columns[e.ColumnIndex].Name == "ValorReposicao")
             {
                 if (e.Value != null && decimal.TryParse(e.Value.ToString(), out decimal valorDecimal))
                 {
@@ -575,16 +574,6 @@ namespace EstruturaFesta
             }));
         }
 
-        private void ConfigurarColunaProdutoReadOnly()
-        {
-            // Não torna a coluna inteira ReadOnly, será controlado por célula
-            if (dataGridViewProdutosLocacao.Columns.Contains("Produto"))
-            {
-                // Opcional: Mantém cor padrão, será alterada por célula quando necessário
-                dataGridViewProdutosLocacao.Columns["Produto"].DefaultCellStyle.BackColor = Color.White;
-            }
-        }
-
         private void dataGridViewProdutosLocacao_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             // Se é a coluna Produto e já tem um produto selecionado, cancela a edição
@@ -598,6 +587,53 @@ namespace EstruturaFesta
                     int.TryParse(produtoId.ToString(), out int id) && id > 0)
                 {
                     e.Cancel = true; // Cancela a edição
+                }
+            }
+        }
+        // Metodo para Criar um Contador de linhas
+        private void dataGridViewProdutosLocacao_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            if (dataGridViewProdutosLocacao.Rows[e.RowIndex].IsNewRow)
+                return;
+
+            string numeroLinha = (e.RowIndex + 1).ToString();
+            using (SolidBrush brush = new SolidBrush(Color.Black))
+            {
+                StringFormat format = new StringFormat()
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                e.Graphics.DrawString(
+                    numeroLinha,
+                    dataGridViewProdutosLocacao.Font,
+                    brush,
+                    e.RowBounds.Left + (dataGridViewProdutosLocacao.RowHeadersWidth / 2),
+                    e.RowBounds.Top + (e.RowBounds.Height / 2),
+                    format
+                );
+            }
+        }
+
+        //Remoção de linhas
+        private void dataGridViewProdutosLocacao_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) // só com botão direito
+            {
+                // Confirmação antes de excluir
+                var confirmar = MessageBox.Show(
+                    "Deseja excluir esta linha?",
+                    "Confirmação",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmar == DialogResult.Yes)
+                {
+                    if (!dataGridViewProdutosLocacao.Rows[e.RowIndex].IsNewRow)
+                    {
+                        dataGridViewProdutosLocacao.Rows.RemoveAt(e.RowIndex);
+                    }
                 }
             }
         }

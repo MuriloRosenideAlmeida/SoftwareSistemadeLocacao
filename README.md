@@ -6,10 +6,10 @@ Sistema de locação de materiais para festas, desenvolvido em **C# WinForms** c
 ## Funcionalidades
 
 - Cadastro de clientes (Pessoa Física e Jurídica)
-- Controle de estoque por data
+- Controle dinamico de estoque por data
 - Criação de contratos e reservas
-- Relatórios e consultas
-- [Adicione mais funcionalidades conforme necessário]
+- Relatórios e consultas com filtro por data
+- Gerenciamento financeiro com retorno de: clientes atendidos, produtos mais alugados, balanço mensal (Em desenvolvimento futuro)
 
 ---
 

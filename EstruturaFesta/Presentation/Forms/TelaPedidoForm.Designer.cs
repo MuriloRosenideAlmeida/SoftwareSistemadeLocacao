@@ -47,12 +47,18 @@
             Estoque = new DataGridViewTextBoxColumn();
             Quantidade = new DataGridViewTextBoxColumn();
             ValorUnitario = new DataGridViewTextBoxColumn();
+            ValorReposicao = new DataGridViewTextBoxColumn();
             ValorTotal = new DataGridViewTextBoxColumn();
             dateTimePickerDataPedido = new DateTimePicker();
             buttonFinalizarPedido = new Button();
             labelCliente = new Label();
             labelNome = new Label();
             labelDocumentos = new Label();
+            dateTimePickerEntrega = new DateTimePicker();
+            dateTimePickerRetirada = new DateTimePicker();
+            labelEntrega = new Label();
+            labelEvento = new Label();
+            labelRetirada = new Label();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
@@ -185,7 +191,7 @@
             // dataGridViewProdutosLocacao
             // 
             dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoID, Produto, Estoque, Quantidade, ValorUnitario, ValorTotal });
+            dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoID, Produto, Estoque, Quantidade, ValorUnitario, ValorReposicao, ValorTotal });
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
             dataGridViewProdutosLocacao.Location = new Point(12, 187);
             dataGridViewProdutosLocacao.MultiSelect = false;
@@ -198,13 +204,16 @@
             dataGridViewProdutosLocacao.CellFormatting += dataGridViewProdutosLocacao_CellFormatting;
             dataGridViewProdutosLocacao.CurrentCellChanged += dataGridViewProdutosLocacao_CurrentCellChanged;
             dataGridViewProdutosLocacao.EditingControlShowing += dataGridViewProdutosLocacao_EditingControlShowing;
+            dataGridViewProdutosLocacao.RowHeaderMouseClick += dataGridViewProdutosLocacao_RowHeaderMouseClick;
+            dataGridViewProdutosLocacao.RowPostPaint += dataGridViewProdutosLocacao_RowPostPaint;
             dataGridViewProdutosLocacao.RowsAdded += dataGridViewProdutosLocacao_RowsAdded;
             // 
             // ProdutoID
             // 
-            ProdutoID.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ProdutoID.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             ProdutoID.HeaderText = "Codigo";
             ProdutoID.Name = "ProdutoID";
+            ProdutoID.Width = 71;
             // 
             // Produto
             // 
@@ -214,36 +223,46 @@
             // 
             // Estoque
             // 
-            Estoque.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Estoque.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             Estoque.HeaderText = "Estoque";
             Estoque.Name = "Estoque";
             Estoque.ReadOnly = true;
+            Estoque.Width = 74;
             // 
             // Quantidade
             // 
-            Quantidade.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Quantidade.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             Quantidade.HeaderText = "Quantidade";
             Quantidade.Name = "Quantidade";
+            Quantidade.Width = 94;
             // 
             // ValorUnitario
             // 
-            ValorUnitario.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorUnitario.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             ValorUnitario.HeaderText = "Valor Unitario";
             ValorUnitario.Name = "ValorUnitario";
             ValorUnitario.ReadOnly = true;
+            ValorUnitario.Width = 95;
+            // 
+            // ValorReposicao
+            // 
+            ValorReposicao.HeaderText = "Valor Reposição";
+            ValorReposicao.Name = "ValorReposicao";
+            ValorReposicao.ReadOnly = true;
             // 
             // ValorTotal
             // 
-            ValorTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             ValorTotal.HeaderText = "Valor Total";
             ValorTotal.Name = "ValorTotal";
             ValorTotal.ReadOnly = true;
+            ValorTotal.Width = 79;
             // 
             // dateTimePickerDataPedido
             // 
             dateTimePickerDataPedido.CustomFormat = "";
             dateTimePickerDataPedido.Format = DateTimePickerFormat.Short;
-            dateTimePickerDataPedido.Location = new Point(103, 158);
+            dateTimePickerDataPedido.Location = new Point(126, 158);
             dateTimePickerDataPedido.Name = "dateTimePickerDataPedido";
             dateTimePickerDataPedido.Size = new Size(97, 23);
             dateTimePickerDataPedido.TabIndex = 2;
@@ -286,15 +305,67 @@
             labelDocumentos.TabIndex = 6;
             labelDocumentos.Text = "CFP/CNPJ";
             // 
+            // dateTimePickerEntrega
+            // 
+            dateTimePickerEntrega.CustomFormat = "";
+            dateTimePickerEntrega.Format = DateTimePickerFormat.Short;
+            dateTimePickerEntrega.Location = new Point(23, 158);
+            dateTimePickerEntrega.Name = "dateTimePickerEntrega";
+            dateTimePickerEntrega.Size = new Size(97, 23);
+            dateTimePickerEntrega.TabIndex = 2;
+            dateTimePickerEntrega.Value = new DateTime(2025, 8, 20, 0, 0, 0, 0);
+            // 
+            // dateTimePickerRetirada
+            // 
+            dateTimePickerRetirada.CustomFormat = "";
+            dateTimePickerRetirada.Format = DateTimePickerFormat.Short;
+            dateTimePickerRetirada.Location = new Point(229, 158);
+            dateTimePickerRetirada.Name = "dateTimePickerRetirada";
+            dateTimePickerRetirada.Size = new Size(97, 23);
+            dateTimePickerRetirada.TabIndex = 2;
+            dateTimePickerRetirada.Value = new DateTime(2025, 8, 20, 0, 0, 0, 0);
+            // 
+            // labelEntrega
+            // 
+            labelEntrega.AutoSize = true;
+            labelEntrega.Location = new Point(23, 140);
+            labelEntrega.Name = "labelEntrega";
+            labelEntrega.Size = new Size(47, 15);
+            labelEntrega.TabIndex = 7;
+            labelEntrega.Text = "Entrega";
+            // 
+            // labelEvento
+            // 
+            labelEvento.AutoSize = true;
+            labelEvento.Location = new Point(126, 140);
+            labelEvento.Name = "labelEvento";
+            labelEvento.Size = new Size(43, 15);
+            labelEvento.TabIndex = 7;
+            labelEvento.Text = "Evento";
+            // 
+            // labelRetirada
+            // 
+            labelRetirada.AutoSize = true;
+            labelRetirada.Location = new Point(229, 140);
+            labelRetirada.Name = "labelRetirada";
+            labelRetirada.Size = new Size(50, 15);
+            labelRetirada.TabIndex = 7;
+            labelRetirada.Text = "Retirada";
+            // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 749);
+            Controls.Add(labelRetirada);
+            Controls.Add(labelEvento);
+            Controls.Add(labelEntrega);
             Controls.Add(labelDocumentos);
             Controls.Add(labelNome);
             Controls.Add(labelCliente);
             Controls.Add(buttonFinalizarPedido);
+            Controls.Add(dateTimePickerRetirada);
+            Controls.Add(dateTimePickerEntrega);
             Controls.Add(dateTimePickerDataPedido);
             Controls.Add(dataGridViewProdutosLocacao);
             Controls.Add(InformacoesCliente);
@@ -334,6 +405,12 @@
         private DataGridViewTextBoxColumn Estoque;
         private DataGridViewTextBoxColumn Quantidade;
         private DataGridViewTextBoxColumn ValorUnitario;
+        private DataGridViewTextBoxColumn ValorReposicao;
         private DataGridViewTextBoxColumn ValorTotal;
+        private DateTimePicker dateTimePickerEntrega;
+        private DateTimePicker dateTimePickerRetirada;
+        private Label labelEntrega;
+        private Label labelEvento;
+        private Label labelRetirada;
     }
 }
