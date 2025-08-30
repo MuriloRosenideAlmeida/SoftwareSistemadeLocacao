@@ -35,12 +35,14 @@
             pedidosToolStripMenuItem = new ToolStripMenuItem();
             novoPedidoToolStripMenuItem = new ToolStripMenuItem();
             filtroDePedidosToolStripMenuItem = new ToolStripMenuItem();
+            filtrosToolStripMenuItem = new ToolStripMenuItem();
+            filtroProdutoToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { cadastrarToolStripMenuItem, pedidosToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { cadastrarToolStripMenuItem, pedidosToolStripMenuItem, filtrosToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -57,14 +59,14 @@
             // clienteToolStripMenuItem
             // 
             clienteToolStripMenuItem.Name = "clienteToolStripMenuItem";
-            clienteToolStripMenuItem.Size = new Size(117, 22);
+            clienteToolStripMenuItem.Size = new Size(180, 22);
             clienteToolStripMenuItem.Text = "Cliente";
             clienteToolStripMenuItem.Click += clienteToolStripMenuItem_Click;
             // 
             // produtoToolStripMenuItem
             // 
             produtoToolStripMenuItem.Name = "produtoToolStripMenuItem";
-            produtoToolStripMenuItem.Size = new Size(117, 22);
+            produtoToolStripMenuItem.Size = new Size(180, 22);
             produtoToolStripMenuItem.Text = "Produto";
             produtoToolStripMenuItem.Click += produtoToolStripMenuItem_Click;
             // 
@@ -78,26 +80,41 @@
             // novoPedidoToolStripMenuItem
             // 
             novoPedidoToolStripMenuItem.Name = "novoPedidoToolStripMenuItem";
-            novoPedidoToolStripMenuItem.Size = new Size(180, 22);
+            novoPedidoToolStripMenuItem.Size = new Size(162, 22);
             novoPedidoToolStripMenuItem.Text = "Novo Pedido";
             novoPedidoToolStripMenuItem.Click += novoPedidoToolStripMenuItem_Click;
             // 
             // filtroDePedidosToolStripMenuItem
             // 
             filtroDePedidosToolStripMenuItem.Name = "filtroDePedidosToolStripMenuItem";
-            filtroDePedidosToolStripMenuItem.Size = new Size(180, 22);
+            filtroDePedidosToolStripMenuItem.Size = new Size(162, 22);
             filtroDePedidosToolStripMenuItem.Text = "Filtro de Pedidos";
             filtroDePedidosToolStripMenuItem.Click += filtroDePedidosToolStripMenuItem_Click;
             // 
-            // FormMenuPrincipal
+            // filtrosToolStripMenuItem
+            // 
+            filtrosToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { filtroProdutoToolStripMenuItem });
+            filtrosToolStripMenuItem.Name = "filtrosToolStripMenuItem";
+            filtrosToolStripMenuItem.Size = new Size(51, 20);
+            filtrosToolStripMenuItem.Text = "Filtros";
+            // 
+            // filtroProdutoToolStripMenuItem
+            // 
+            filtroProdutoToolStripMenuItem.Name = "filtroProdutoToolStripMenuItem";
+            filtroProdutoToolStripMenuItem.Size = new Size(180, 22);
+            filtroProdutoToolStripMenuItem.Text = "Produto";
+            filtroProdutoToolStripMenuItem.Click += filtroProdutoToolStripMenuItem_Click;
+            // 
+            // MenuPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
-            Name = "FormMenuPrincipal";
+            Name = "MenuPrincipal";
             Text = "FormMenuPrincipal";
+            WindowState = FormWindowState.Maximized;
             Load += FormMenuPrincipal_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -114,5 +131,7 @@
         private ToolStripMenuItem pedidosToolStripMenuItem;
         private ToolStripMenuItem novoPedidoToolStripMenuItem;
         private ToolStripMenuItem filtroDePedidosToolStripMenuItem;
+        private ToolStripMenuItem filtrosToolStripMenuItem;
+        private ToolStripMenuItem filtroProdutoToolStripMenuItem;
     }
 }

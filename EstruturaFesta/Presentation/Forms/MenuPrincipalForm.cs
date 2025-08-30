@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EstruturaFesta.Presentation.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,7 +25,7 @@ namespace EstruturaFesta
         private void clienteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new CadastroClientesForm();
-            form.MdiParent = this; // Opcional: se quiser como janela interna
+            form.MdiParent = this;
             form.Show();
         }
 
@@ -49,6 +50,11 @@ namespace EstruturaFesta
             form.Show();
         }
 
-
+        private void filtroProdutoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new FiltroProdutoForm();
+            form.MdiParent = this;
+            form.Show();
+        }
     }
 }

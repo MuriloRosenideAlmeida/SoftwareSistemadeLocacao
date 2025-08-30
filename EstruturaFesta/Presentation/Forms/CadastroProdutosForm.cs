@@ -7,97 +7,109 @@ namespace EstruturaFesta
 {
     public partial class CadastroProdutosForm : Form
     {
+        private Produto _produto;
         public CadastroProdutosForm()
         {
             InitializeComponent();
             textBoxPrecoLocacao.Text = "R$";
             textBoxPrecoReposicao.Text = "R$";
             textBoxCompra.Text = "R$";
-
-
         }
-
-        private void label1_Click(object sender, EventArgs e)
+        public CadastroProdutosForm(Produto produto) : this()
         {
-
+            _produto = produto;
+            PreencherCampos();
         }
-        private void TextBoxNome_Leave(object sender, EventArgs e)
+        private void PreencherCampos()
+        {
+            if (_produto == null) return;
+
+            textBoxNome.Text = _produto.Nome;
+            numericUpDownQuantidade.Value = _produto.Quantidade;
+            textBoxPrecoLocacao.Text = $"R$ {_produto.PrecoLocacao:N2}";
+            textBoxEspecificacao.Text = _produto.Especificacao;
+            textBoxMaterial.Text = _produto.Material;
+            textBoxModelo.Text = _produto.Modelo;
+            textBoxCompra.Text = $"R$ {_produto.PrecoCompra:N2}";
+            textBoxPrecoReposicao.Text = $"R$ {_produto.PrecoReposicao:N2}";
+            dateTimePicker1.Value = _produto.DataCompra;
+        }
+        
+        //Metodo generico que utiliza nas 3 textbox
+        private void TextBoxPreco_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                if (string.IsNullOrWhiteSpace(tb.Text.Replace("R$", "").Trim()))
+                {
+                    tb.Text = "R$ ";
+                    tb.SelectionStart = tb.Text.Length;
+                }
+            }
+        }
+        //Metodo generico que utiliza nas 3 textbox
+        private void TextBoxPreco_Leave(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                string valorStr = tb.Text.Replace("R$", "").Trim();
+
+                if (string.IsNullOrEmpty(valorStr))
+                {
+                    tb.Text = "R$ ";
+                    tb.SelectionStart = tb.Text.Length;
+                    return;
+                }
+
+                if (decimal.TryParse(valorStr, out decimal valor))
+                {
+                    tb.Text = $"R$ {valor:N2}";
+                }
+                else
+                {
+                    tb.Text = "R$ ";
+                    tb.SelectionStart = tb.Text.Length;
+                }
+            }
+        }
+
+        private void BntAdicionar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBoxNome.Text))
             {
                 MessageBox.Show("O nome não pode estar vazio.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 textBoxNome.Focus(); // Redefine o foco para a TextBox
+                return;
             }
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void TextBoxPrecoLocacao_TextChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(textBoxPrecoLocacao.Text.Replace("R$", "").Trim()))
-            {
-                textBoxPrecoLocacao.Text = "R$ ";
-                textBoxPrecoLocacao.SelectionStart = textBoxPrecoLocacao.Text.Length;
-                string textoAtual = new string(textBoxPrecoLocacao.Text.Where(char.IsDigit).ToArray());
-            }
-        }
-
-        private void TextBoxCompra(object sender, EventArgs e)
-        {
-
-        }
-        private void TextBoxCompra_Changed(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(textBoxCompra.Text.Replace("R$", "").Trim()))
-            {
-                textBoxCompra.Text = "R$ ";
-                textBoxCompra.SelectionStart = textBoxCompra.Text.Length;
-            }
-
-        }
-
-        private void label8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void TextBoxPrecoReposicao_Changed(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(textBoxPrecoReposicao.Text.Replace("R$", "").Trim()))
-            {
-                textBoxPrecoReposicao.Text = "R$ ";
-                textBoxPrecoReposicao.SelectionStart = textBoxPrecoReposicao.Text.Length;
-            }
-
-        }
-
-        private void BntAdicionar_Click(object sender, EventArgs e)
-        {
             using (var context = new EstruturaDataBase())
             {
-                var produto = new Produto
+                if (_produto == null) // Novo produto
                 {
-                    Nome = textBoxNome.Text,
-                    Quantidade = (int)numericUpDownQuantidade.Value,
-                    PrecoLocacao = Convert.ToDecimal(textBoxPrecoLocacao.Text.Replace("R$", "").Trim()),
-                    Especificacao = textBoxEspecificacao.Text,
-                    Material = textBoxMaterial.Text,
-                    Modelo = textBoxModelo.Text,
-                    PrecoCompra = Convert.ToDecimal(textBoxCompra.Text.Replace("R$", "").Trim()),
-                    PrecoReposicao = Convert.ToDecimal(textBoxPrecoReposicao.Text.Replace("R$", "").Trim()),
-                    DataCompra = dateTimePicker1.Value
+                    _produto = new Produto();
+                    context.Produtos.Add(_produto);
+                }
+                else
+                {
+                    context.Produtos.Attach(_produto);
+                }
 
-                };
-                context.Add(produto);
+                // Atualiza os dados do produto
+                _produto.Nome = textBoxNome.Text;
+                _produto.Quantidade = (int)numericUpDownQuantidade.Value;
+                _produto.PrecoLocacao = Convert.ToDecimal(textBoxPrecoLocacao.Text.Replace("R$", "").Trim());
+                _produto.Especificacao = textBoxEspecificacao.Text;
+                _produto.Material = textBoxMaterial.Text;
+                _produto.Modelo = textBoxModelo.Text;
+                _produto.PrecoCompra = Convert.ToDecimal(textBoxCompra.Text.Replace("R$", "").Trim());
+                _produto.PrecoReposicao = Convert.ToDecimal(textBoxPrecoReposicao.Text.Replace("R$", "").Trim());
+                _produto.DataCompra = dateTimePicker1.Value;
+
                 context.SaveChanges();
-                MessageBox.Show("Produto adicionado com sucesso", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                string mensagem = _produto.ID == 0 ? "Produto adicionado com sucesso!" : "Produto atualizado com sucesso!";
+                MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                this.Close();
             }
         }
     }

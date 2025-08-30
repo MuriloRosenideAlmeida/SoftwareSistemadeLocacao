@@ -57,16 +57,19 @@
             // 
             // dateTimePickerInicial
             // 
-            dateTimePickerInicial.Location = new Point(40, 83);
+            dateTimePickerInicial.Format = DateTimePickerFormat.Short;
+            dateTimePickerInicial.Location = new Point(95, 83);
             dateTimePickerInicial.Name = "dateTimePickerInicial";
-            dateTimePickerInicial.Size = new Size(246, 23);
+            dateTimePickerInicial.Size = new Size(96, 23);
             dateTimePickerInicial.TabIndex = 2;
+            dateTimePickerInicial.Value = new DateTime(2025, 8, 26, 0, 0, 0, 0);
             // 
             // dateTimePickerFinal
             // 
-            dateTimePickerFinal.Location = new Point(392, 83);
+            dateTimePickerFinal.Format = DateTimePickerFormat.Short;
+            dateTimePickerFinal.Location = new Point(444, 83);
             dateTimePickerFinal.Name = "dateTimePickerFinal";
-            dateTimePickerFinal.Size = new Size(250, 23);
+            dateTimePickerFinal.Size = new Size(97, 23);
             dateTimePickerFinal.TabIndex = 3;
             // 
             // bntBuscar

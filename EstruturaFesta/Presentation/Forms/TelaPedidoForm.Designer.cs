@@ -59,6 +59,7 @@
             labelEntrega = new Label();
             labelEvento = new Label();
             labelRetirada = new Label();
+            buttonQuebra = new Button();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
@@ -87,7 +88,7 @@
             maskedTextBoxNumeroContato.Location = new Point(195, 72);
             maskedTextBoxNumeroContato.Mask = "(00)00000-0000";
             maskedTextBoxNumeroContato.Name = "maskedTextBoxNumeroContato";
-            maskedTextBoxNumeroContato.Size = new Size(81, 23);
+            maskedTextBoxNumeroContato.Size = new Size(87, 23);
             maskedTextBoxNumeroContato.TabIndex = 7;
             // 
             // GerarLink
@@ -103,7 +104,7 @@
             // linkLabelWhatsApp
             // 
             linkLabelWhatsApp.AutoSize = true;
-            linkLabelWhatsApp.Location = new Point(281, 75);
+            linkLabelWhatsApp.Location = new Point(282, 75);
             linkLabelWhatsApp.Name = "linkLabelWhatsApp";
             linkLabelWhatsApp.Size = new Size(91, 15);
             linkLabelWhatsApp.TabIndex = 7;
@@ -267,6 +268,7 @@
             dateTimePickerDataPedido.Size = new Size(97, 23);
             dateTimePickerDataPedido.TabIndex = 2;
             dateTimePickerDataPedido.Value = new DateTime(2025, 8, 20, 0, 0, 0, 0);
+            dateTimePickerDataPedido.ValueChanged += dateTimePickerDataPedido_ValueChanged;
             // 
             // buttonFinalizarPedido
             // 
@@ -352,11 +354,22 @@
             labelRetirada.TabIndex = 7;
             labelRetirada.Text = "Retirada";
             // 
+            // buttonQuebra
+            // 
+            buttonQuebra.Location = new Point(528, 358);
+            buttonQuebra.Name = "buttonQuebra";
+            buttonQuebra.Size = new Size(75, 23);
+            buttonQuebra.TabIndex = 8;
+            buttonQuebra.Text = "Quebras";
+            buttonQuebra.UseVisualStyleBackColor = true;
+            buttonQuebra.Click += buttonQuebra_Click;
+            // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 749);
+            Controls.Add(buttonQuebra);
             Controls.Add(labelRetirada);
             Controls.Add(labelEvento);
             Controls.Add(labelEntrega);
@@ -372,6 +385,7 @@
             Name = "TelaPedidoForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Tela Pedido";
+            Load += TelaPedidoForm_Load;
             InformacoesCliente.ResumeLayout(false);
             InformacoesCliente.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).EndInit();
@@ -412,5 +426,6 @@
         private Label labelEntrega;
         private Label labelEvento;
         private Label labelRetirada;
+        private Button buttonQuebra;
     }
 }

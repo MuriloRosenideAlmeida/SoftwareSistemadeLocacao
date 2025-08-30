@@ -64,6 +64,7 @@
             textBoxRazaoSocial = new TextBox();
             RazaoSocial = new Label();
             panelCadastroPF = new Panel();
+            maskedTextBoxNascimento = new MaskedTextBox();
             dataGridViewContatos = new DataGridView();
             TelefoneContato = new DataGridViewTextBoxColumn();
             NomeContato = new DataGridViewTextBoxColumn();
@@ -72,7 +73,6 @@
             telefone = new Label();
             textBoxRG = new TextBox();
             rg = new Label();
-            textBoxDataNascimento = new TextBox();
             cpf = new Label();
             textBoxNomeCliente = new TextBox();
             nomeCliente = new Label();
@@ -134,6 +134,7 @@
             textBoxCEP.Name = "textBoxCEP";
             textBoxCEP.Size = new Size(100, 23);
             textBoxCEP.TabIndex = 14;
+            textBoxCEP.KeyDown += textBoxCEP_KeyDown;
             textBoxCEP.Leave += textBoxCEP_Leave;
             // 
             // Rua
@@ -408,13 +409,13 @@
             // 
             // panelCadastroPF
             // 
+            panelCadastroPF.Controls.Add(maskedTextBoxNascimento);
             panelCadastroPF.Controls.Add(dataGridViewContatos);
             panelCadastroPF.Controls.Add(textBoxCPF);
             panelCadastroPF.Controls.Add(label1);
             panelCadastroPF.Controls.Add(telefone);
             panelCadastroPF.Controls.Add(textBoxRG);
             panelCadastroPF.Controls.Add(rg);
-            panelCadastroPF.Controls.Add(textBoxDataNascimento);
             panelCadastroPF.Controls.Add(cpf);
             panelCadastroPF.Controls.Add(textBoxNomeCliente);
             panelCadastroPF.Controls.Add(nomeCliente);
@@ -423,6 +424,16 @@
             panelCadastroPF.Size = new Size(804, 160);
             panelCadastroPF.TabIndex = 28;
             panelCadastroPF.Visible = false;
+            // 
+            // maskedTextBoxNascimento
+            // 
+            maskedTextBoxNascimento.Location = new Point(606, 35);
+            maskedTextBoxNascimento.Mask = "00/00/0000";
+            maskedTextBoxNascimento.Name = "maskedTextBoxNascimento";
+            maskedTextBoxNascimento.Size = new Size(69, 23);
+            maskedTextBoxNascimento.TabIndex = 48;
+            maskedTextBoxNascimento.ValidatingType = typeof(DateTime);
+            maskedTextBoxNascimento.MaskInputRejected += maskedTextBoxNascimento_MaskInputRejected;
             // 
             // dataGridViewContatos
             // 
@@ -486,14 +497,6 @@
             rg.TabIndex = 42;
             rg.Text = "RG";
             // 
-            // textBoxDataNascimento
-            // 
-            textBoxDataNascimento.Location = new Point(606, 35);
-            textBoxDataNascimento.Name = "textBoxDataNascimento";
-            textBoxDataNascimento.Size = new Size(143, 23);
-            textBoxDataNascimento.TabIndex = 41;
-            textBoxDataNascimento.Validated += textBoxDataNascimento_Validated;
-            // 
             // cpf
             // 
             cpf.AutoSize = true;
@@ -519,16 +522,16 @@
             nomeCliente.TabIndex = 38;
             nomeCliente.Text = "Nome";
             // 
-            // CadastroClientes
+            // CadastroClientesForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1005, 378);
-            Controls.Add(panelCadastroPJ);
             Controls.Add(panelCadastroPF);
             Controls.Add(groupBox2);
             Controls.Add(groupBoxTipoCliente);
-            Name = "CadastroClientes";
+            Controls.Add(panelCadastroPJ);
+            Name = "CadastroClientesForm";
             Text = "CadastroClientes";
             groupBoxTipoCliente.ResumeLayout(false);
             groupBoxTipoCliente.PerformLayout();
@@ -569,7 +572,6 @@
         private Label telefone;
         private TextBox textBoxRG;
         private Label rg;
-        private TextBox textBoxDataNascimento;
         private Label cpf;
         private TextBox textBoxNomeCliente;
         private Label nomeCliente;
@@ -592,5 +594,6 @@
         private DataGridView dataGridViewContatosPJ;
         private DataGridViewTextBoxColumn Contato;
         private DataGridViewTextBoxColumn NomePJ;
+        private MaskedTextBox maskedTextBoxNascimento;
     }
 }

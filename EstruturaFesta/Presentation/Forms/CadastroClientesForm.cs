@@ -27,6 +27,14 @@ namespace EstruturaFesta
         {
             LocalizarCEP();
         }
+        private void textBoxCEP_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                LocalizarCEP();
+                e.SuppressKeyPress = true;
+            }
+        }
         private async void LocalizarCEP()
         {
             if (!string.IsNullOrWhiteSpace(textBoxCEP.Text))
@@ -36,11 +44,14 @@ namespace EstruturaFesta
                     var endereco = await _viaCepClient.SearchAsync(textBoxCEP.Text, CancellationToken.None);
                     if (endereco != null)
                     {
-
-                        textBoxRua.Text = endereco.Street;
-                        textBoxBairro.Text = endereco.Neighborhood;
-                        textBoxCidade.Text = endereco.City;
-                        textBoxEstado.Text = endereco.StateInitials;
+                        if (string.IsNullOrWhiteSpace(textBoxRua.Text))
+                            textBoxRua.Text = endereco.Street;
+                        if (string.IsNullOrWhiteSpace(textBoxBairro.Text))
+                            textBoxBairro.Text = endereco.Neighborhood;
+                        if (string.IsNullOrWhiteSpace(textBoxCidade.Text))
+                            textBoxCidade.Text = endereco.City;
+                        if (string.IsNullOrWhiteSpace(textBoxEstado.Text))
+                            textBoxEstado.Text = endereco.StateInitials;
 
                     }
                     else
@@ -77,14 +88,13 @@ namespace EstruturaFesta
                 textBoxNumero.Focus(); // Redefine o foco para a TextBox
             }
         }
-        private void textBoxDataNascimento_Validated(object sender, EventArgs e)
+        private void maskedTextBoxNascimento_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxDataNascimento.Text))
+            if (string.IsNullOrWhiteSpace(maskedTextBoxNascimento.Text))
             {
-                MessageBox.Show("A data de nascimento não pode estar vazia.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxDataNascimento.Focus(); // Redefine o foco para a TextBox
+                MessageBox.Show("Digite apenas números para a data de nascimento.",
+                    "Entrada inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
         //Adicionar Clientes
         private void buttonAdicionarCliente_Click(object sender, EventArgs e)
@@ -98,7 +108,7 @@ namespace EstruturaFesta
                         Nome = textBoxNomeCliente.Text,
                         CPF = textBoxCPF.Text,
                         RG = textBoxRG.Text,
-                        DataNascimento = DateTime.Parse(textBoxDataNascimento.Text),
+                        DataNascimento = DateTime.Parse(maskedTextBoxNascimento.Text),
                         Contatos = new List<Contato>(),
                         Rua = textBoxRua.Text,
                         Bairro = textBoxBairro.Text,
@@ -165,6 +175,6 @@ namespace EstruturaFesta
             }
         }
 
-      
+        
     }
 }

@@ -1,6 +1,7 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
 using EstruturaFesta.Domain.Entities;
 using EstruturaFesta.Infrastructure.Data;
+using EstruturaFesta.Presentation.Forms;
 using System.Data;
 using System.Diagnostics;
 
@@ -23,6 +24,10 @@ namespace EstruturaFesta
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
             dataGridViewProdutosLocacao.StandardTab = false;
 
+        }
+        private void TelaPedidoForm_Load(object sender, EventArgs e)
+        {
+            dateTimePickerDataPedido.Value = DateTime.Now;
         }
 
         private void TelaPedido_Shown(object sender, EventArgs e)
@@ -85,6 +90,49 @@ namespace EstruturaFesta
             }
         }
 
+        private void dateTimePickerDataPedido_ValueChanged(object sender, EventArgs e)
+        {
+            DateTime novaData = dateTimePickerDataPedido.Value.Date;
+
+            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+            {
+                // Ignora linhas sem ProdutoID
+                if (row.Cells["ProdutoID"].Value == null) continue;
+
+                // Pega o ID do produto
+                if (!int.TryParse(row.Cells["ProdutoID"].Value.ToString(), out int produtoId)) continue;
+
+                // Estoque total do produto (pegar do DataGridView ou do DTO)
+                if (!int.TryParse(row.Cells["Estoque"].Value?.ToString(), out int estoqueTotal)) estoqueTotal = 0;
+
+                // Quantidade do pedido atual
+                if (!int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int quantidadePedido)) quantidadePedido = 0;
+
+                // Calcula o estoque disponível para a nova data
+                int estoqueDisponivel = CalcularEstoqueDisponivel(produtoId, novaData, estoqueTotal);
+
+                // Atualiza a coluna de estoque
+                row.Cells["Estoque"].Value = estoqueDisponivel;
+
+                // Ajusta a quantidade do pedido se estiver maior que o disponível
+                if (quantidadePedido > estoqueDisponivel)
+                {
+                    MessageBox.Show(
+                        $"A quantidade do produto {row.Cells["Produto"].Value} foi ajustada para o máximo disponível ({estoqueDisponivel}) para a nova data.",
+                        "Atenção",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                    row.Cells["Quantidade"].Value = estoqueDisponivel;
+                    quantidadePedido = estoqueDisponivel;
+                }
+
+                // Recalcula o valor total
+                if (!decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco)) preco = 0;
+                row.Cells["ValorTotal"].Value = quantidadePedido * preco;
+            }
+        }
+
         // Parte do Produto
         private void ConfigurarBotaoBuscaProduto()
         {
@@ -103,12 +151,6 @@ namespace EstruturaFesta
         private void BotaoBuscarProduto_Click(object sender, EventArgs e)
         {
             AbrirBuscaProduto(linhaAtualComBotao);
-        }
-
-        private bool ProdutoIdEstaVazio(DataGridViewRow row)
-        {
-            var produtoId = row.Cells["Produto"].Value;
-            return produtoId == null || string.IsNullOrEmpty(produtoId.ToString());
         }
 
         private bool EstaLinhaVisivel(int linha)
@@ -533,6 +575,7 @@ namespace EstruturaFesta
                     break;
             }
         }
+
         private void NavigateToColumn(DataGridView dgv, int row, string columnName)
         {
             BeginInvoke((Action)(() =>
@@ -637,5 +680,26 @@ namespace EstruturaFesta
                 }
             }
         }
+
+        private void buttonQuebra_Click(object sender, EventArgs e)
+        {
+            var produtosParaQuebra = dataGridViewProdutosLocacao.Rows
+        .Cast<DataGridViewRow>()
+        .Where(r => !r.IsNewRow)
+        .Select(r => new ProdutoQuebra
+        {
+            ProdutoId = Convert.ToInt32(r.Cells["ProdutoId"].Value),
+            Nome = r.Cells["Produto"].Value.ToString(),
+            Quantidade = Convert.ToInt32(r.Cells["Quantidade"].Value),
+            ValorReposicao = Convert.ToDecimal(r.Cells["ValorReposicao"].Value),
+            QuantidadeQuebrada = 0
+        }).ToList();
+            using (var formQuebra = new QuebraProdutoForm(produtosParaQuebra))
+            {
+                formQuebra.ShowDialog();
+            }
+        }
+
+        
     }
 }    

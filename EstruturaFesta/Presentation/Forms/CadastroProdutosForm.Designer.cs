@@ -30,21 +30,21 @@ namespace EstruturaFesta
         private void InitializeComponent()
         {
             textBoxNome = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
+            labelNome = new Label();
+            labelQuantidade = new Label();
+            labelModelo = new Label();
             textBoxModelo = new TextBox();
             textBoxMaterial = new TextBox();
-            label4 = new Label();
-            label5 = new Label();
+            labelMaterial = new Label();
+            labelEspecificacao = new Label();
             textBoxEspecificacao = new TextBox();
             pictureBox1 = new PictureBox();
-            label6 = new Label();
+            labelImagemProduto = new Label();
             textBoxPrecoLocacao = new TextBox();
-            label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
-            label10 = new Label();
+            labelPrecoLocacao = new Label();
+            labelPrecoCompra = new Label();
+            labelPrecoReposicao = new Label();
+            labelDataCompra = new Label();
             textBoxPrecoReposicao = new TextBox();
             textBoxCompra = new TextBox();
             dateTimePicker1 = new DateTimePicker();
@@ -60,35 +60,33 @@ namespace EstruturaFesta
             textBoxNome.Name = "textBoxNome";
             textBoxNome.Size = new Size(346, 23);
             textBoxNome.TabIndex = 0;
-            textBoxNome.Leave += TextBoxNome_Leave;
             // 
-            // label1
+            // labelNome
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(132, 46);
-            label1.Name = "label1";
-            label1.Size = new Size(40, 15);
-            label1.TabIndex = 10;
-            label1.Text = "Nome";
-            label1.Click += label1_Click;
+            labelNome.AutoSize = true;
+            labelNome.Location = new Point(132, 46);
+            labelNome.Name = "labelNome";
+            labelNome.Size = new Size(40, 15);
+            labelNome.TabIndex = 10;
+            labelNome.Text = "Nome";
             // 
-            // label2
+            // labelQuantidade
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(103, 88);
-            label2.Name = "label2";
-            label2.Size = new Size(69, 15);
-            label2.TabIndex = 10;
-            label2.Text = "Quantidade";
+            labelQuantidade.AutoSize = true;
+            labelQuantidade.Location = new Point(103, 88);
+            labelQuantidade.Name = "labelQuantidade";
+            labelQuantidade.Size = new Size(69, 15);
+            labelQuantidade.TabIndex = 10;
+            labelQuantidade.Text = "Quantidade";
             // 
-            // label3
+            // labelModelo
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(124, 177);
-            label3.Name = "label3";
-            label3.Size = new Size(48, 15);
-            label3.TabIndex = 10;
-            label3.Text = "Modelo";
+            labelModelo.AutoSize = true;
+            labelModelo.Location = new Point(124, 177);
+            labelModelo.Name = "labelModelo";
+            labelModelo.Size = new Size(48, 15);
+            labelModelo.TabIndex = 10;
+            labelModelo.Text = "Modelo";
             // 
             // textBoxModelo
             // 
@@ -104,23 +102,23 @@ namespace EstruturaFesta
             textBoxMaterial.Size = new Size(346, 23);
             textBoxMaterial.TabIndex = 2;
             // 
-            // label4
+            // labelMaterial
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(122, 134);
-            label4.Name = "label4";
-            label4.Size = new Size(50, 15);
-            label4.TabIndex = 10;
-            label4.Text = "Material";
+            labelMaterial.AutoSize = true;
+            labelMaterial.Location = new Point(122, 134);
+            labelMaterial.Name = "labelMaterial";
+            labelMaterial.Size = new Size(50, 15);
+            labelMaterial.TabIndex = 10;
+            labelMaterial.Text = "Material";
             // 
-            // label5
+            // labelEspecificacao
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(94, 221);
-            label5.Name = "label5";
-            label5.Size = new Size(78, 15);
-            label5.TabIndex = 10;
-            label5.Text = "Especificação";
+            labelEspecificacao.AutoSize = true;
+            labelEspecificacao.Location = new Point(94, 221);
+            labelEspecificacao.Name = "labelEspecificacao";
+            labelEspecificacao.Size = new Size(78, 15);
+            labelEspecificacao.TabIndex = 10;
+            labelEspecificacao.Text = "Especificação";
             // 
             // textBoxEspecificacao
             // 
@@ -137,15 +135,14 @@ namespace EstruturaFesta
             pictureBox1.TabIndex = 10;
             pictureBox1.TabStop = false;
             // 
-            // label6
+            // labelImagemProduto
             // 
-            label6.AutoSize = true;
-            label6.Location = new Point(620, 28);
-            label6.Name = "label6";
-            label6.Size = new Size(114, 15);
-            label6.TabIndex = 11;
-            label6.Text = "Imagem do Produto";
-            label6.Click += label6_Click;
+            labelImagemProduto.AutoSize = true;
+            labelImagemProduto.Location = new Point(620, 28);
+            labelImagemProduto.Name = "labelImagemProduto";
+            labelImagemProduto.Size = new Size(114, 15);
+            labelImagemProduto.TabIndex = 11;
+            labelImagemProduto.Text = "Imagem do Produto";
             // 
             // textBoxPrecoLocacao
             // 
@@ -153,44 +150,44 @@ namespace EstruturaFesta
             textBoxPrecoLocacao.Name = "textBoxPrecoLocacao";
             textBoxPrecoLocacao.Size = new Size(85, 23);
             textBoxPrecoLocacao.TabIndex = 5;
-            textBoxPrecoLocacao.TextChanged += TextBoxPrecoLocacao_TextChanged;
+            textBoxPrecoLocacao.TextChanged += TextBoxPreco_TextChanged;
+            textBoxPrecoLocacao.Leave += TextBoxPreco_Leave;
             // 
-            // label7
+            // labelPrecoLocacao
             // 
-            label7.AutoSize = true;
-            label7.Location = new Point(72, 267);
-            label7.Name = "label7";
-            label7.Size = new Size(100, 15);
-            label7.TabIndex = 10;
-            label7.Text = "Preço de Locação";
+            labelPrecoLocacao.AutoSize = true;
+            labelPrecoLocacao.Location = new Point(72, 267);
+            labelPrecoLocacao.Name = "labelPrecoLocacao";
+            labelPrecoLocacao.Size = new Size(100, 15);
+            labelPrecoLocacao.TabIndex = 10;
+            labelPrecoLocacao.Text = "Preço de Locação";
             // 
-            // label8
+            // labelPrecoCompra
             // 
-            label8.AutoSize = true;
-            label8.Location = new Point(618, 267);
-            label8.Name = "label8";
-            label8.Size = new Size(99, 15);
-            label8.TabIndex = 10;
-            label8.Text = "Preço de Compra";
-            label8.Click += label8_Click;
+            labelPrecoCompra.AutoSize = true;
+            labelPrecoCompra.Location = new Point(618, 267);
+            labelPrecoCompra.Name = "labelPrecoCompra";
+            labelPrecoCompra.Size = new Size(99, 15);
+            labelPrecoCompra.TabIndex = 10;
+            labelPrecoCompra.Text = "Preço de Compra";
             // 
-            // label9
+            // labelPrecoReposicao
             // 
-            label9.AutoSize = true;
-            label9.Location = new Point(618, 224);
-            label9.Name = "label9";
-            label9.Size = new Size(110, 15);
-            label9.TabIndex = 10;
-            label9.Text = "Preço de Reposição";
+            labelPrecoReposicao.AutoSize = true;
+            labelPrecoReposicao.Location = new Point(618, 224);
+            labelPrecoReposicao.Name = "labelPrecoReposicao";
+            labelPrecoReposicao.Size = new Size(110, 15);
+            labelPrecoReposicao.TabIndex = 10;
+            labelPrecoReposicao.Text = "Preço de Reposição";
             // 
-            // label10
+            // labelDataCompra
             // 
-            label10.AutoSize = true;
-            label10.Location = new Point(618, 304);
-            label10.Name = "label10";
-            label10.Size = new Size(93, 15);
-            label10.TabIndex = 10;
-            label10.Text = "Data da Compra";
+            labelDataCompra.AutoSize = true;
+            labelDataCompra.Location = new Point(618, 304);
+            labelDataCompra.Name = "labelDataCompra";
+            labelDataCompra.Size = new Size(93, 15);
+            labelDataCompra.TabIndex = 10;
+            labelDataCompra.Text = "Data da Compra";
             // 
             // textBoxPrecoReposicao
             // 
@@ -198,7 +195,8 @@ namespace EstruturaFesta
             textBoxPrecoReposicao.Name = "textBoxPrecoReposicao";
             textBoxPrecoReposicao.Size = new Size(125, 23);
             textBoxPrecoReposicao.TabIndex = 6;
-            textBoxPrecoReposicao.TextChanged += TextBoxPrecoReposicao_Changed;
+            textBoxPrecoReposicao.TextChanged += TextBoxPreco_TextChanged;
+            textBoxPrecoReposicao.Leave += TextBoxPreco_Leave;
             // 
             // textBoxCompra
             // 
@@ -206,7 +204,8 @@ namespace EstruturaFesta
             textBoxCompra.Name = "textBoxCompra";
             textBoxCompra.Size = new Size(125, 23);
             textBoxCompra.TabIndex = 7;
-            textBoxCompra.TextChanged += TextBoxCompra_Changed;
+            textBoxCompra.TextChanged += TextBoxPreco_TextChanged;
+            textBoxCompra.Leave += TextBoxPreco_Leave;
             // 
             // dateTimePicker1
             // 
@@ -233,7 +232,7 @@ namespace EstruturaFesta
             bntAdicionar.UseVisualStyleBackColor = true;
             bntAdicionar.Click += BntAdicionar_Click;
             // 
-            // CadastroProdutos
+            // CadastroProdutosForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -243,23 +242,23 @@ namespace EstruturaFesta
             Controls.Add(dateTimePicker1);
             Controls.Add(textBoxCompra);
             Controls.Add(textBoxPrecoReposicao);
-            Controls.Add(label10);
-            Controls.Add(label9);
-            Controls.Add(label8);
-            Controls.Add(label7);
+            Controls.Add(labelDataCompra);
+            Controls.Add(labelPrecoReposicao);
+            Controls.Add(labelPrecoCompra);
+            Controls.Add(labelPrecoLocacao);
             Controls.Add(textBoxPrecoLocacao);
-            Controls.Add(label6);
+            Controls.Add(labelImagemProduto);
             Controls.Add(pictureBox1);
             Controls.Add(textBoxEspecificacao);
-            Controls.Add(label5);
-            Controls.Add(label4);
+            Controls.Add(labelEspecificacao);
+            Controls.Add(labelMaterial);
             Controls.Add(textBoxMaterial);
             Controls.Add(textBoxModelo);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(labelModelo);
+            Controls.Add(labelQuantidade);
+            Controls.Add(labelNome);
             Controls.Add(textBoxNome);
-            Name = "CadastroProdutos";
+            Name = "CadastroProdutosForm";
             Text = "CadastroProdutos";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownQuantidade).EndInit();
@@ -270,21 +269,21 @@ namespace EstruturaFesta
         #endregion
 
         private TextBox textBoxNome;
-        private Label label1;
-        private Label label2;
-        private Label label3;
+        private Label labelNome;
+        private Label labelQuantidade;
+        private Label labelModelo;
         private TextBox textBoxModelo;
         private TextBox textBoxMaterial;
-        private Label label4;
-        private Label label5;
+        private Label labelMaterial;
+        private Label labelEspecificacao;
         private TextBox textBoxEspecificacao;
         private PictureBox pictureBox1;
-        private Label label6;
+        private Label labelImagemProduto;
         private TextBox textBoxPrecoLocacao;
-        private Label label7;
-        private Label label8;
-        private Label label9;
-        private Label label10;
+        private Label labelPrecoLocacao;
+        private Label labelPrecoCompra;
+        private Label labelPrecoReposicao;
+        private Label labelDataCompra;
         private TextBox textBoxPrecoReposicao;
         private TextBox textBoxCompra;
         private DateTimePicker dateTimePicker1;

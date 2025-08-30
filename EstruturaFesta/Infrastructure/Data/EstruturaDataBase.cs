@@ -15,6 +15,7 @@ namespace EstruturaFesta.Infrastructure.Data
         public DbSet<SaldoEstoqueData> SaldosPorData { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ProdutoPedido> ProdutosPedidos { get; set; }
+        public DbSet<PerdaProduto> PerdaProdutos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,7 +50,17 @@ namespace EstruturaFesta.Infrastructure.Data
                 .HasOne(pp => pp.Produto)
                 .WithMany()
                 .HasForeignKey(pp => pp.ProdutoId);
+            modelBuilder.Entity<Produto>()
+       .Property(p => p.PrecoLocacao)
+       .HasColumnType("decimal(10,2)");
 
+            modelBuilder.Entity<Produto>()
+                .Property(p => p.PrecoReposicao)
+                .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<Produto>()
+                .Property(p => p.PrecoCompra)
+                .HasColumnType("decimal(10,2)");
         }
     }
 }
