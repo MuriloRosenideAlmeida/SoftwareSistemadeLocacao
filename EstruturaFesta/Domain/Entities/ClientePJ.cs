@@ -7,5 +7,9 @@
         public string RazaoSocial { get; set; }
         public string InscricaoEstadual { get; set; }
         public string InscricaoMunicipal { get; set; }
+        public override string ObterDocumento()
+        {
+            return CNPJ;
+        }
     }
 }

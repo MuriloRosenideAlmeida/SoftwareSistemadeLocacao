@@ -2,6 +2,7 @@
 using EstruturaFesta.Domain.Entities;
 using EstruturaFesta.Infrastructure.Data;
 using EstruturaFesta.Presentation.Forms;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
 
@@ -11,7 +12,7 @@ namespace EstruturaFesta
     {
         private Button botaoBuscarProduto;
         private int linhaAtualComBotao = 0;
-
+        private int? _pedidoId = null;
         public TelaPedidoForm()
         {
             InitializeComponent();
@@ -25,6 +26,61 @@ namespace EstruturaFesta
             dataGridViewProdutosLocacao.StandardTab = false;
 
         }
+        public TelaPedidoForm(int pedidoId) : this()
+        {
+            _pedidoId = pedidoId;
+            CarregarPedido(pedidoId);
+        }
+        private void CarregarPedido(int pedidoId)
+        {
+            using var db = new EstruturaDataBase();
+
+            var pedido = db.Pedidos
+                .Include(p => p.Produtos)
+                .ThenInclude(pp => pp.Produto)
+                .Include(p => p.Cliente)
+                .FirstOrDefault(p => p.ID == pedidoId);
+
+            if (pedido == null)
+            {
+                MessageBox.Show("Pedido não encontrado.");
+                return;
+            }
+
+            // Preenche cliente
+            textBoxIDCliente.Text = pedido.ClienteId.ToString();
+            textBoxNomeCliente.Text = pedido.Cliente.Nome;
+            textBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
+
+            // Preenche data do pedido
+            dateTimePickerDataPedido.Value = pedido.DataPedido;
+
+            // Limpa o DataGridView
+            dataGridViewProdutosLocacao.Rows.Clear();
+
+            foreach (var item in pedido.Produtos)
+            {
+                string descricaoCompleta = $"{item.Produto.Nome} {item.Produto.Material} {item.Produto.Modelo} {item.Produto.Especificacao}".Trim();
+
+                int estoqueReservado = db.SaldosPorData
+           .Where(s => s.ProdutoId == item.ProdutoId && s.Data.Date == pedido.DataPedido.Date)
+           .Select(s => s.QuantidadeReservada)
+           .FirstOrDefault();
+                int estoqueDisponivel = item.Produto.Quantidade - estoqueReservado;
+                estoqueDisponivel = Math.Max(0, estoqueDisponivel);
+                dataGridViewProdutosLocacao.Rows.Add(
+                    item.ProdutoId,
+                    descricaoCompleta,
+                    estoqueDisponivel,
+                    item.Quantidade,
+                    item.ValorUnitario,
+                    item.Quantidade * item.ValorUnitario,
+                    item.Produto.PrecoReposicao
+                );
+            }
+            GarantirLinhaInicial();
+            AtualizarPosicaoBotao();
+        }
         private void TelaPedidoForm_Load(object sender, EventArgs e)
         {
             dateTimePickerDataPedido.Value = DateTime.Now;
@@ -32,9 +88,12 @@ namespace EstruturaFesta
 
         private void TelaPedido_Shown(object sender, EventArgs e)
         {
+
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
+
         }
+
         // Parte do cliente
         private void bntBuscarCliente_Click(object sender, EventArgs e)
         {
@@ -191,7 +250,7 @@ namespace EstruturaFesta
                 row.Cells["ValorUnitario"].Value = produto.ValorUnitario;
 
                 // Move o foco para a célula de quantidade
-                this.BeginInvoke((Action)(() =>
+                BeginInvoke((Action)(() =>
                 {
                     dataGridViewProdutosLocacao.CurrentCell = row.Cells["Quantidade"];
                     dataGridViewProdutosLocacao.BeginEdit(true);
@@ -361,9 +420,19 @@ namespace EstruturaFesta
 
         private void dataGridViewProdutosLocacao_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
+            if (dataGridViewProdutosLocacao.IsHandleCreated)
+            {
+                BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
+            }
+            else
+            {
+                // Se o handle ainda não existe, você pode adiar para o evento Shown
+                this.Shown += (s, e) =>
+                {
+                    BeginInvoke((Action)(() => AtualizarPosicaoBotao()));
+                };
+            }
         }
-
         //Logica do botão para finalizar um pedido
         private void buttonFinalizarPedido_Click(object sender, EventArgs e)
         {
@@ -381,42 +450,119 @@ namespace EstruturaFesta
 
             var dataPedido = dateTimePickerDataPedido.Value.Date;
 
-            var listaProdutos = new List<ProdutoPedido>();
+            using var db = new EstruturaDataBase();
+            Pedido pedido;
 
-            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+            if (_pedidoId.HasValue) // EDITAR pedido existente
             {
-                if (row.IsNewRow) continue;
+                pedido = db.Pedidos
+                    .Include(p => p.Produtos)
+                    .FirstOrDefault(p => p.ID == _pedidoId.Value);
 
-                string descricao = row.Cells["Produto"].Value?.ToString();
-                int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int quantidade);
-                decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal valorUnitario);
-
-                if (string.IsNullOrWhiteSpace(descricao) || quantidade <= 0) continue;
-
-                using var dbBusca = new EstruturaDataBase();
-                var produto = dbBusca.Produtos.FirstOrDefault(p =>
-                    (p.Nome + " " + p.Material + " " + p.Modelo + " " + p.Especificacao).Trim() == descricao);
-
-                if (produto != null)
+                if (pedido == null)
                 {
+                    MessageBox.Show("Pedido não encontrado.");
+                    return;
+                }
+
+                pedido.ClienteId = clienteId;
+                pedido.DataPedido = dataPedido;
+
+                var produtosExistentes = pedido.Produtos.ToList();
+
+                foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    int produtoId = Convert.ToInt32(row.Cells["ProdutoID"].Value);
+                    int quantidade = Convert.ToInt32(row.Cells["Quantidade"].Value);
+                    decimal valorUnitario = Convert.ToDecimal(row.Cells["ValorUnitario"].Value);
+
+                    var itemExistente = produtosExistentes.FirstOrDefault(x => x.ProdutoId == produtoId);
+
+                    if (itemExistente != null)
+                    {
+                        // Atualiza estoque reservado
+                        var saldo = db.SaldosPorData.FirstOrDefault(s => s.ProdutoId == produtoId && s.Data.Date == dataPedido);
+                        if (saldo != null)
+                        {
+                            saldo.QuantidadeReservada += (quantidade - itemExistente.Quantidade);
+                        }
+                        else
+                        {
+                            db.SaldosPorData.Add(new SaldoEstoqueData
+                            {
+                                ProdutoId = produtoId,
+                                Data = dataPedido,
+                                QuantidadeReservada = quantidade
+                            });
+                        }
+
+                        // Atualiza item
+                        itemExistente.Quantidade = quantidade;
+                        itemExistente.ValorUnitario = valorUnitario;
+                        produtosExistentes.Remove(itemExistente);
+                    }
+                    else
+                    {
+                        // Novo item
+                        pedido.Produtos.Add(new ProdutoPedido
+                        {
+                            ProdutoId = produtoId,
+                            Quantidade = quantidade,
+                            ValorUnitario = valorUnitario
+                        });
+
+                        // Atualiza estoque reservado
+                        db.SaldosPorData.Add(new SaldoEstoqueData
+                        {
+                            ProdutoId = produtoId,
+                            Data = dataPedido,
+                            QuantidadeReservada = quantidade
+                        });
+                    }
+                }
+
+                // Remove itens que não estão mais no grid e atualiza estoque
+                foreach (var itemRemovido in produtosExistentes)
+                {
+                    var saldo = db.SaldosPorData.FirstOrDefault(s => s.ProdutoId == itemRemovido.ProdutoId && s.Data.Date == dataPedido);
+                    if (saldo != null)
+                    {
+                        saldo.QuantidadeReservada -= itemRemovido.Quantidade;
+                        if (saldo.QuantidadeReservada < 0) saldo.QuantidadeReservada = 0;
+                    }
+                    pedido.Produtos.Remove(itemRemovido);
+                }
+            }
+            else // NOVO pedido
+            {
+                var listaProdutos = new List<ProdutoPedido>();
+
+                foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    int produtoId = Convert.ToInt32(row.Cells["ProdutoID"].Value);
+                    int quantidade = Convert.ToInt32(row.Cells["Quantidade"].Value);
+                    decimal valorUnitario = Convert.ToDecimal(row.Cells["ValorUnitario"].Value);
+
                     listaProdutos.Add(new ProdutoPedido
                     {
-                        ProdutoId = produto.ID,
+                        ProdutoId = produtoId,
                         Quantidade = quantidade,
                         ValorUnitario = valorUnitario
                     });
+
+                    db.SaldosPorData.Add(new SaldoEstoqueData
+                    {
+                        ProdutoId = produtoId,
+                        Data = dataPedido,
+                        QuantidadeReservada = quantidade
+                    });
                 }
-            }
 
-            if (!listaProdutos.Any())
-            {
-                MessageBox.Show("Adicione ao menos um produto válido ao pedido.");
-                return;
-            }
-
-            using (var db = new EstruturaDataBase())
-            {
-                var pedido = new Pedido
+                pedido = new Pedido
                 {
                     ClienteId = clienteId,
                     DataPedido = dataPedido,
@@ -424,27 +570,11 @@ namespace EstruturaFesta
                 };
 
                 db.Pedidos.Add(pedido);
-                db.SaveChanges();
-
-                foreach (var item in listaProdutos)
-                {
-                    db.SaldosPorData.Add(new SaldoEstoqueData
-                    {
-                        ProdutoId = item.ProdutoId,
-                        Data = dataPedido,
-                        QuantidadeReservada = item.Quantidade
-                    });
-                }
-
-                db.SaveChanges();
             }
 
-            MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            db.SaveChanges();
 
-            // Reabre a tela limpa
-            this.Hide();
-            var novoPedido = new TelaPedidoForm();
-            novoPedido.Show();
+            MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }
 
@@ -700,6 +830,6 @@ namespace EstruturaFesta
             }
         }
 
-        
+
     }
-}    
+}

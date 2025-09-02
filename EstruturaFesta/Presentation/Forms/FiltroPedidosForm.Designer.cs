@@ -89,6 +89,7 @@
             dataGridViewPedidos.Name = "dataGridViewPedidos";
             dataGridViewPedidos.Size = new Size(709, 240);
             dataGridViewPedidos.TabIndex = 5;
+            dataGridViewPedidos.CellDoubleClick += dataGridViewPedidos_CellDoubleClick;
             // 
             // FiltroPedidos
             // 

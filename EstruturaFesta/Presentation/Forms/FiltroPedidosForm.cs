@@ -43,5 +43,20 @@ namespace EstruturaFesta
             dataGridViewPedidos.DataSource = pedidos;
         }
 
+        private void dataGridViewPedidos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return; // Ignora cabeçalho
+
+            var row = dataGridViewPedidos.Rows[e.RowIndex];
+
+            if (row.Cells["ID"].Value == null) return;
+
+            int pedidoId = Convert.ToInt32(row.Cells["ID"].Value);
+
+            // Abre o TelaPedidoForm passando o pedidoId
+            var telaPedido = new TelaPedidoForm(pedidoId);
+            telaPedido.ShowDialog();
+            bntBuscar_Click(null, null);
+        }
     }
 }

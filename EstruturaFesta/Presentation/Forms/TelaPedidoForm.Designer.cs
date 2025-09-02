@@ -305,7 +305,7 @@
             labelDocumentos.Name = "labelDocumentos";
             labelDocumentos.Size = new Size(60, 15);
             labelDocumentos.TabIndex = 6;
-            labelDocumentos.Text = "CFP/CNPJ";
+            labelDocumentos.Text = "CPF/CNPJ";
             // 
             // dateTimePickerEntrega
             // 
