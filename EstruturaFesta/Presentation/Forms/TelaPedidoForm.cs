@@ -13,6 +13,7 @@ namespace EstruturaFesta
         private Button botaoBuscarProduto;
         private int linhaAtualComBotao = 0;
         private int? _pedidoId = null;
+
         public TelaPedidoForm()
         {
             InitializeComponent();
@@ -24,13 +25,14 @@ namespace EstruturaFesta
             this.Shown += TelaPedido_Shown;
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
             dataGridViewProdutosLocacao.StandardTab = false;
-
         }
+
         public TelaPedidoForm(int pedidoId) : this()
         {
             _pedidoId = pedidoId;
             CarregarPedido(pedidoId);
         }
+
         private void CarregarPedido(int pedidoId)
         {
             using var db = new EstruturaDataBase();
@@ -47,51 +49,62 @@ namespace EstruturaFesta
                 return;
             }
 
-            // Preenche cliente
-            textBoxIDCliente.Text = pedido.ClienteId.ToString();
-            textBoxNomeCliente.Text = pedido.Cliente.Nome;
-            textBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
+            // Desabilita eventos temporariamente
+            dataGridViewProdutosLocacao.CellEndEdit -= dataGridViewProdutosLocacao_CellEndEdit;
+            dateTimePickerDataPedido.ValueChanged -= dateTimePickerDataPedido_ValueChanged;
 
-            // Preenche data do pedido
-            dateTimePickerDataPedido.Value = pedido.DataPedido;
-
-            // Limpa o DataGridView
-            dataGridViewProdutosLocacao.Rows.Clear();
-
-            foreach (var item in pedido.Produtos)
+            try
             {
-                string descricaoCompleta = $"{item.Produto.Nome} {item.Produto.Material} {item.Produto.Modelo} {item.Produto.Especificacao}".Trim();
+                // Preenche dados básicos
+                textBoxIDCliente.Text = pedido.ClienteId.ToString();
+                textBoxNomeCliente.Text = pedido.Cliente.Nome;
+                textBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
+                dateTimePickerDataPedido.Value = pedido.DataPedido;
 
-                int estoqueReservado = db.SaldosPorData
-           .Where(s => s.ProdutoId == item.ProdutoId && s.Data.Date == pedido.DataPedido.Date)
-           .Select(s => s.QuantidadeReservada)
-           .FirstOrDefault();
-                int estoqueDisponivel = item.Produto.Quantidade - estoqueReservado;
-                estoqueDisponivel = Math.Max(0, estoqueDisponivel);
-                dataGridViewProdutosLocacao.Rows.Add(
-                    item.ProdutoId,
-                    descricaoCompleta,
-                    estoqueDisponivel,
-                    item.Quantidade,
-                    item.ValorUnitario,
-                    item.Quantidade * item.ValorUnitario,
-                    item.Produto.PrecoReposicao
-                );
+                // Limpa e preenche o grid COMPLETO de uma vez
+                dataGridViewProdutosLocacao.Rows.Clear();
+
+                foreach (var item in pedido.Produtos)
+                {
+                    string descricaoCompleta = $"{item.Produto.Nome} {item.Produto.Material} {item.Produto.Modelo} {item.Produto.Especificacao}".Trim();
+
+                    int estoqueDisponivel = CalcularEstoqueDisponivel(item.ProdutoId, pedido.DataPedido, item.Produto.Quantidade);
+
+                    dataGridViewProdutosLocacao.Rows.Add(
+                        item.ProdutoId,
+                        descricaoCompleta,
+                        estoqueDisponivel,
+                        item.Quantidade,
+                        item.ValorUnitario,
+                        item.Quantidade * item.ValorUnitario,
+                        item.Produto.PrecoReposicao
+                    );
+                }
             }
+            finally
+            {
+                // Reabilita eventos
+                dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
+                dateTimePickerDataPedido.ValueChanged += dateTimePickerDataPedido_ValueChanged;
+            }
+
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
         }
+
         private void TelaPedidoForm_Load(object sender, EventArgs e)
         {
-            dateTimePickerDataPedido.Value = DateTime.Now;
+            // Só define data atual se for um pedido NOVO
+            if (!_pedidoId.HasValue)
+            {
+                dateTimePickerDataPedido.Value = DateTime.Now;
+            }
         }
 
         private void TelaPedido_Shown(object sender, EventArgs e)
         {
-
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
-
         }
 
         // Parte do cliente
@@ -260,7 +273,8 @@ namespace EstruturaFesta
 
         //Evento que contem a logica de preencher todas as informações do produto selecionado
         private void dataGridViewProdutosLocacao_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {//Isso serve para não pegar o index do cabeçalho
+        {
+            //Isso serve para não pegar o index do cabeçalho
             if (e.RowIndex < 0) return;
 
             //Isso pega o nome da coluna que foi editada e consigo criar If para cada coluna
@@ -294,7 +308,6 @@ namespace EstruturaFesta
                 decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
                 row.Cells["ValorTotal"].Value = quantidade * preco;
             }
-
         }
 
         private bool VerificarProdutoDuplicado(int produtoId, int linhaAtual)
@@ -372,7 +385,6 @@ namespace EstruturaFesta
                     row.Cells["Produto"].Value = null;
                     return;
                 }
-
             }
         }
 
@@ -433,6 +445,7 @@ namespace EstruturaFesta
                 };
             }
         }
+
         //Logica do botão para finalizar um pedido
         private void buttonFinalizarPedido_Click(object sender, EventArgs e)
         {
@@ -581,7 +594,7 @@ namespace EstruturaFesta
         //Evento vinculado ao datagrid que quando troca de celula chama o metodo de visualização do botão
         private void dataGridViewProdutosLocacao_CurrentCellChanged(object sender, EventArgs e)
         {
-            AtualizarVisibilidadeBotao();
+            AtualizarPosicaoBotao();
         }
 
         //Torna o botão visivel chamando o metodo
@@ -660,7 +673,6 @@ namespace EstruturaFesta
         }
 
         //logica para fazer o foco voltar para a primeira celula
-
         private void EditingControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode != Keys.Enter) return;
@@ -763,6 +775,7 @@ namespace EstruturaFesta
                 }
             }
         }
+
         // Metodo para Criar um Contador de linhas
         private void dataGridViewProdutosLocacao_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
@@ -824,12 +837,11 @@ namespace EstruturaFesta
             ValorReposicao = Convert.ToDecimal(r.Cells["ValorReposicao"].Value),
             QuantidadeQuebrada = 0
         }).ToList();
+
             using (var formQuebra = new QuebraProdutoForm(produtosParaQuebra))
             {
                 formQuebra.ShowDialog();
             }
         }
-
-
     }
 }
