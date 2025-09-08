@@ -17,6 +17,11 @@ namespace EstruturaFesta
         {
             InitializeComponent();
         }
+        private void FiltroPedidos_Load(object sender, EventArgs e)
+        {
+            dateTimePickerInicial.Value = DateTime.Today;
+            dateTimePickerFinal.Value = DateTime.Today.AddDays(1);
+        }
 
         private void bntBuscar_Click(object sender, EventArgs e)
         {
@@ -58,5 +63,7 @@ namespace EstruturaFesta
             telaPedido.ShowDialog();
             bntBuscar_Click(null, null);
         }
+
+        
     }
 }

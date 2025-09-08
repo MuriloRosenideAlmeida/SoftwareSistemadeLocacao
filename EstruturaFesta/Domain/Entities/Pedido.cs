@@ -10,6 +10,8 @@ namespace EstruturaFesta.Domain.Entities
     {
         public int ID { get; set; }
         public DateTime DataPedido { get; set; }
+        public DateTime DataEntrega { get; set; }
+        public DateTime DataRetirada { get; set; }
 
         public int ClienteId { get; set; }
         public Cliente Cliente { get; set; }

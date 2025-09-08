@@ -104,6 +104,7 @@
             Controls.Add(label1);
             Name = "FiltroPedidos";
             Text = "Filtro de Pedidos";
+            Load += FiltroPedidos_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridViewPedidos).EndInit();
             ResumeLayout(false);
             PerformLayout();
