@@ -1,4 +1,5 @@
-﻿using EstruturaFesta.Infrastructure.Data;
+﻿using EstruturaFesta.AppServices.DTOs;
+using EstruturaFesta.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -54,15 +55,16 @@ namespace EstruturaFesta.Presentation.Forms
                 }
 
                 var resultado = query
-                    .Select(p => new
+                    .Select(p => new ProdutoDTO
                     {
-                        p.ID,
-                        p.Nome,
-                        p.Material,
-                        p.Modelo,
-                        p.Especificacao,
+                        ProdutoId = p.ID,
+                        Nome = p.Nome,
+                        Material = p.Material,
+                        Modelo = p.Modelo,
+                        Especificacao = p.Especificacao,
                         QuantidadeEstoque = p.Quantidade,
-                        ValorUnitario = p.PrecoLocacao
+                        ValorUnitario = p.PrecoLocacao,
+                        ValorReposicao = p.PrecoReposicao,
                     })
                     .ToList();
 
@@ -92,6 +94,35 @@ namespace EstruturaFesta.Presentation.Forms
                     }
                 }
             }
+        }
+
+        private void dataGridViewFiltroProdutos_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string columnName = dataGridViewFiltroProdutos.Columns[e.ColumnIndex].Name;
+
+            // Pega a lista atual do DataSource
+            var produtos = dataGridViewFiltroProdutos.DataSource as List<ProdutoDTO>;
+            if (produtos == null) return;
+
+            // Alterna entre ascendente e descendente
+            bool ascending = dataGridViewFiltroProdutos.SortOrder != SortOrder.Ascending;
+
+            // Usa Reflection para pegar a propriedade correspondente
+            var propInfo = typeof(ProdutoDTO).GetProperty(columnName);
+            if (propInfo == null) return; // Se não existir a propriedade, sai
+
+            // Ordena dinamicamente pelo valor da propriedade
+            produtos = ascending
+                ? produtos.OrderBy(p => propInfo.GetValue(p, null)).ToList()
+                : produtos.OrderByDescending(p => propInfo.GetValue(p, null)).ToList();
+
+            // Atualiza o DataSource
+            dataGridViewFiltroProdutos.DataSource = null;
+            dataGridViewFiltroProdutos.DataSource = produtos;
+
+            // Atualiza o ícone de ordenação
+            dataGridViewFiltroProdutos.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection =
+                ascending ? SortOrder.Ascending : SortOrder.Descending;
         }
     }
 }

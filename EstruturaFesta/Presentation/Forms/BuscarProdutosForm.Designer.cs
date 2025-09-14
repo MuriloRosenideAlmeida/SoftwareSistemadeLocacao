@@ -144,15 +144,16 @@
             dataGridViewFiltroProdutos.Size = new Size(800, 426);
             dataGridViewFiltroProdutos.TabIndex = 1;
             dataGridViewFiltroProdutos.CellDoubleClick += dataGridViewFiltroProdutos_CellDoubleClick;
+            dataGridViewFiltroProdutos.ColumnHeaderMouseClick += dataGridViewFiltroProdutos_ColumnHeaderMouseClick;
             // 
-            // BuscarProdutos
+            // BuscarProdutosForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(dataGridViewFiltroProdutos);
             Controls.Add(panelFiltros);
-            Name = "BuscarProdutos";
+            Name = "BuscarProdutosForm";
             Text = "Buscar Produto";
             panelFiltros.ResumeLayout(false);
             panelFiltros.PerformLayout();

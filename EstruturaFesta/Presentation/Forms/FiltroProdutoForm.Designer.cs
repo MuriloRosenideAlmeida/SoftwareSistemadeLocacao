@@ -50,6 +50,7 @@
             dataGridViewFiltroProdutos.Size = new Size(801, 403);
             dataGridViewFiltroProdutos.TabIndex = 0;
             dataGridViewFiltroProdutos.CellDoubleClick += dataGridViewFiltroProdutos_CellDoubleClick;
+            dataGridViewFiltroProdutos.ColumnHeaderMouseClick += dataGridViewFiltroProdutos_ColumnHeaderMouseClick;
             // 
             // textBoxFiltroNomeProduto
             // 

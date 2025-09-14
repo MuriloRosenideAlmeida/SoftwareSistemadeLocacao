@@ -334,6 +334,7 @@ namespace EstruturaFesta
                 row.Cells["Produto"].Value = descricaoCompleta;
                 row.Cells["Estoque"].Value = produto.QuantidadeEstoque;
                 row.Cells["ValorUnitario"].Value = produto.ValorUnitario;
+                row.Cells["ValorReposicao"].Value = produto.ValorReposicao;
 
                 // Move o foco para a célula de quantidade
                 BeginInvoke((Action)(() =>
@@ -855,9 +856,6 @@ namespace EstruturaFesta
             MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }
-
-
-
 
         private void buttonQuebra_Click(object sender, EventArgs e)
         {
