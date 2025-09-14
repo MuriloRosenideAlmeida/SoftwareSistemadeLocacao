@@ -60,6 +60,7 @@
             labelEvento = new Label();
             labelRetirada = new Label();
             buttonQuebra = new Button();
+            textBoxTotalValorQuebra = new TextBox();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             SuspendLayout();
@@ -272,7 +273,7 @@
             // 
             // buttonFinalizarPedido
             // 
-            buttonFinalizarPedido.Location = new Point(647, 352);
+            buttonFinalizarPedido.Location = new Point(647, 372);
             buttonFinalizarPedido.Name = "buttonFinalizarPedido";
             buttonFinalizarPedido.Size = new Size(118, 23);
             buttonFinalizarPedido.TabIndex = 3;
@@ -356,7 +357,7 @@
             // 
             // buttonQuebra
             // 
-            buttonQuebra.Location = new Point(528, 358);
+            buttonQuebra.Location = new Point(566, 372);
             buttonQuebra.Name = "buttonQuebra";
             buttonQuebra.Size = new Size(75, 23);
             buttonQuebra.TabIndex = 8;
@@ -364,11 +365,19 @@
             buttonQuebra.UseVisualStyleBackColor = true;
             buttonQuebra.Click += buttonQuebra_Click;
             // 
+            // textBoxTotalValorQuebra
+            // 
+            textBoxTotalValorQuebra.Location = new Point(665, 343);
+            textBoxTotalValorQuebra.Name = "textBoxTotalValorQuebra";
+            textBoxTotalValorQuebra.Size = new Size(100, 23);
+            textBoxTotalValorQuebra.TabIndex = 9;
+            // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 749);
+            Controls.Add(textBoxTotalValorQuebra);
             Controls.Add(buttonQuebra);
             Controls.Add(labelRetirada);
             Controls.Add(labelEvento);
@@ -427,5 +436,6 @@
         private Label labelEvento;
         private Label labelRetirada;
         private Button buttonQuebra;
+        private TextBox textBoxTotalValorQuebra;
     }
 }

@@ -12,6 +12,7 @@ namespace EstruturaFesta
     {
         private Button botaoBuscarProduto;
         private int linhaAtualComBotao = 0;
+        private bool baixaRealizada = false;
         private int? _pedidoId = null;
         private Dictionary<int, int> _quantidadesOriginais = new();
         private Dictionary<int, int> _estoqueOriginal = new();
@@ -127,7 +128,7 @@ namespace EstruturaFesta
         {
             new FormDataGridView().ShowDialog();
         }
-       
+
         public void PreencherCamposCliente(int id, string nome, string documento)
         {
             textBoxIDCliente.Text = id.ToString();
@@ -475,7 +476,7 @@ namespace EstruturaFesta
                 }
             }
         }
-        
+
         // Método para calcular o estoque disponível considerando as reservas da data
         private int CalcularEstoqueDisponivel(int produtoId, DateTime data)
         {
@@ -859,22 +860,50 @@ namespace EstruturaFesta
 
         private void buttonQuebra_Click(object sender, EventArgs e)
         {
-            var produtosParaQuebra = dataGridViewProdutosLocacao.Rows
-        .Cast<DataGridViewRow>()
-        .Where(r => !r.IsNewRow)
-        .Select(r => new ProdutoQuebra
-        {
-            ProdutoId = Convert.ToInt32(r.Cells["ProdutoId"].Value),
-            Nome = r.Cells["Produto"].Value.ToString(),
-            Quantidade = Convert.ToInt32(r.Cells["Quantidade"].Value),
-            ValorReposicao = Convert.ToDecimal(r.Cells["ValorReposicao"].Value),
-            QuantidadeQuebrada = 0
-        }).ToList();
-
-            using (var formQuebra = new QuebraProdutoForm(produtosParaQuebra))
+            if (_pedidoId == null)
             {
-                formQuebra.ShowDialog();
+                MessageBox.Show("Pedido não identificado.");
+                return;
             }
+
+            using var db = new EstruturaDataBase();
+
+            // Verifica se já houve baixa para este pedido
+            bool baixaJaRealizada = db.PerdaProdutos.Any(p => p.PedidoId == _pedidoId);
+
+            if (baixaJaRealizada)
+            {
+                var resultado = MessageBox.Show(
+                    "Este pedido já realizou a baixa de produtos, deseja realizar novamente?",
+                    "Confirmação",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resultado == DialogResult.No)
+                    return;
+            }
+            var produtosParaQuebra = dataGridViewProdutosLocacao.Rows
+    .Cast<DataGridViewRow>()
+    .Where(r => !r.IsNewRow)
+    .Select(r => new ProdutoQuebra
+    {
+        ProdutoId = Convert.ToInt32(r.Cells["ProdutoId"].Value),
+        Nome = r.Cells["Produto"].Value.ToString(),
+        Quantidade = Convert.ToInt32(r.Cells["Quantidade"].Value),
+        ValorReposicao = Convert.ToDecimal(r.Cells["ValorReposicao"].Value),
+        QuantidadeQuebrada = 0
+    }).ToList();
+
+            using var formQuebra = new QuebraProdutoForm(produtosParaQuebra, _pedidoId.Value);
+            formQuebra.ShowDialog();
+
+            // Se o usuário clicou OK no form, marca que houve baixa
+            if (formQuebra.DialogResult == DialogResult.OK)
+            {
+                textBoxTotalValorQuebra.Text = formQuebra.TotalValorQuebra.ToString("C2");
+                baixaRealizada = true;
+            }
+
         }
     }
 }

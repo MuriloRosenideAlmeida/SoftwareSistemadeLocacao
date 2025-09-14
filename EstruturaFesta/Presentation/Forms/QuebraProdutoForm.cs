@@ -9,11 +9,27 @@ namespace EstruturaFesta.Presentation.Forms
 {
     public partial class QuebraProdutoForm : Form
     {
+        private int _pedidoId;
         public List<ProdutoQuebra> ProdutosQuebra { get; private set; }
-        public QuebraProdutoForm(List<ProdutoQuebra> produtos)
+        public decimal TotalValorQuebra
+        {
+            get
+            {
+                if (decimal.TryParse(textBoxValorTotalQuebra.Text,
+                                     System.Globalization.NumberStyles.Currency,
+                                     null,
+                                     out decimal total))
+                {
+                    return total;
+                }
+                return 0;
+            }
+        }
+        public QuebraProdutoForm(List<ProdutoQuebra> produtos, int pedidoId)
         {
             InitializeComponent();
             ProdutosQuebra = produtos;
+            _pedidoId = pedidoId;
 
             dataGridViewQuebra.AutoGenerateColumns = false;
             dataGridViewQuebra.DataSource = ProdutosQuebra;
@@ -42,42 +58,6 @@ namespace EstruturaFesta.Presentation.Forms
             decimal total = ProdutosQuebra.Sum(p => p.ValorTotal);
             textBoxValorTotalQuebra.Text = total.ToString("C2");
         }
-
-        private void buttonSalvar_Click(object sender, EventArgs e)
-        {
-            foreach (var item in ProdutosQuebra)
-            {
-                if (item.QuantidadeQuebrada > item.Quantidade)
-                {
-                    MessageBox.Show($"Quantidade quebrada do produto {item.Nome} não pode ser maior que a quantidade do pedido.");
-                    return;
-                }
-
-            }
-            using (var context = new EstruturaDataBase())
-            {
-                foreach (var item in ProdutosQuebra)
-                {
-                    if (item.QuantidadeQuebrada > 0)
-                    {
-                        var produtoDb = context.Produtos.Find(item.ProdutoId);
-                        produtoDb.Quantidade -= item.QuantidadeQuebrada;
-
-                        context.PerdaProdutos.Add(new PerdaProduto
-                        {
-                            ProdutoId = item.ProdutoId,
-                            Quantidade = item.QuantidadeQuebrada,
-                            Data = DateTime.Now,
-
-                        });
-                    }
-                }
-                context.SaveChanges();
-            }
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
         private void dataGridViewQuebra_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -121,12 +101,75 @@ namespace EstruturaFesta.Presentation.Forms
             {
                 if (decimal.TryParse(e.Value.ToString(), out decimal valorDecimal))
                 {
-                    
-                    e.Value = valorDecimal.ToString("C2"); 
+
+                    e.Value = valorDecimal.ToString("C2");
                     e.FormattingApplied = true;
                 }
             }
         }
+
+        private void buttonSalvar_Click(object sender, EventArgs e)
+        {
+            foreach (var item in ProdutosQuebra)
+            {
+                if (item.QuantidadeQuebrada > item.Quantidade)
+                {
+                    MessageBox.Show($"Quantidade quebrada do produto {item.Nome} não pode ser maior que a quantidade do pedido.");
+                    return;
+                }
+            }
+
+            var produtosParaBaixa = ProdutosQuebra.Where(p => p.QuantidadeQuebrada > 0).ToList();
+
+            if (produtosParaBaixa.Count == 0)
+            {
+                MessageBox.Show("Nenhum produto com quantidade para baixa.");
+                return;
+            }
+
+            // Monta mensagem de confirmação
+            string mensagem = "Tem certeza que deseja realizar a baixa dos produtos:\n\n";
+            mensagem += string.Format("{0,-30} {1,-10} {2,10}\n", "Produto", "Qtd", "Valor");
+
+            // Adiciona uma linha separadora
+            mensagem += new string('-', 55) + "\n";
+
+            foreach (var p in produtosParaBaixa)
+            {
+                mensagem += string.Format("{0,-30} {1,-10} {2,10}\n",
+                    p.Nome,
+                    p.QuantidadeQuebrada,
+                    (p.QuantidadeQuebrada * p.ValorReposicao).ToString("C2", new System.Globalization.CultureInfo("pt-BR"))
+                );
+            }
+
+            var resultado = MessageBox.Show(mensagem, "Confirmação de Baixa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (resultado == DialogResult.No)
+                return; // Cancela
+
+            // Salva no banco
+            using (var context = new EstruturaDataBase())
+            {
+                foreach (var item in produtosParaBaixa)
+                {
+                    var produtoDb = context.Produtos.Find(item.ProdutoId);
+                    if (produtoDb != null)
+                        produtoDb.Quantidade -= item.QuantidadeQuebrada;
+
+                    context.PerdaProdutos.Add(new PerdaProduto
+                    {
+                        ProdutoId = item.ProdutoId,
+                        Quantidade = item.QuantidadeQuebrada,
+                        Data = DateTime.Now,
+                        PedidoId = _pedidoId // vincula a baixa ao pedido
+                    });
+                }
+                context.SaveChanges();
+            }
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
     }
 }
     
