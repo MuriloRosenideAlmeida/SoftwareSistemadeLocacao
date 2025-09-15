@@ -56,5 +56,12 @@ namespace EstruturaFesta
             form.MdiParent = this;
             form.Show();
         }
+
+        private void filtroDeClienteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new FiltroClienteForm();
+            form.MdiParent = this;
+            form.Show();
+        }
     }
 }

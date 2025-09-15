@@ -37,6 +37,7 @@
             filtroDePedidosToolStripMenuItem = new ToolStripMenuItem();
             filtrosToolStripMenuItem = new ToolStripMenuItem();
             filtroProdutoToolStripMenuItem = new ToolStripMenuItem();
+            filtroDeClienteToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -59,14 +60,14 @@
             // clienteToolStripMenuItem
             // 
             clienteToolStripMenuItem.Name = "clienteToolStripMenuItem";
-            clienteToolStripMenuItem.Size = new Size(180, 22);
+            clienteToolStripMenuItem.Size = new Size(117, 22);
             clienteToolStripMenuItem.Text = "Cliente";
             clienteToolStripMenuItem.Click += clienteToolStripMenuItem_Click;
             // 
             // produtoToolStripMenuItem
             // 
             produtoToolStripMenuItem.Name = "produtoToolStripMenuItem";
-            produtoToolStripMenuItem.Size = new Size(180, 22);
+            produtoToolStripMenuItem.Size = new Size(117, 22);
             produtoToolStripMenuItem.Text = "Produto";
             produtoToolStripMenuItem.Click += produtoToolStripMenuItem_Click;
             // 
@@ -93,7 +94,7 @@
             // 
             // filtrosToolStripMenuItem
             // 
-            filtrosToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { filtroProdutoToolStripMenuItem });
+            filtrosToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { filtroProdutoToolStripMenuItem, filtroDeClienteToolStripMenuItem });
             filtrosToolStripMenuItem.Name = "filtrosToolStripMenuItem";
             filtrosToolStripMenuItem.Size = new Size(51, 20);
             filtrosToolStripMenuItem.Text = "Filtros";
@@ -104,6 +105,13 @@
             filtroProdutoToolStripMenuItem.Size = new Size(180, 22);
             filtroProdutoToolStripMenuItem.Text = "Produto";
             filtroProdutoToolStripMenuItem.Click += filtroProdutoToolStripMenuItem_Click;
+            // 
+            // filtroDeClienteToolStripMenuItem
+            // 
+            filtroDeClienteToolStripMenuItem.Name = "filtroDeClienteToolStripMenuItem";
+            filtroDeClienteToolStripMenuItem.Size = new Size(180, 22);
+            filtroDeClienteToolStripMenuItem.Text = "Cliente";
+            filtroDeClienteToolStripMenuItem.Click += filtroDeClienteToolStripMenuItem_Click;
             // 
             // MenuPrincipal
             // 
@@ -133,5 +141,6 @@
         private ToolStripMenuItem filtroDePedidosToolStripMenuItem;
         private ToolStripMenuItem filtrosToolStripMenuItem;
         private ToolStripMenuItem filtroProdutoToolStripMenuItem;
+        private ToolStripMenuItem filtroDeClienteToolStripMenuItem;
     }
 }

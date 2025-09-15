@@ -53,7 +53,7 @@ namespace EstruturaFesta
                 return;
             }
 
-            // CORREÇÃO: Carregar cache de quantidades originais
+            // Carregar cache de quantidades originais
             _quantidadesOriginais = pedido.Produtos
                 .ToDictionary(pp => pp.ProdutoId, pp => pp.Quantidade);
 
