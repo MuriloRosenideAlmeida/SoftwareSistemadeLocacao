@@ -1,3 +1,4 @@
+﻿using EstruturaFesta.Infrastructure.Data;
 using MySql.Data.MySqlClient;
 
 namespace EstruturaFesta
@@ -14,8 +15,8 @@ namespace EstruturaFesta
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new MenuPrincipal());
-            
+
         }
-       
+
     }
 }

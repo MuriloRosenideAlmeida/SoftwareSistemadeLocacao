@@ -4,7 +4,6 @@ using EstruturaFesta.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    [Migration("20250914221616_RelacaoPerdaProdutoComPedidoCorrigida")]
-    partial class RelacaoPerdaProdutoComPedidoCorrigida
+    partial class EstruturaDataBaseModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +67,7 @@ namespace EstruturaFesta.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Cliente");
+                    b.ToTable("Clientes");
 
                     b.HasDiscriminator<string>("Discriminador").HasValue("Cliente");
 
@@ -100,7 +97,7 @@ namespace EstruturaFesta.Migrations
 
                     b.HasIndex("ClienteID");
 
-                    b.ToTable("Contato");
+                    b.ToTable("Contatos");
                 });
 
             modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pedido", b =>

@@ -25,6 +25,7 @@
     <Folder Include="AppServices\UseCases\" />
     <Folder Include="Domain\Interfaces\" />
     <Folder Include="Domain\ValueObjects\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Presentation\Resorces\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>

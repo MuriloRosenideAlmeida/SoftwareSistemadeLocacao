@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    [Migration("20241126212244_ConfigurarDiscriminador")]
-    partial class ConfigurarDiscriminador
+    [Migration("20250915192939_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace EstruturaFesta.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("EstruturaFesta.Clientes.Cliente", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Cliente", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -70,14 +70,14 @@ namespace EstruturaFesta.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Cliente");
+                    b.ToTable("Clientes");
 
                     b.HasDiscriminator<string>("Discriminador").HasValue("Cliente");
 
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Clientes.Contato", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Contato", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -100,10 +100,66 @@ namespace EstruturaFesta.Migrations
 
                     b.HasIndex("ClienteID");
 
-                    b.ToTable("Contato");
+                    b.ToTable("Contatos");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Produto", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pedido", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataEntrega")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataPedido")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataRetirada")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("Pedidos");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.PerdaProduto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("PerdaProdutos");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Produto", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -131,13 +187,13 @@ namespace EstruturaFesta.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("PrecoCompra")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("PrecoLocacao")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("PrecoReposicao")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
@@ -147,7 +203,28 @@ namespace EstruturaFesta.Migrations
                     b.ToTable("Produtos");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Reserva", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.ProdutoPedido", b =>
+                {
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorUnitario")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("PedidoId", "ProdutoId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("ProdutosPedidos");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Reserva", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -174,9 +251,33 @@ namespace EstruturaFesta.Migrations
                     b.ToTable("Reserva");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Clientes.ClientePF", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.SaldoEstoqueData", b =>
                 {
-                    b.HasBaseType("EstruturaFesta.Clientes.Cliente");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantidadeReservada")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("SaldosPorData");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.ClientePF", b =>
+                {
+                    b.HasBaseType("EstruturaFesta.Domain.Entities.Cliente");
 
                     b.Property<string>("CPF")
                         .IsRequired()
@@ -192,9 +293,9 @@ namespace EstruturaFesta.Migrations
                     b.HasDiscriminator().HasValue("ClientePF");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Clientes.ClientePJ", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.ClientePJ", b =>
                 {
-                    b.HasBaseType("EstruturaFesta.Clientes.Cliente");
+                    b.HasBaseType("EstruturaFesta.Domain.Entities.Cliente");
 
                     b.Property<string>("CNPJ")
                         .IsRequired()
@@ -219,9 +320,9 @@ namespace EstruturaFesta.Migrations
                     b.HasDiscriminator().HasValue("ClientePJ");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Clientes.Contato", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Contato", b =>
                 {
-                    b.HasOne("EstruturaFesta.Clientes.Cliente", "Cliente")
+                    b.HasOne("EstruturaFesta.Domain.Entities.Cliente", "Cliente")
                         .WithMany("Contatos")
                         .HasForeignKey("ClienteID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -230,19 +331,84 @@ namespace EstruturaFesta.Migrations
                     b.Navigation("Cliente");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Reserva", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pedido", b =>
                 {
-                    b.HasOne("EstruturaFesta.Produto", null)
+                    b.HasOne("EstruturaFesta.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.PerdaProduto", b =>
+                {
+                    b.HasOne("EstruturaFesta.Domain.Entities.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EstruturaFesta.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.ProdutoPedido", b =>
+                {
+                    b.HasOne("EstruturaFesta.Domain.Entities.Pedido", "Pedido")
+                        .WithMany("Produtos")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EstruturaFesta.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Reserva", b =>
+                {
+                    b.HasOne("EstruturaFesta.Domain.Entities.Produto", null)
                         .WithMany("Reserva")
                         .HasForeignKey("ProdutoID");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Clientes.Cliente", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.SaldoEstoqueData", b =>
+                {
+                    b.HasOne("EstruturaFesta.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Cliente", b =>
                 {
                     b.Navigation("Contatos");
                 });
 
-            modelBuilder.Entity("EstruturaFesta.Produto", b =>
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pedido", b =>
+                {
+                    b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Produto", b =>
                 {
                     b.Navigation("Reserva");
                 });
