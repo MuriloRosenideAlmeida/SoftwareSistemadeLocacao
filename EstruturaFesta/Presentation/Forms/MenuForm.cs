@@ -21,6 +21,53 @@ namespace EstruturaFesta.Presentation.Forms
         private Panel bordaEsquerdaBotao;
         private Form formularioFilhoAtual;
 
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_NCCALCSIZE = 0x0083;
+            const int WM_GETMINMAXINFO = 0x0024;
+
+            if (m.Msg == WM_NCCALCSIZE && m.WParam != IntPtr.Zero)
+            {
+                // Remove todas as bordas (topo e laterais)
+                m.Result = IntPtr.Zero;
+                return;
+            }
+
+            if (m.Msg == WM_GETMINMAXINFO)
+            {
+                // Força o form maximizado a ocupar a tela inteira sem bordas
+                var screen = Screen.FromHandle(this.Handle);
+                MINMAXINFO mmi = (MINMAXINFO)System.Runtime.InteropServices.Marshal.PtrToStructure(m.LParam, typeof(MINMAXINFO));
+
+                mmi.ptMaxPosition.x = screen.WorkingArea.Left;
+                mmi.ptMaxPosition.y = screen.WorkingArea.Top;
+                mmi.ptMaxSize.x = screen.WorkingArea.Width;
+                mmi.ptMaxSize.y = screen.WorkingArea.Height;
+
+                System.Runtime.InteropServices.Marshal.StructureToPtr(mmi, m.LParam, true);
+                return;
+            }
+
+            base.WndProc(ref m);
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int x;
+            public int y;
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
+        }
+        
 
         public MenuForm()
         {
@@ -180,23 +227,30 @@ namespace EstruturaFesta.Presentation.Forms
                 WindowState = FormWindowState.Normal;
                 bntMaximize.IconChar = IconChar.SquareFull;
             }
-                
+
         }
         private void bntExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
-        
-        
+
+
         //Remove transparent border in maximized state
         private void FormMainMenu_Resize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Maximized)
+            {
                 FormBorderStyle = FormBorderStyle.None;
+                
+                // ocupa toda a tela, sem sobras laterais
+                this.Bounds = Screen.FromHandle(this.Handle).Bounds;
+            }
             else
+            {
                 FormBorderStyle = FormBorderStyle.Sizable;
+            }
         }
-
-        
     }
+
+    
 }

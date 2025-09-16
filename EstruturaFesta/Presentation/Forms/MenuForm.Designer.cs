@@ -68,7 +68,7 @@
             panelMenu.Controls.Add(panelLogo);
             panelMenu.Dock = DockStyle.Left;
             panelMenu.ForeColor = Color.FromArgb(30, 31, 68);
-            panelMenu.Location = new Point(10, 0);
+            panelMenu.Location = new Point(0, 0);
             panelMenu.Name = "panelMenu";
             panelMenu.Size = new Size(220, 520);
             panelMenu.TabIndex = 0;
@@ -242,9 +242,9 @@
             barraDeTitulo.Controls.Add(formatoAtualIcone);
             barraDeTitulo.Dock = DockStyle.Top;
             barraDeTitulo.ForeColor = Color.FromArgb(31, 30, 68);
-            barraDeTitulo.Location = new Point(230, 0);
+            barraDeTitulo.Location = new Point(220, 0);
             barraDeTitulo.Name = "barraDeTitulo";
-            barraDeTitulo.Size = new Size(752, 80);
+            barraDeTitulo.Size = new Size(782, 80);
             barraDeTitulo.TabIndex = 1;
             barraDeTitulo.MouseDown += barraDeTitulo_MouseDown;
             // 
@@ -257,7 +257,7 @@
             bntExit.IconColor = Color.Gainsboro;
             bntExit.IconFont = FontAwesome.Sharp.IconFont.Auto;
             bntExit.IconSize = 25;
-            bntExit.Location = new Point(717, 3);
+            bntExit.Location = new Point(747, 4);
             bntExit.Name = "bntExit";
             bntExit.Size = new Size(25, 25);
             bntExit.TabIndex = 4;
@@ -273,7 +273,7 @@
             bntMaximize.IconColor = Color.Gainsboro;
             bntMaximize.IconFont = FontAwesome.Sharp.IconFont.Auto;
             bntMaximize.IconSize = 25;
-            bntMaximize.Location = new Point(679, 3);
+            bntMaximize.Location = new Point(709, 4);
             bntMaximize.Name = "bntMaximize";
             bntMaximize.Size = new Size(25, 25);
             bntMaximize.TabIndex = 3;
@@ -289,7 +289,7 @@
             bntMinimize.IconColor = Color.Gainsboro;
             bntMinimize.IconFont = FontAwesome.Sharp.IconFont.Auto;
             bntMinimize.IconSize = 25;
-            bntMinimize.Location = new Point(641, 3);
+            bntMinimize.Location = new Point(671, 4);
             bntMinimize.Name = "bntMinimize";
             bntMinimize.Size = new Size(25, 25);
             bntMinimize.TabIndex = 2;
@@ -324,18 +324,18 @@
             // 
             panelSombra.BackColor = Color.FromArgb(26, 24, 58);
             panelSombra.Dock = DockStyle.Top;
-            panelSombra.Location = new Point(230, 80);
+            panelSombra.Location = new Point(220, 80);
             panelSombra.Name = "panelSombra";
-            panelSombra.Size = new Size(752, 9);
+            panelSombra.Size = new Size(782, 9);
             panelSombra.TabIndex = 2;
             // 
             // panelDesktop
             // 
             panelDesktop.BackColor = Color.FromArgb(34, 33, 74);
             panelDesktop.Dock = DockStyle.Fill;
-            panelDesktop.Location = new Point(230, 89);
+            panelDesktop.Location = new Point(220, 89);
             panelDesktop.Name = "panelDesktop";
-            panelDesktop.Size = new Size(752, 431);
+            panelDesktop.Size = new Size(782, 431);
             panelDesktop.TabIndex = 3;
             // 
             // MenuForm
@@ -348,8 +348,8 @@
             Controls.Add(barraDeTitulo);
             Controls.Add(panelMenu);
             Name = "MenuForm";
-            Padding = new Padding(10, 0, 20, 0);
             Text = "MenuForm";
+            Resize += FormMainMenu_Resize;
             panelMenu.ResumeLayout(false);
             panelLogo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)bntLogo).EndInit();
