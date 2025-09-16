@@ -1,6 +1,6 @@
 ﻿namespace EstruturaFesta
 {
-    partial class FiltroPedidos
+    partial class FiltroPedidosForm
     {
         /// <summary>
         /// Required designer variable.
@@ -92,7 +92,7 @@
             dataGridViewPedidos.CellDoubleClick += dataGridViewPedidos_CellDoubleClick;
             dataGridViewPedidos.ColumnHeaderMouseClick += dataGridViewPedidos_ColumnHeaderMouseClick;
             // 
-            // FiltroPedidos
+            // FiltroPedidosForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -103,7 +103,7 @@
             Controls.Add(dateTimePickerInicial);
             Controls.Add(label2);
             Controls.Add(label1);
-            Name = "FiltroPedidos";
+            Name = "FiltroPedidosForm";
             Text = "Filtro de Pedidos";
             Load += FiltroPedidos_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridViewPedidos).EndInit();

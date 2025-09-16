@@ -45,7 +45,7 @@ namespace EstruturaFesta
 
         private void filtroDePedidosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = new FiltroPedidos();
+            var form = new FiltroPedidosForm();
             form.MdiParent = this;
             form.Show();
         }

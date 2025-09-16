@@ -59,5 +59,15 @@ namespace EstruturaFesta.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap logo_estrutura {
+            get {
+                object obj = ResourceManager.GetObject("logo_estrutura", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

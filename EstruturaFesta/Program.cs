@@ -1,4 +1,5 @@
 ﻿using EstruturaFesta.Infrastructure.Data;
+using EstruturaFesta.Presentation.Forms;
 using MySql.Data.MySqlClient;
 
 namespace EstruturaFesta
@@ -14,7 +15,8 @@ namespace EstruturaFesta
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new MenuPrincipal());
+            //Application.Run(new MenuPrincipal());
+            Application.Run(new MenuForm());
 
         }
 
