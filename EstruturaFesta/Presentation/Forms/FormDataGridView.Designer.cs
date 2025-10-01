@@ -1,6 +1,6 @@
 ﻿namespace EstruturaFesta
 {
-    partial class FormDataGridView
+    partial class FormBuscarClientes
     {
         /// <summary>
         /// Required designer variable.
@@ -41,14 +41,14 @@
             dataGridView1.TabIndex = 0;
             dataGridView1.CellDoubleClick += dataGridView1_CellDoubleClick;
             // 
-            // FormDataGridView
+            // FormBuscarClientes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1318, 715);
             Controls.Add(dataGridView1);
-            Name = "FormDataGridView";
-            Text = "FormDataGridView";
+            Name = "FormBuscarClientes";
+            Text = "Clientes";
             Load += FormDataGridView_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);

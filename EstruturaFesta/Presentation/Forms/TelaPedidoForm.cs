@@ -17,6 +17,7 @@ namespace EstruturaFesta
         private Dictionary<int, int> _quantidadesOriginais = new();
         private Dictionary<int, int> _estoqueOriginal = new();
 
+        #region Contrutores e Inicializadores do Form
         public TelaPedidoForm()
         {
             InitializeComponent();
@@ -43,8 +44,9 @@ namespace EstruturaFesta
 
             var pedido = db.Pedidos
                 .Include(p => p.Produtos)
-                .ThenInclude(pp => pp.Produto)
+                    .ThenInclude(pp => pp.Produto)
                 .Include(p => p.Cliente)
+                    .ThenInclude(c => c.Contatos)
                 .FirstOrDefault(p => p.ID == pedidoId);
 
             if (pedido == null)
@@ -57,7 +59,7 @@ namespace EstruturaFesta
             _quantidadesOriginais = pedido.Produtos
                 .ToDictionary(pp => pp.ProdutoId, pp => pp.Quantidade);
 
-            // CORREÇÃO: Carregar cache de estoque original
+            // Carregar cache de estoque original
             _estoqueOriginal = pedido.Produtos
                 .ToDictionary(pp => pp.ProdutoId, pp => pp.Produto.Quantidade);
 
@@ -68,9 +70,18 @@ namespace EstruturaFesta
             try
             {
                 // Preenche dados básicos
+                textBoxIDPedido.Text = pedido.ID.ToString();
                 textBoxIDCliente.Text = pedido.ClienteId.ToString();
                 textBoxNomeCliente.Text = pedido.Cliente.Nome;
                 textBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
+                dataGridViewTelefones.Rows.Clear();
+                if (pedido.Cliente.Contatos != null)
+                {
+                    foreach (var contato in pedido.Cliente.Contatos.OrderBy(c => c.ID))
+                    {
+                        dataGridViewTelefones.Rows.Add(contato.NomeContato, contato.Telefone);
+                    }
+                }
                 dateTimePickerDataPedido.Value = pedido.DataPedido;
                 dateTimePickerEntrega.Value = pedido.DataEntrega;
                 dateTimePickerRetirada.Value = pedido.DataRetirada;
@@ -114,6 +125,7 @@ namespace EstruturaFesta
             if (!_pedidoId.HasValue)
             {
                 dateTimePickerDataPedido.Value = DateTime.Today;
+                textBoxIDPedido.Text = "Novo Pedido";
             }
         }
 
@@ -122,18 +134,65 @@ namespace EstruturaFesta
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
         }
+        #endregion
 
-        // Parte do cliente
+        #region Parte do cliente
         private void bntBuscarCliente_Click(object sender, EventArgs e)
         {
-            new FormDataGridView().ShowDialog();
+            new FormBuscarClientes().ShowDialog();
         }
-
+        //Pega as informações necessarias do cliente e preenche as textbox
         public void PreencherCamposCliente(int id, string nome, string documento)
         {
             textBoxIDCliente.Text = id.ToString();
             textBoxNomeCliente.Text = nome;
             textBoxDocumentoCliente.Text = documento;
+            // Limpar grid de contatos
+            dataGridViewTelefones.Rows.Clear();
+
+            // Buscar contatos do cliente
+            using var db = new EstruturaDataBase();
+            var contatos = db.Contatos
+                             .Where(c => c.ClienteID == id)
+                             .OrderBy(c => c.ID)
+                             .ToList();
+
+            // Preencher grid de contatos
+            foreach (var contato in contatos)
+            {
+                dataGridViewTelefones.Rows.Add(contato.NomeContato, contato.Telefone);
+            }
+        }
+        private void buttonEditarCliente_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBoxIDCliente.Text))
+            {
+                MessageBox.Show("Nenhum cliente selecionado para edição.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int clienteId = int.Parse(textBoxIDCliente.Text);
+
+            using var db = new EstruturaDataBase();
+            var cliente = db.Clientes
+                            .Include(c => c.Contatos)
+                            .FirstOrDefault(c => c.ID == clienteId);
+
+            if (cliente == null)
+            {
+                MessageBox.Show("Cliente não encontrado no banco de dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            using (var formCliente = new CadastroClientesForm(cliente))
+            {
+                if (formCliente.ShowDialog() == DialogResult.OK)
+                {
+                    PreencherCamposCliente(cliente.ID,
+                cliente is ClientePF pf ? pf.Nome : ((ClientePJ)cliente).NomeFantasia,
+                cliente.ObterDocumento());
+                }
+            }
         }
 
         private void GerarLink_Click(object sender, EventArgs e)
@@ -210,7 +269,29 @@ namespace EstruturaFesta
             }
         }
 
-        //////////////////////////////Parte do Botão///////////////////////////////////
+        //Parte do panel
+        private void panelSaldo_Paint(object sender, PaintEventArgs e)
+        {
+
+            decimal valor;
+
+            // Verifica se a TextBox tem um valor válido e se é maior que 0
+            if (decimal.TryParse(textBoxSaldo.Text, out valor) && valor > 0)
+            {
+                // Desenha a borda para vermelho se tiver saldo
+                using (Pen pen = new Pen(Color.Red, 3))
+                {
+                    Rectangle rect = new Rectangle(0, 0, panelSaldo.Width - 1, panelSaldo.Height - 1);
+                    e.Graphics.DrawRectangle(pen, rect);
+                }
+            }
+
+
+
+        }
+        #endregion
+
+        #region Parte do Botão
         private void ConfigurarBotaoBuscaProduto()
         {
             botaoBuscarProduto = new Button
@@ -298,7 +379,9 @@ namespace EstruturaFesta
         {
             AbrirBuscaProduto(linhaAtualComBotao);
         }
-        ////////////////////////////////////////////////////////////////////////////////
+        #endregion
+
+        #region Parte do Datagrid
         private bool EstaLinhaVisivel(int linha)
         {
             int primeiraVisivel = dataGridViewProdutosLocacao.FirstDisplayedScrollingRowIndex;
@@ -310,10 +393,10 @@ namespace EstruturaFesta
 
         private void GarantirLinhaInicial()
         {
-            if (dataGridViewProdutosLocacao.Rows.Count == 0 ||
-                (dataGridViewProdutosLocacao.Rows.Count == 1 && dataGridViewProdutosLocacao.Rows[0].IsNewRow))
+            if (dataGridViewTelefones.Rows.Count == 0 ||
+                (dataGridViewTelefones.Rows.Count == 1 && dataGridViewTelefones.Rows[0].IsNewRow))
             {
-                dataGridViewProdutosLocacao.Rows.Add();
+                dataGridViewTelefones.Rows.Add();
             }
         }
 
@@ -499,6 +582,7 @@ namespace EstruturaFesta
             // Nunca retorna valor negativo
             return Math.Max(0, disponivel);
         }
+
         private int ObterQuantidadeOriginalPedido(int produtoId)
         {
             return _quantidadesOriginais.TryGetValue(produtoId, out int qtd) ? qtd : 0;
@@ -708,7 +792,9 @@ namespace EstruturaFesta
                 }
             }
         }
+        #endregion
 
+        #region Botoes Finais
         //Logica do botão para finalizar um pedido
         private void buttonFinalizarPedido_Click(object sender, EventArgs e)
         {
@@ -905,5 +991,7 @@ namespace EstruturaFesta
             }
 
         }
+        #endregion
+
     }
 }

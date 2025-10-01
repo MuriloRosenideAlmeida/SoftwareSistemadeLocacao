@@ -28,12 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             InformacoesCliente = new Panel();
+            buttonEditarCliente = new Button();
+            labelIdPedido = new Label();
+            textBoxIDPedido = new TextBox();
+            labelTelefones = new Label();
+            dataGridViewTelefones = new DataGridView();
+            NomeContato = new DataGridViewTextBoxColumn();
+            Telefone = new DataGridViewTextBoxColumn();
             maskedTextBoxNumeroContato = new MaskedTextBox();
             GerarLink = new Button();
             linkLabelWhatsApp = new LinkLabel();
             labelObservacoes = new Label();
             labelNumeroContato = new Label();
+            labelCliente = new Label();
+            labelNome = new Label();
+            labelDocumentos = new Label();
             labelNomeContato = new Label();
             bntBuscarCliente = new Button();
             textBoxIDCliente = new TextBox();
@@ -51,9 +63,6 @@
             ValorTotal = new DataGridViewTextBoxColumn();
             dateTimePickerDataPedido = new DateTimePicker();
             buttonFinalizarPedido = new Button();
-            labelCliente = new Label();
-            labelNome = new Label();
-            labelDocumentos = new Label();
             dateTimePickerEntrega = new DateTimePicker();
             dateTimePickerRetirada = new DateTimePicker();
             labelEntrega = new Label();
@@ -61,17 +70,38 @@
             labelRetirada = new Label();
             buttonQuebra = new Button();
             textBoxTotalValorQuebra = new TextBox();
+            panelSaldo = new Panel();
+            labelIDSaldo = new Label();
+            labelTotalGasto = new Label();
+            labelSaldo = new Label();
+            labelNomePanel = new Label();
+            textBoxIDSaldo = new TextBox();
+            textBoxTotalGasto = new TextBox();
+            textBoxSaldo = new TextBox();
+            labelReposicao = new Label();
+            textBox1 = new TextBox();
+            labelValorTotal = new Label();
             InformacoesCliente.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewTelefones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
+            panelSaldo.SuspendLayout();
             SuspendLayout();
             // 
             // InformacoesCliente
             // 
+            InformacoesCliente.Controls.Add(buttonEditarCliente);
+            InformacoesCliente.Controls.Add(labelIdPedido);
+            InformacoesCliente.Controls.Add(textBoxIDPedido);
+            InformacoesCliente.Controls.Add(labelTelefones);
+            InformacoesCliente.Controls.Add(dataGridViewTelefones);
             InformacoesCliente.Controls.Add(maskedTextBoxNumeroContato);
             InformacoesCliente.Controls.Add(GerarLink);
             InformacoesCliente.Controls.Add(linkLabelWhatsApp);
             InformacoesCliente.Controls.Add(labelObservacoes);
             InformacoesCliente.Controls.Add(labelNumeroContato);
+            InformacoesCliente.Controls.Add(labelCliente);
+            InformacoesCliente.Controls.Add(labelNome);
+            InformacoesCliente.Controls.Add(labelDocumentos);
             InformacoesCliente.Controls.Add(labelNomeContato);
             InformacoesCliente.Controls.Add(bntBuscarCliente);
             InformacoesCliente.Controls.Add(textBoxIDCliente);
@@ -79,14 +109,77 @@
             InformacoesCliente.Controls.Add(textBoxContato);
             InformacoesCliente.Controls.Add(textBoxDocumentoCliente);
             InformacoesCliente.Controls.Add(textBoxNomeCliente);
-            InformacoesCliente.Location = new Point(12, 12);
+            InformacoesCliente.Location = new Point(0, 0);
             InformacoesCliente.Name = "InformacoesCliente";
-            InformacoesCliente.Size = new Size(756, 124);
+            InformacoesCliente.Size = new Size(1009, 189);
             InformacoesCliente.TabIndex = 0;
+            // 
+            // buttonEditarCliente
+            // 
+            buttonEditarCliente.Location = new Point(223, 35);
+            buttonEditarCliente.Name = "buttonEditarCliente";
+            buttonEditarCliente.Size = new Size(75, 23);
+            buttonEditarCliente.TabIndex = 14;
+            buttonEditarCliente.Text = "Cliente";
+            buttonEditarCliente.UseVisualStyleBackColor = true;
+            buttonEditarCliente.Click += buttonEditarCliente_Click;
+            // 
+            // labelIdPedido
+            // 
+            labelIdPedido.AutoSize = true;
+            labelIdPedido.Location = new Point(12, 17);
+            labelIdPedido.Name = "labelIdPedido";
+            labelIdPedido.Size = new Size(46, 15);
+            labelIdPedido.TabIndex = 13;
+            labelIdPedido.Text = "Código";
+            // 
+            // textBoxIDPedido
+            // 
+            textBoxIDPedido.Location = new Point(12, 35);
+            textBoxIDPedido.Name = "textBoxIDPedido";
+            textBoxIDPedido.ReadOnly = true;
+            textBoxIDPedido.Size = new Size(100, 23);
+            textBoxIDPedido.TabIndex = 12;
+            textBoxIDPedido.TextAlign = HorizontalAlignment.Right;
+            // 
+            // labelTelefones
+            // 
+            labelTelefones.AutoSize = true;
+            labelTelefones.Location = new Point(12, 80);
+            labelTelefones.Name = "labelTelefones";
+            labelTelefones.Size = new Size(51, 15);
+            labelTelefones.TabIndex = 11;
+            labelTelefones.Text = "Telefone";
+            // 
+            // dataGridViewTelefones
+            // 
+            dataGridViewTelefones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewTelefones.Columns.AddRange(new DataGridViewColumn[] { NomeContato, Telefone });
+            dataGridViewTelefones.Location = new Point(4, 98);
+            dataGridViewTelefones.Name = "dataGridViewTelefones";
+            dataGridViewTelefones.Size = new Size(341, 75);
+            dataGridViewTelefones.TabIndex = 10;
+            // 
+            // NomeContato
+            // 
+            NomeContato.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            NomeContato.DataPropertyName = "NomeContato";
+            NomeContato.HeaderText = "Nome";
+            NomeContato.Name = "NomeContato";
+            NomeContato.ReadOnly = true;
+            // 
+            // Telefone
+            // 
+            Telefone.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Telefone.DataPropertyName = "Telefone";
+            Telefone.HeaderText = "Telefone";
+            Telefone.Name = "Telefone";
+            Telefone.ReadOnly = true;
             // 
             // maskedTextBoxNumeroContato
             // 
-            maskedTextBoxNumeroContato.Location = new Point(195, 72);
+            maskedTextBoxNumeroContato.Anchor = AnchorStyles.Left;
+            maskedTextBoxNumeroContato.Location = new Point(510, 98);
             maskedTextBoxNumeroContato.Mask = "(00)00000-0000";
             maskedTextBoxNumeroContato.Name = "maskedTextBoxNumeroContato";
             maskedTextBoxNumeroContato.Size = new Size(87, 23);
@@ -94,7 +187,8 @@
             // 
             // GerarLink
             // 
-            GerarLink.Location = new Point(56, 98);
+            GerarLink.Anchor = AnchorStyles.Left;
+            GerarLink.Location = new Point(351, 123);
             GerarLink.Name = "GerarLink";
             GerarLink.Size = new Size(132, 23);
             GerarLink.TabIndex = 9;
@@ -104,8 +198,9 @@
             // 
             // linkLabelWhatsApp
             // 
+            linkLabelWhatsApp.Anchor = AnchorStyles.Left;
             linkLabelWhatsApp.AutoSize = true;
-            linkLabelWhatsApp.Location = new Point(282, 75);
+            linkLabelWhatsApp.Location = new Point(510, 131);
             linkLabelWhatsApp.Name = "linkLabelWhatsApp";
             linkLabelWhatsApp.Size = new Size(91, 15);
             linkLabelWhatsApp.TabIndex = 7;
@@ -116,8 +211,9 @@
             // 
             // labelObservacoes
             // 
+            labelObservacoes.Anchor = AnchorStyles.Right;
             labelObservacoes.AutoSize = true;
-            labelObservacoes.Location = new Point(379, 34);
+            labelObservacoes.Location = new Point(648, 80);
             labelObservacoes.Name = "labelObservacoes";
             labelObservacoes.Size = new Size(74, 15);
             labelObservacoes.TabIndex = 8;
@@ -125,17 +221,48 @@
             // 
             // labelNumeroContato
             // 
+            labelNumeroContato.Anchor = AnchorStyles.Left;
             labelNumeroContato.AutoSize = true;
-            labelNumeroContato.Location = new Point(192, 55);
+            labelNumeroContato.Location = new Point(510, 80);
             labelNumeroContato.Name = "labelNumeroContato";
             labelNumeroContato.Size = new Size(114, 15);
             labelNumeroContato.TabIndex = 7;
             labelNumeroContato.Text = "Numero do Contato";
             // 
+            // labelCliente
+            // 
+            labelCliente.AutoSize = true;
+            labelCliente.Location = new Point(142, 17);
+            labelCliente.Name = "labelCliente";
+            labelCliente.Size = new Size(44, 15);
+            labelCliente.TabIndex = 4;
+            labelCliente.Text = "Cliente";
+            // 
+            // labelNome
+            // 
+            labelNome.Anchor = AnchorStyles.Left;
+            labelNome.AutoSize = true;
+            labelNome.Location = new Point(329, 17);
+            labelNome.Name = "labelNome";
+            labelNome.Size = new Size(40, 15);
+            labelNome.TabIndex = 5;
+            labelNome.Text = "Nome";
+            // 
+            // labelDocumentos
+            // 
+            labelDocumentos.Anchor = AnchorStyles.Right;
+            labelDocumentos.AutoSize = true;
+            labelDocumentos.Location = new Point(825, 17);
+            labelDocumentos.Name = "labelDocumentos";
+            labelDocumentos.Size = new Size(60, 15);
+            labelDocumentos.TabIndex = 6;
+            labelDocumentos.Text = "CPF/CNPJ";
+            // 
             // labelNomeContato
             // 
+            labelNomeContato.Anchor = AnchorStyles.Left;
             labelNomeContato.AutoSize = true;
-            labelNomeContato.Location = new Point(5, 55);
+            labelNomeContato.Location = new Point(351, 80);
             labelNomeContato.Name = "labelNomeContato";
             labelNomeContato.Size = new Size(103, 15);
             labelNomeContato.TabIndex = 7;
@@ -145,9 +272,9 @@
             // 
             bntBuscarCliente.FlatStyle = FlatStyle.Flat;
             bntBuscarCliente.Font = new Font("Segoe UI", 7F);
-            bntBuscarCliente.Location = new Point(103, 3);
+            bntBuscarCliente.Location = new Point(185, 35);
             bntBuscarCliente.Name = "bntBuscarCliente";
-            bntBuscarCliente.Size = new Size(21, 23);
+            bntBuscarCliente.Size = new Size(23, 23);
             bntBuscarCliente.TabIndex = 1;
             bntBuscarCliente.Text = "▼";
             bntBuscarCliente.UseVisualStyleBackColor = true;
@@ -156,50 +283,63 @@
             // 
             // textBoxIDCliente
             // 
-            textBoxIDCliente.Location = new Point(3, 3);
+            textBoxIDCliente.Location = new Point(140, 35);
             textBoxIDCliente.Name = "textBoxIDCliente";
-            textBoxIDCliente.Size = new Size(100, 23);
+            textBoxIDCliente.Size = new Size(46, 23);
             textBoxIDCliente.TabIndex = 1;
+            textBoxIDCliente.TextAlign = HorizontalAlignment.Right;
             // 
             // textBoxDescrição
             // 
-            textBoxDescrição.Location = new Point(378, 49);
+            textBoxDescrição.Anchor = AnchorStyles.Right;
+            textBoxDescrição.Location = new Point(648, 98);
             textBoxDescrição.Multiline = true;
             textBoxDescrição.Name = "textBoxDescrição";
-            textBoxDescrição.Size = new Size(375, 63);
+            textBoxDescrição.Size = new Size(356, 63);
             textBoxDescrição.TabIndex = 6;
             // 
             // textBoxContato
             // 
-            textBoxContato.Location = new Point(3, 72);
+            textBoxContato.Anchor = AnchorStyles.Left;
+            textBoxContato.Location = new Point(351, 98);
             textBoxContato.Name = "textBoxContato";
-            textBoxContato.Size = new Size(185, 23);
+            textBoxContato.Size = new Size(153, 23);
             textBoxContato.TabIndex = 4;
             // 
             // textBoxDocumentoCliente
             // 
-            textBoxDocumentoCliente.Location = new Point(581, 3);
+            textBoxDocumentoCliente.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            textBoxDocumentoCliente.Location = new Point(825, 35);
             textBoxDocumentoCliente.Name = "textBoxDocumentoCliente";
             textBoxDocumentoCliente.Size = new Size(172, 23);
             textBoxDocumentoCliente.TabIndex = 3;
             // 
             // textBoxNomeCliente
             // 
-            textBoxNomeCliente.Location = new Point(130, 3);
+            textBoxNomeCliente.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBoxNomeCliente.Location = new Point(329, 35);
             textBoxNomeCliente.Name = "textBoxNomeCliente";
-            textBoxNomeCliente.Size = new Size(433, 23);
+            textBoxNomeCliente.Size = new Size(475, 23);
             textBoxNomeCliente.TabIndex = 2;
             // 
             // dataGridViewProdutosLocacao
             // 
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(240, 240, 240);
+            dataGridViewProdutosLocacao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewProdutosLocacao.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoID, Produto, Estoque, Quantidade, ValorUnitario, ValorReposicao, ValorTotal });
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
-            dataGridViewProdutosLocacao.Location = new Point(12, 187);
+            dataGridViewProdutosLocacao.EnableHeadersVisualStyles = false;
+            dataGridViewProdutosLocacao.Location = new Point(31, 239);
             dataGridViewProdutosLocacao.MultiSelect = false;
             dataGridViewProdutosLocacao.Name = "dataGridViewProdutosLocacao";
+            dataGridViewCellStyle4.SelectionBackColor = Color.White;
+            dataGridViewProdutosLocacao.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewProdutosLocacao.RowTemplate.DefaultCellStyle.BackColor = Color.White;
+            dataGridViewProdutosLocacao.RowTemplate.Height = 20;
             dataGridViewProdutosLocacao.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            dataGridViewProdutosLocacao.Size = new Size(753, 150);
+            dataGridViewProdutosLocacao.Size = new Size(1042, 150);
             dataGridViewProdutosLocacao.TabIndex = 1;
             dataGridViewProdutosLocacao.CellBeginEdit += dataGridViewProdutosLocacao_CellBeginEdit;
             dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
@@ -264,7 +404,7 @@
             // 
             dateTimePickerDataPedido.CustomFormat = "";
             dateTimePickerDataPedido.Format = DateTimePickerFormat.Short;
-            dateTimePickerDataPedido.Location = new Point(126, 158);
+            dateTimePickerDataPedido.Location = new Point(145, 210);
             dateTimePickerDataPedido.Name = "dateTimePickerDataPedido";
             dateTimePickerDataPedido.Size = new Size(97, 23);
             dateTimePickerDataPedido.TabIndex = 2;
@@ -273,7 +413,7 @@
             // 
             // buttonFinalizarPedido
             // 
-            buttonFinalizarPedido.Location = new Point(647, 372);
+            buttonFinalizarPedido.Location = new Point(955, 459);
             buttonFinalizarPedido.Name = "buttonFinalizarPedido";
             buttonFinalizarPedido.Size = new Size(118, 23);
             buttonFinalizarPedido.TabIndex = 3;
@@ -281,38 +421,11 @@
             buttonFinalizarPedido.UseVisualStyleBackColor = true;
             buttonFinalizarPedido.Click += buttonFinalizarPedido_Click;
             // 
-            // labelCliente
-            // 
-            labelCliente.AutoSize = true;
-            labelCliente.Location = new Point(16, 0);
-            labelCliente.Name = "labelCliente";
-            labelCliente.Size = new Size(44, 15);
-            labelCliente.TabIndex = 4;
-            labelCliente.Text = "Cliente";
-            // 
-            // labelNome
-            // 
-            labelNome.AutoSize = true;
-            labelNome.Location = new Point(142, 0);
-            labelNome.Name = "labelNome";
-            labelNome.Size = new Size(40, 15);
-            labelNome.TabIndex = 5;
-            labelNome.Text = "Nome";
-            // 
-            // labelDocumentos
-            // 
-            labelDocumentos.AutoSize = true;
-            labelDocumentos.Location = new Point(594, 0);
-            labelDocumentos.Name = "labelDocumentos";
-            labelDocumentos.Size = new Size(60, 15);
-            labelDocumentos.TabIndex = 6;
-            labelDocumentos.Text = "CPF/CNPJ";
-            // 
             // dateTimePickerEntrega
             // 
             dateTimePickerEntrega.CustomFormat = "";
             dateTimePickerEntrega.Format = DateTimePickerFormat.Short;
-            dateTimePickerEntrega.Location = new Point(23, 158);
+            dateTimePickerEntrega.Location = new Point(42, 210);
             dateTimePickerEntrega.Name = "dateTimePickerEntrega";
             dateTimePickerEntrega.Size = new Size(97, 23);
             dateTimePickerEntrega.TabIndex = 2;
@@ -322,7 +435,7 @@
             // 
             dateTimePickerRetirada.CustomFormat = "";
             dateTimePickerRetirada.Format = DateTimePickerFormat.Short;
-            dateTimePickerRetirada.Location = new Point(229, 158);
+            dateTimePickerRetirada.Location = new Point(248, 210);
             dateTimePickerRetirada.Name = "dateTimePickerRetirada";
             dateTimePickerRetirada.Size = new Size(97, 23);
             dateTimePickerRetirada.TabIndex = 2;
@@ -331,7 +444,7 @@
             // labelEntrega
             // 
             labelEntrega.AutoSize = true;
-            labelEntrega.Location = new Point(23, 140);
+            labelEntrega.Location = new Point(42, 192);
             labelEntrega.Name = "labelEntrega";
             labelEntrega.Size = new Size(47, 15);
             labelEntrega.TabIndex = 7;
@@ -340,7 +453,7 @@
             // labelEvento
             // 
             labelEvento.AutoSize = true;
-            labelEvento.Location = new Point(126, 140);
+            labelEvento.Location = new Point(145, 192);
             labelEvento.Name = "labelEvento";
             labelEvento.Size = new Size(43, 15);
             labelEvento.TabIndex = 7;
@@ -349,7 +462,7 @@
             // labelRetirada
             // 
             labelRetirada.AutoSize = true;
-            labelRetirada.Location = new Point(229, 140);
+            labelRetirada.Location = new Point(248, 192);
             labelRetirada.Name = "labelRetirada";
             labelRetirada.Size = new Size(50, 15);
             labelRetirada.TabIndex = 7;
@@ -357,7 +470,7 @@
             // 
             // buttonQuebra
             // 
-            buttonQuebra.Location = new Point(566, 372);
+            buttonQuebra.Location = new Point(874, 459);
             buttonQuebra.Name = "buttonQuebra";
             buttonQuebra.Size = new Size(75, 23);
             buttonQuebra.TabIndex = 8;
@@ -367,37 +480,139 @@
             // 
             // textBoxTotalValorQuebra
             // 
-            textBoxTotalValorQuebra.Location = new Point(665, 343);
+            textBoxTotalValorQuebra.Location = new Point(887, 414);
             textBoxTotalValorQuebra.Name = "textBoxTotalValorQuebra";
             textBoxTotalValorQuebra.Size = new Size(100, 23);
             textBoxTotalValorQuebra.TabIndex = 9;
+            // 
+            // panelSaldo
+            // 
+            panelSaldo.Controls.Add(labelIDSaldo);
+            panelSaldo.Controls.Add(labelTotalGasto);
+            panelSaldo.Controls.Add(labelSaldo);
+            panelSaldo.Controls.Add(labelNomePanel);
+            panelSaldo.Controls.Add(textBoxIDSaldo);
+            panelSaldo.Controls.Add(textBoxTotalGasto);
+            panelSaldo.Controls.Add(textBoxSaldo);
+            panelSaldo.Location = new Point(1010, 0);
+            panelSaldo.Name = "panelSaldo";
+            panelSaldo.Size = new Size(117, 189);
+            panelSaldo.TabIndex = 10;
+            panelSaldo.Paint += panelSaldo_Paint;
+            // 
+            // labelIDSaldo
+            // 
+            labelIDSaldo.AutoSize = true;
+            labelIDSaldo.Location = new Point(3, 132);
+            labelIDSaldo.Name = "labelIDSaldo";
+            labelIDSaldo.Size = new Size(108, 15);
+            labelIDSaldo.TabIndex = 1;
+            labelIDSaldo.Text = "Pedidos com Saldo";
+            // 
+            // labelTotalGasto
+            // 
+            labelTotalGasto.AutoSize = true;
+            labelTotalGasto.Location = new Point(5, 36);
+            labelTotalGasto.Name = "labelTotalGasto";
+            labelTotalGasto.Size = new Size(65, 15);
+            labelTotalGasto.TabIndex = 1;
+            labelTotalGasto.Text = "Total Gasto";
+            // 
+            // labelSaldo
+            // 
+            labelSaldo.AutoSize = true;
+            labelSaldo.Location = new Point(5, 80);
+            labelSaldo.Name = "labelSaldo";
+            labelSaldo.Size = new Size(95, 15);
+            labelSaldo.TabIndex = 1;
+            labelSaldo.Text = "Saldo em Aberto";
+            // 
+            // labelNomePanel
+            // 
+            labelNomePanel.AutoSize = true;
+            labelNomePanel.Location = new Point(5, 9);
+            labelNomePanel.Name = "labelNomePanel";
+            labelNomePanel.Size = new Size(36, 15);
+            labelNomePanel.TabIndex = 1;
+            labelNomePanel.Text = "Saldo";
+            // 
+            // textBoxIDSaldo
+            // 
+            textBoxIDSaldo.Location = new Point(5, 150);
+            textBoxIDSaldo.Name = "textBoxIDSaldo";
+            textBoxIDSaldo.Size = new Size(106, 23);
+            textBoxIDSaldo.TabIndex = 0;
+            // 
+            // textBoxTotalGasto
+            // 
+            textBoxTotalGasto.Location = new Point(5, 54);
+            textBoxTotalGasto.Name = "textBoxTotalGasto";
+            textBoxTotalGasto.Size = new Size(106, 23);
+            textBoxTotalGasto.TabIndex = 0;
+            // 
+            // textBoxSaldo
+            // 
+            textBoxSaldo.Location = new Point(5, 98);
+            textBoxSaldo.Name = "textBoxSaldo";
+            textBoxSaldo.Size = new Size(106, 23);
+            textBoxSaldo.TabIndex = 0;
+            // 
+            // labelReposicao
+            // 
+            labelReposicao.AutoSize = true;
+            labelReposicao.Location = new Point(887, 396);
+            labelReposicao.Name = "labelReposicao";
+            labelReposicao.Size = new Size(90, 15);
+            labelReposicao.TabIndex = 11;
+            labelReposicao.Text = "Valor Reposição";
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(993, 414);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(80, 23);
+            textBox1.TabIndex = 9;
+            // 
+            // labelValorTotal
+            // 
+            labelValorTotal.AutoSize = true;
+            labelValorTotal.Location = new Point(993, 396);
+            labelValorTotal.Name = "labelValorTotal";
+            labelValorTotal.Size = new Size(61, 15);
+            labelValorTotal.TabIndex = 11;
+            labelValorTotal.Text = "Valor Total";
             // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(780, 749);
+            ClientSize = new Size(1130, 600);
+            Controls.Add(labelValorTotal);
+            Controls.Add(labelReposicao);
+            Controls.Add(panelSaldo);
+            Controls.Add(textBox1);
             Controls.Add(textBoxTotalValorQuebra);
             Controls.Add(buttonQuebra);
             Controls.Add(labelRetirada);
             Controls.Add(labelEvento);
             Controls.Add(labelEntrega);
-            Controls.Add(labelDocumentos);
-            Controls.Add(labelNome);
-            Controls.Add(labelCliente);
             Controls.Add(buttonFinalizarPedido);
             Controls.Add(dateTimePickerRetirada);
             Controls.Add(dateTimePickerEntrega);
             Controls.Add(dateTimePickerDataPedido);
             Controls.Add(dataGridViewProdutosLocacao);
             Controls.Add(InformacoesCliente);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "TelaPedidoForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Tela Pedido";
             Load += TelaPedidoForm_Load;
             InformacoesCliente.ResumeLayout(false);
             InformacoesCliente.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewTelefones).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).EndInit();
+            panelSaldo.ResumeLayout(false);
+            panelSaldo.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -437,5 +652,23 @@
         private Label labelRetirada;
         private Button buttonQuebra;
         private TextBox textBoxTotalValorQuebra;
+        private Label labelTelefones;
+        private DataGridView dataGridViewTelefones;
+        private DataGridViewTextBoxColumn NomeContato;
+        private DataGridViewTextBoxColumn Telefone;
+        private Label labelIdPedido;
+        private TextBox textBoxIDPedido;
+        private Panel panelSaldo;
+        private Label labelIDSaldo;
+        private Label labelSaldo;
+        private Label labelNomePanel;
+        private TextBox textBoxIDSaldo;
+        private TextBox textBoxSaldo;
+        private Label labelReposicao;
+        private TextBox textBox1;
+        private Label labelValorTotal;
+        private Label labelTotalGasto;
+        private TextBox textBoxTotalGasto;
+        private Button buttonEditarCliente;
     }
 }

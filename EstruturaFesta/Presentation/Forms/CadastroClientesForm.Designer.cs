@@ -50,6 +50,8 @@
             AdicionarCliente = new Label();
             panelCadastroPJ = new Panel();
             dataGridViewContatosPJ = new DataGridView();
+            Contato = new DataGridViewTextBoxColumn();
+            NomePJ = new DataGridViewTextBoxColumn();
             labelTelefone = new Label();
             textBoxInscricaoMunicipal = new TextBox();
             InscricaoMunicipal = new Label();
@@ -64,6 +66,8 @@
             panelCadastroPF = new Panel();
             maskedTextBoxNascimento = new MaskedTextBox();
             dataGridViewContatos = new DataGridView();
+            TelefoneContato = new DataGridViewTextBoxColumn();
+            NomeContato = new DataGridViewTextBoxColumn();
             textBoxCPF = new TextBox();
             label1 = new Label();
             telefone = new Label();
@@ -72,10 +76,6 @@
             cpf = new Label();
             textBoxNomeCliente = new TextBox();
             nomeCliente = new Label();
-            TelefoneContato = new DataGridViewTextBoxColumn();
-            NomeContato = new DataGridViewTextBoxColumn();
-            Contato = new DataGridViewTextBoxColumn();
-            NomePJ = new DataGridViewTextBoxColumn();
             groupBoxTipoCliente.SuspendLayout();
             groupBox2.SuspendLayout();
             panelCadastroPJ.SuspendLayout();
@@ -308,6 +308,18 @@
             dataGridViewContatosPJ.Size = new Size(230, 50);
             dataGridViewContatosPJ.TabIndex = 48;
             // 
+            // Contato
+            // 
+            Contato.DataPropertyName = "Telefone";
+            Contato.HeaderText = "Telefone";
+            Contato.Name = "Contato";
+            // 
+            // NomePJ
+            // 
+            NomePJ.DataPropertyName = "NomeContato";
+            NomePJ.HeaderText = "Nome";
+            NomePJ.Name = "NomePJ";
+            // 
             // labelTelefone
             // 
             labelTelefone.AutoSize = true;
@@ -435,6 +447,18 @@
             dataGridViewContatos.Size = new Size(230, 50);
             dataGridViewContatos.TabIndex = 47;
             // 
+            // TelefoneContato
+            // 
+            TelefoneContato.DataPropertyName = "Telefone";
+            TelefoneContato.HeaderText = "Telefone";
+            TelefoneContato.Name = "TelefoneContato";
+            // 
+            // NomeContato
+            // 
+            NomeContato.DataPropertyName = "NomeContato";
+            NomeContato.HeaderText = "Nome";
+            NomeContato.Name = "NomeContato";
+            // 
             // textBoxCPF
             // 
             textBoxCPF.Location = new Point(75, 82);
@@ -502,38 +526,14 @@
             nomeCliente.TabIndex = 38;
             nomeCliente.Text = "Nome";
             // 
-            // TelefoneContato
-            // 
-            TelefoneContato.DataPropertyName = "Telefone";
-            TelefoneContato.HeaderText = "Telefone";
-            TelefoneContato.Name = "TelefoneContato";
-            // 
-            // NomeContato
-            // 
-            NomeContato.DataPropertyName = "NomeContato";
-            NomeContato.HeaderText = "Nome";
-            NomeContato.Name = "NomeContato";
-            // 
-            // Contato
-            // 
-            Contato.DataPropertyName = "Telefone";
-            Contato.HeaderText = "Telefone";
-            Contato.Name = "Contato";
-            // 
-            // NomePJ
-            // 
-            NomePJ.DataPropertyName = "NomeContato";
-            NomePJ.HeaderText = "Nome";
-            NomePJ.Name = "NomePJ";
-            // 
             // CadastroClientesForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1005, 378);
+            Controls.Add(panelCadastroPF);
             Controls.Add(groupBox2);
             Controls.Add(groupBoxTipoCliente);
-            Controls.Add(panelCadastroPF);
             Controls.Add(panelCadastroPJ);
             Name = "CadastroClientesForm";
             Text = "CadastroClientes";

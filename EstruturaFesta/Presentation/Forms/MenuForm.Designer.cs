@@ -347,9 +347,10 @@
             Controls.Add(panelSombra);
             Controls.Add(barraDeTitulo);
             Controls.Add(panelMenu);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "MenuForm";
             Text = "MenuForm";
-            Resize += FormMainMenu_Resize;
+            WindowState = FormWindowState.Maximized;
             panelMenu.ResumeLayout(false);
             panelLogo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)bntLogo).EndInit();

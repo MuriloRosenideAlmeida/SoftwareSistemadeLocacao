@@ -11,10 +11,10 @@ using EstruturaFesta.Domain.Entities;
 
 namespace EstruturaFesta
 {
-    public partial class FormDataGridView : Form
+    public partial class FormBuscarClientes : Form
     {
 
-        public FormDataGridView()
+        public FormBuscarClientes()
         {
             InitializeComponent();
             WindowState = FormWindowState.Maximized;
