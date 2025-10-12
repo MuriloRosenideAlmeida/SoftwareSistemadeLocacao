@@ -87,6 +87,7 @@
             // radioButtonPF
             // 
             radioButtonPF.AutoSize = true;
+            radioButtonPF.Checked = true;
             radioButtonPF.Location = new Point(6, 22);
             radioButtonPF.Name = "radioButtonPF";
             radioButtonPF.Size = new Size(93, 19);
@@ -114,7 +115,6 @@
             radioButtonPJ.Name = "radioButtonPJ";
             radioButtonPJ.Size = new Size(104, 19);
             radioButtonPJ.TabIndex = 10;
-            radioButtonPJ.TabStop = true;
             radioButtonPJ.Text = "Pessoa Jurídica";
             radioButtonPJ.UseVisualStyleBackColor = true;
             radioButtonPJ.CheckedChanged += radioButtonPJ_CheckedChanged;
@@ -297,6 +297,7 @@
             panelCadastroPJ.Name = "panelCadastroPJ";
             panelCadastroPJ.Size = new Size(804, 160);
             panelCadastroPJ.TabIndex = 27;
+            panelCadastroPJ.Visible = false;
             // 
             // dataGridViewContatosPJ
             // 
@@ -425,7 +426,6 @@
             panelCadastroPF.Name = "panelCadastroPF";
             panelCadastroPF.Size = new Size(804, 160);
             panelCadastroPF.TabIndex = 28;
-            panelCadastroPF.Visible = false;
             // 
             // maskedTextBoxNascimento
             // 
@@ -531,9 +531,9 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1005, 378);
-            Controls.Add(panelCadastroPF);
             Controls.Add(groupBox2);
             Controls.Add(groupBoxTipoCliente);
+            Controls.Add(panelCadastroPF);
             Controls.Add(panelCadastroPJ);
             Name = "CadastroClientesForm";
             Text = "CadastroClientes";

@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             InformacoesCliente = new Panel();
             buttonEditarCliente = new Button();
             labelIdPedido = new Label();
@@ -77,14 +80,28 @@
             labelNomePanel = new Label();
             textBoxIDSaldo = new TextBox();
             textBoxTotalGasto = new TextBox();
-            textBoxSaldo = new TextBox();
+            textBoxSaldoCliente = new TextBox();
             labelReposicao = new Label();
-            textBox1 = new TextBox();
+            textBoxValorTotal = new TextBox();
             labelValorTotal = new Label();
+            dataGridViewPagamentos = new DataGridView();
+            FormaPagamento = new DataGridViewComboBoxColumn();
+            DataPagamento = new DataGridViewTextBoxColumn();
+            Valor = new DataGridViewTextBoxColumn();
+            Pago = new DataGridViewCheckBoxColumn();
+            textBoxSaldoPedido = new TextBox();
+            labelSaldoPedido = new Label();
+            textBoxSubTotal = new TextBox();
+            textBoxAcrescimo = new TextBox();
+            textBoxDesconto = new TextBox();
+            labelSubTotal = new Label();
+            labelAcrescimo = new Label();
+            labelDesconto = new Label();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTelefones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
             panelSaldo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewPagamentos).BeginInit();
             SuspendLayout();
             // 
             // InformacoesCliente
@@ -324,8 +341,8 @@
             // 
             // dataGridViewProdutosLocacao
             // 
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(240, 240, 240);
-            dataGridViewProdutosLocacao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(240, 240, 240);
+            dataGridViewProdutosLocacao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewProdutosLocacao.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoID, Produto, Estoque, Quantidade, ValorUnitario, ValorReposicao, ValorTotal });
@@ -334,8 +351,8 @@
             dataGridViewProdutosLocacao.Location = new Point(31, 239);
             dataGridViewProdutosLocacao.MultiSelect = false;
             dataGridViewProdutosLocacao.Name = "dataGridViewProdutosLocacao";
-            dataGridViewCellStyle4.SelectionBackColor = Color.White;
-            dataGridViewProdutosLocacao.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.SelectionBackColor = Color.White;
+            dataGridViewProdutosLocacao.RowsDefaultCellStyle = dataGridViewCellStyle2;
             dataGridViewProdutosLocacao.RowTemplate.DefaultCellStyle.BackColor = Color.White;
             dataGridViewProdutosLocacao.RowTemplate.Height = 20;
             dataGridViewProdutosLocacao.SelectionMode = DataGridViewSelectionMode.CellSelect;
@@ -413,7 +430,7 @@
             // 
             // buttonFinalizarPedido
             // 
-            buttonFinalizarPedido.Location = new Point(955, 459);
+            buttonFinalizarPedido.Location = new Point(955, 565);
             buttonFinalizarPedido.Name = "buttonFinalizarPedido";
             buttonFinalizarPedido.Size = new Size(118, 23);
             buttonFinalizarPedido.TabIndex = 3;
@@ -470,7 +487,7 @@
             // 
             // buttonQuebra
             // 
-            buttonQuebra.Location = new Point(874, 459);
+            buttonQuebra.Location = new Point(865, 565);
             buttonQuebra.Name = "buttonQuebra";
             buttonQuebra.Size = new Size(75, 23);
             buttonQuebra.TabIndex = 8;
@@ -480,9 +497,9 @@
             // 
             // textBoxTotalValorQuebra
             // 
-            textBoxTotalValorQuebra.Location = new Point(887, 414);
+            textBoxTotalValorQuebra.Location = new Point(955, 507);
             textBoxTotalValorQuebra.Name = "textBoxTotalValorQuebra";
-            textBoxTotalValorQuebra.Size = new Size(100, 23);
+            textBoxTotalValorQuebra.Size = new Size(118, 23);
             textBoxTotalValorQuebra.TabIndex = 9;
             // 
             // panelSaldo
@@ -493,7 +510,7 @@
             panelSaldo.Controls.Add(labelNomePanel);
             panelSaldo.Controls.Add(textBoxIDSaldo);
             panelSaldo.Controls.Add(textBoxTotalGasto);
-            panelSaldo.Controls.Add(textBoxSaldo);
+            panelSaldo.Controls.Add(textBoxSaldoCliente);
             panelSaldo.Location = new Point(1010, 0);
             panelSaldo.Name = "panelSaldo";
             panelSaldo.Size = new Size(117, 189);
@@ -550,47 +567,167 @@
             textBoxTotalGasto.Size = new Size(106, 23);
             textBoxTotalGasto.TabIndex = 0;
             // 
-            // textBoxSaldo
+            // textBoxSaldoCliente
             // 
-            textBoxSaldo.Location = new Point(5, 98);
-            textBoxSaldo.Name = "textBoxSaldo";
-            textBoxSaldo.Size = new Size(106, 23);
-            textBoxSaldo.TabIndex = 0;
+            textBoxSaldoCliente.Location = new Point(5, 98);
+            textBoxSaldoCliente.Name = "textBoxSaldoCliente";
+            textBoxSaldoCliente.Size = new Size(106, 23);
+            textBoxSaldoCliente.TabIndex = 0;
             // 
             // labelReposicao
             // 
             labelReposicao.AutoSize = true;
-            labelReposicao.Location = new Point(887, 396);
+            labelReposicao.Location = new Point(859, 510);
             labelReposicao.Name = "labelReposicao";
             labelReposicao.Size = new Size(90, 15);
             labelReposicao.TabIndex = 11;
             labelReposicao.Text = "Valor Reposição";
             // 
-            // textBox1
+            // textBoxValorTotal
             // 
-            textBox1.Location = new Point(993, 414);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(80, 23);
-            textBox1.TabIndex = 9;
+            textBoxValorTotal.Location = new Point(955, 536);
+            textBoxValorTotal.Name = "textBoxValorTotal";
+            textBoxValorTotal.Size = new Size(118, 23);
+            textBoxValorTotal.TabIndex = 9;
             // 
             // labelValorTotal
             // 
             labelValorTotal.AutoSize = true;
-            labelValorTotal.Location = new Point(993, 396);
+            labelValorTotal.Location = new Point(888, 539);
             labelValorTotal.Name = "labelValorTotal";
             labelValorTotal.Size = new Size(61, 15);
             labelValorTotal.TabIndex = 11;
             labelValorTotal.Text = "Valor Total";
+            // 
+            // dataGridViewPagamentos
+            // 
+            dataGridViewPagamentos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewPagamentos.Columns.AddRange(new DataGridViewColumn[] { FormaPagamento, DataPagamento, Valor, Pago });
+            dataGridViewPagamentos.Location = new Point(42, 438);
+            dataGridViewPagamentos.Name = "dataGridViewPagamentos";
+            dataGridViewPagamentos.Size = new Size(441, 150);
+            dataGridViewPagamentos.TabIndex = 12;
+            dataGridViewPagamentos.CellEnter += dataGridViewPagamentos_CellEnter;
+            dataGridViewPagamentos.CellFormatting += dataGridViewPagamentos_CellFormatting;
+            dataGridViewPagamentos.CellValueChanged += dataGridViewPagamentos_CellValueChanged;
+            dataGridViewPagamentos.CurrentCellDirtyStateChanged += dataGridViewPagamentos_CurrentCellDirtyStateChanged;
+            dataGridViewPagamentos.EditingControlShowing += dataGridViewPagamentos_EditingControlShowing;
+            dataGridViewPagamentos.RowLeave += dataGridViewPagamentos_RowLeave;
+            dataGridViewPagamentos.KeyDown += dataGridViewPagamentos_KeyDown;
+            // 
+            // FormaPagamento
+            // 
+            dataGridViewCellStyle3.NullValue = "Dinheiro";
+            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle3;
+            FormaPagamento.HeaderText = "Forma de Pagamento";
+            FormaPagamento.Items.AddRange(new object[] { "Dinheiro", "Pix", "Credito", "Debito" });
+            FormaPagamento.Name = "FormaPagamento";
+            // 
+            // DataPagamento
+            // 
+            dataGridViewCellStyle4.Format = "d";
+            dataGridViewCellStyle4.NullValue = null;
+            DataPagamento.DefaultCellStyle = dataGridViewCellStyle4;
+            DataPagamento.HeaderText = "Data do Pagamento";
+            DataPagamento.Name = "DataPagamento";
+            // 
+            // Valor
+            // 
+            dataGridViewCellStyle5.Format = "C2";
+            dataGridViewCellStyle5.NullValue = null;
+            Valor.DefaultCellStyle = dataGridViewCellStyle5;
+            Valor.HeaderText = "Valor";
+            Valor.Name = "Valor";
+            // 
+            // Pago
+            // 
+            Pago.HeaderText = "Pago";
+            Pago.Name = "Pago";
+            // 
+            // textBoxSaldoPedido
+            // 
+            textBoxSaldoPedido.Location = new Point(955, 478);
+            textBoxSaldoPedido.Name = "textBoxSaldoPedido";
+            textBoxSaldoPedido.Size = new Size(118, 23);
+            textBoxSaldoPedido.TabIndex = 13;
+            // 
+            // labelSaldoPedido
+            // 
+            labelSaldoPedido.AutoSize = true;
+            labelSaldoPedido.Location = new Point(856, 481);
+            labelSaldoPedido.Name = "labelSaldoPedido";
+            labelSaldoPedido.Size = new Size(93, 15);
+            labelSaldoPedido.TabIndex = 11;
+            labelSaldoPedido.Text = "Saldo do Pedido";
+            // 
+            // textBoxSubTotal
+            // 
+            textBoxSubTotal.Location = new Point(955, 395);
+            textBoxSubTotal.Name = "textBoxSubTotal";
+            textBoxSubTotal.Size = new Size(118, 23);
+            textBoxSubTotal.TabIndex = 14;
+            // 
+            // textBoxAcrescimo
+            // 
+            textBoxAcrescimo.Location = new Point(955, 424);
+            textBoxAcrescimo.Name = "textBoxAcrescimo";
+            textBoxAcrescimo.Size = new Size(118, 23);
+            textBoxAcrescimo.TabIndex = 14;
+            textBoxAcrescimo.TextChanged += textBoxAcrescimo_TextChanged;
+            // 
+            // textBoxDesconto
+            // 
+            textBoxDesconto.Location = new Point(955, 452);
+            textBoxDesconto.Name = "textBoxDesconto";
+            textBoxDesconto.Size = new Size(118, 23);
+            textBoxDesconto.TabIndex = 14;
+            textBoxDesconto.TextChanged += textBoxDesconto_TextChanged;
+            // 
+            // labelSubTotal
+            // 
+            labelSubTotal.AutoSize = true;
+            labelSubTotal.Location = new Point(894, 398);
+            labelSubTotal.Name = "labelSubTotal";
+            labelSubTotal.Size = new Size(55, 15);
+            labelSubTotal.TabIndex = 15;
+            labelSubTotal.Text = "Sub Total";
+            // 
+            // labelAcrescimo
+            // 
+            labelAcrescimo.AutoSize = true;
+            labelAcrescimo.Location = new Point(886, 427);
+            labelAcrescimo.Name = "labelAcrescimo";
+            labelAcrescimo.Size = new Size(63, 15);
+            labelAcrescimo.TabIndex = 15;
+            labelAcrescimo.Text = "Acréscimo";
+            // 
+            // labelDesconto
+            // 
+            labelDesconto.AutoSize = true;
+            labelDesconto.Location = new Point(892, 455);
+            labelDesconto.Name = "labelDesconto";
+            labelDesconto.Size = new Size(57, 15);
+            labelDesconto.TabIndex = 15;
+            labelDesconto.Text = "Desconto";
             // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1130, 600);
+            Controls.Add(labelDesconto);
+            Controls.Add(labelAcrescimo);
+            Controls.Add(labelSubTotal);
+            Controls.Add(textBoxDesconto);
+            Controls.Add(textBoxAcrescimo);
+            Controls.Add(textBoxSubTotal);
+            Controls.Add(textBoxSaldoPedido);
+            Controls.Add(dataGridViewPagamentos);
             Controls.Add(labelValorTotal);
+            Controls.Add(labelSaldoPedido);
             Controls.Add(labelReposicao);
             Controls.Add(panelSaldo);
-            Controls.Add(textBox1);
+            Controls.Add(textBoxValorTotal);
             Controls.Add(textBoxTotalValorQuebra);
             Controls.Add(buttonQuebra);
             Controls.Add(labelRetirada);
@@ -613,6 +750,7 @@
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).EndInit();
             panelSaldo.ResumeLayout(false);
             panelSaldo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewPagamentos).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -663,12 +801,25 @@
         private Label labelSaldo;
         private Label labelNomePanel;
         private TextBox textBoxIDSaldo;
-        private TextBox textBoxSaldo;
+        private TextBox textBoxSaldoCliente;
         private Label labelReposicao;
-        private TextBox textBox1;
+        private TextBox textBoxValorTotal;
         private Label labelValorTotal;
         private Label labelTotalGasto;
         private TextBox textBoxTotalGasto;
         private Button buttonEditarCliente;
+        private DataGridView dataGridViewPagamentos;
+        private TextBox textBoxSaldoPedido;
+        private Label labelSaldoPedido;
+        private TextBox textBoxSubTotal;
+        private TextBox textBoxAcrescimo;
+        private TextBox textBoxDesconto;
+        private Label labelSubTotal;
+        private Label labelAcrescimo;
+        private Label labelDesconto;
+        private DataGridViewComboBoxColumn FormaPagamento;
+        private DataGridViewTextBoxColumn DataPagamento;
+        private DataGridViewTextBoxColumn Valor;
+        private DataGridViewCheckBoxColumn Pago;
     }
 }

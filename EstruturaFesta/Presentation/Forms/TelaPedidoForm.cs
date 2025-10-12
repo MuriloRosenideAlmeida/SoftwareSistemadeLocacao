@@ -276,7 +276,7 @@ namespace EstruturaFesta
             decimal valor;
 
             // Verifica se a TextBox tem um valor válido e se é maior que 0
-            if (decimal.TryParse(textBoxSaldo.Text, out valor) && valor > 0)
+            if (decimal.TryParse(textBoxSaldoCliente.Text, out valor) && valor > 0)
             {
                 // Desenha a borda para vermelho se tiver saldo
                 using (Pen pen = new Pen(Color.Red, 3))
@@ -480,6 +480,8 @@ namespace EstruturaFesta
             // Recalcula valor total
             decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
             row.Cells["ValorTotal"].Value = quantidadeNova * preco;
+            AtualizarTotais();
+
         }
 
         private bool VerificarProdutoDuplicado(int produtoId, int linhaAtual)
@@ -788,10 +790,352 @@ namespace EstruturaFesta
                     if (!dataGridViewProdutosLocacao.Rows[e.RowIndex].IsNewRow)
                     {
                         dataGridViewProdutosLocacao.Rows.RemoveAt(e.RowIndex);
+                        AtualizarTotais();
                     }
                 }
             }
         }
+        #endregion
+
+        #region Parte do Pagamento
+        private void AtualizarSaldo()
+        {
+            // Pega o total do pedido
+            if (!decimal.TryParse(textBoxValorTotal.Text, out decimal totalPedido))
+                totalPedido = 0;
+
+            decimal totalPago = 0;
+
+            // Percorre as linhas do DataGrid
+            foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                bool pago = false;
+                decimal valor = 0;
+
+                // Verifica se o checkbox foi marcado
+                if (row.Cells["Pago"].Value != null)
+                    bool.TryParse(row.Cells["Pago"].Value.ToString(), out pago);
+
+                // Pega o valor digitado
+                if (row.Cells["Valor"].Value != null)
+                    decimal.TryParse(row.Cells["Valor"].Value.ToString(), out valor);
+
+                if (pago)
+                    totalPago += valor;
+            }
+
+            // Calcula saldo restante
+            decimal saldo = totalPedido - totalPago;
+
+            // Atualiza a TextBox de saldo
+            textBoxSaldoPedido.Text = saldo.ToString("N2");
+        }
+        private void textBoxAcrescimo_TextChanged(object sender, EventArgs e)
+        {
+            AtualizarTotais();
+        }
+
+        private void textBoxDesconto_TextChanged(object sender, EventArgs e)
+        {
+            AtualizarTotais();
+        }
+
+        private void dataGridViewPagamentos_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            // Necessário para que o check seja "confirmado" logo ao clicar
+            if (dataGridViewPagamentos.IsCurrentCellDirty)
+            {
+                dataGridViewPagamentos.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void dataGridViewPagamentos_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            AtualizarSaldo();
+            AtualizarTotais();
+        }
+
+        private void dataGridViewPagamentos_RowLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            var row = dataGridViewPagamentos.Rows[e.RowIndex];
+
+            bool pago = false;
+            decimal valor = 0;
+
+            // Verifica se checkbox Pago está marcada
+            if (row.Cells["Pago"].Value != null)
+                bool.TryParse(row.Cells["Pago"].Value.ToString(), out pago);
+
+            // Pega o valor da célula Valor
+            if (row.Cells["Valor"].Value != null)
+                decimal.TryParse(row.Cells["Valor"].Value.ToString(), out valor);
+
+            // Define a cor da linha
+            if (pago)
+            {
+                row.DefaultCellStyle.BackColor = Color.LightGreen;
+                row.DefaultCellStyle.ForeColor = Color.Black;
+            }
+            else if (!pago && valor > 0)
+            {
+                row.DefaultCellStyle.BackColor = Color.LightCoral;
+                row.DefaultCellStyle.ForeColor = Color.Black;
+            }
+            else
+            {
+                // Mantém cor padrão se não houver valor ou pagamento
+                row.DefaultCellStyle.BackColor = Color.White;
+                row.DefaultCellStyle.ForeColor = Color.Black;
+            }
+        }
+
+        private void AtualizarCorLinha(int rowIndex)
+        {
+            if (rowIndex < 0 || rowIndex >= dataGridViewPagamentos.Rows.Count) return;
+            var row = dataGridViewPagamentos.Rows[rowIndex];
+            if (row.IsNewRow) return;
+
+            bool pago = row.Cells["Pago"].Value != null && (bool)row.Cells["Pago"].Value;
+            bool temValor = row.Cells["Valor"].Value != null && decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valorTemp) && valorTemp > 0;
+
+            if (pago)
+                row.DefaultCellStyle.BackColor = Color.LightGreen;
+            else if (temValor && !pago)
+                row.DefaultCellStyle.BackColor = Color.LightCoral;
+            else
+                row.DefaultCellStyle.BackColor = Color.White;
+
+            // Mantém texto legível
+            row.DefaultCellStyle.ForeColor = Color.Black;
+        }
+
+        private void AtualizarTotais()
+        {
+            decimal subTotal = 0;
+            decimal acrescimo = 0;
+            decimal desconto = 0;
+            decimal total = 0;
+            decimal totalPago = 0;
+            decimal saldo = 0;
+
+            // Soma os valores dos produtos
+            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                if (row.Cells["ValorTotal"]?.Value != null &&
+                    decimal.TryParse(row.Cells["ValorTotal"].Value.ToString(), out decimal valorTotalProdutos))
+                {
+                    subTotal += valorTotalProdutos;
+                }
+            }
+
+            // Lê acrescimo e desconto
+            decimal.TryParse(textBoxAcrescimo.Text, out acrescimo);
+            decimal.TryParse(textBoxDesconto.Text, out desconto);
+
+            // Calcula valor total
+            total = subTotal + acrescimo - desconto;
+
+            // Soma pagamentos marcados como "Pago"
+            foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                bool pago = false;
+                if (row.Cells["Pago"] is DataGridViewCheckBoxCell checkCell && checkCell.Value != null)
+                    pago = (bool)checkCell.Value;
+
+                if (pago && row.Cells["Valor"]?.Value != null &&
+                    decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valorPago))
+                {
+                    totalPago += valorPago;
+                }
+            }
+
+            // Calcula saldo
+            saldo = total - totalPago;
+
+            // Atualiza as TextBox
+            textBoxSubTotal.Text = subTotal.ToString("N2");
+            textBoxValorTotal.Text = total.ToString("N2");
+            textBoxSaldoPedido.Text = saldo.ToString("N2");
+        }
+
+        private void dataGridViewPagamentos_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            var coluna = dataGridViewPagamentos.Columns[e.ColumnIndex].Name;
+
+            // Formata DataPagamento
+            if (coluna == "DataPagamento" && e.Value != null)
+            {
+                if (DateTime.TryParse(e.Value.ToString(), out DateTime data))
+                {
+                    e.Value = data.ToString("dd/MM/yyyy");
+                    e.FormattingApplied = true;
+                }
+            }
+
+            // Formata Valor como moeda
+            if (coluna == "Valor" && e.Value != null)
+            {
+                if (decimal.TryParse(e.Value.ToString(), out decimal valor))
+                {
+                    e.Value = valor.ToString("C2", new System.Globalization.CultureInfo("pt-BR"));
+                    e.FormattingApplied = true;
+                }
+            }
+        }
+
+        private void dataGridViewPagamentos_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            e.Control.PreviewKeyDown -= PagamentosEditingControl_PreviewKeyDown;
+            e.Control.PreviewKeyDown += PagamentosEditingControl_PreviewKeyDown;
+
+
+            // Remove handlers antigos para evitar duplicação
+            e.Control.KeyPress -= MaskedDate_KeyPress;
+
+            // Aplica apenas na coluna de DataPagamento
+            if (dataGridViewPagamentos.CurrentCell.OwningColumn.Name == "DataPagamento")
+            {
+                TextBox tb = e.Control as TextBox;
+                if (tb != null)
+                {
+                    tb.KeyPress += MaskedDate_KeyPress;
+                }
+            }
+
+
+        }
+
+        private void MaskedDate_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Apenas números e backspace são permitidos
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            TextBox tb = sender as TextBox;
+            if (tb == null) return;
+
+            // Se for backspace, deixa remover normalmente
+            if (e.KeyChar == (char)Keys.Back)
+                return;
+
+            // Insere a barra "/" automaticamente nos lugares corretos
+            string texto = tb.Text.Replace("/", "");
+
+            if (texto.Length == 2 || texto.Length == 4)
+                tb.Text += "/";
+
+            // Move o cursor para o final
+            tb.SelectionStart = tb.Text.Length;
+        }
+
+        private void PagamentosEditingControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter) return;
+
+            var dgv = dataGridViewPagamentos;
+            if (dgv.CurrentCell == null) return;
+
+            e.IsInputKey = true;
+            dgv.EndEdit();
+
+            string colunaAtual = dgv.CurrentCell.OwningColumn.Name;
+            int linhaAtual = dgv.CurrentCell.RowIndex;
+
+            switch (colunaAtual)
+            {
+                case "FormaPagamento":
+                    NavigateToPagamentoColumn(dgv, linhaAtual, "DataPagamento");
+                    break;
+
+                case "DataPagamento":
+                    NavigateToPagamentoColumn(dgv, linhaAtual, "Valor");
+                    break;
+
+                case "Valor":
+                    NavigateToPagamentoColumn(dgv, linhaAtual, "Pago");
+                    break;
+            }
+        }
+
+        private void NavigateToPagamentoColumn(DataGridView dgv, int row, string columnName)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                if (!dgv.Columns.Contains(columnName)) return;
+
+                int colIndex = dgv.Columns[columnName].Index;
+                if (row < dgv.Rows.Count)
+                {
+                    dgv.CurrentCell = dgv.Rows[row].Cells[colIndex];
+                    dgv.BeginEdit(true);
+                }
+            }));
+        }
+
+        private void dataGridViewPagamentos_KeyDown(object sender, KeyEventArgs e)
+        {
+            var dgv = dataGridViewPagamentos;
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+
+                if (dgv.CurrentCell == null) return;
+
+                var coluna = dgv.CurrentCell.OwningColumn.Name;
+                int linhaAtual = dgv.CurrentCell.RowIndex;
+
+                // ENTER na última coluna -> próxima linha
+                if (coluna == "Pago")
+                {
+                    int proximaLinha = linhaAtual + 1;
+                    if (proximaLinha >= dgv.Rows.Count) return; // DataGrid cria automaticamente
+
+                    NavigateToPagamentoColumn(dgv, proximaLinha, "FormaPagamento");
+                }
+            }
+
+            // SPACE para alternar o check
+            if (e.KeyCode == Keys.Space && dgv.CurrentCell != null && dgv.CurrentCell.OwningColumn.Name == "Pago")
+            {
+                e.Handled = true;
+                var cell = dgv.CurrentCell as DataGridViewCheckBoxCell;
+
+                if (cell != null)
+                {
+                    bool atual = cell.Value != null && (bool)cell.Value;
+                    cell.Value = !atual;
+                    dgv.EndEdit();
+                    AtualizarSaldo();
+                }
+            }
+        }
+
+        // Preenche data automaticamente quando a célula recebe foco
+        private void dataGridViewPagamentos_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            var dgv = dataGridViewPagamentos;
+
+            if (dgv.Rows[e.RowIndex].IsNewRow)
+            {
+                var row = dgv.Rows[e.RowIndex];
+
+                // Preenche valores padrão apenas quando a linha é nova
+                row.Cells["DataPagamento"].Value ??= DateTime.Today;
+                row.Cells["Pago"].Value ??= false;
+            }
+        }
+
         #endregion
 
         #region Botoes Finais
