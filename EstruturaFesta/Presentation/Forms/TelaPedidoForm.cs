@@ -5,6 +5,7 @@ using EstruturaFesta.Presentation.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace EstruturaFesta
 {
@@ -66,6 +67,9 @@ namespace EstruturaFesta
             // Desabilita eventos temporariamente
             dataGridViewProdutosLocacao.CellEndEdit -= dataGridViewProdutosLocacao_CellEndEdit;
             dateTimePickerDataPedido.ValueChanged -= dateTimePickerDataPedido_ValueChanged;
+         
+            dataGridViewProdutosLocacao.CellEndEdit -= dataGridViewProdutosLocacao_CellEndEdit;
+            dataGridViewProdutosLocacao.RowsAdded -= dataGridViewProdutosLocacao_RowsAdded;
 
             try
             {
@@ -101,8 +105,8 @@ namespace EstruturaFesta
                         estoqueDisponivel,
                         item.Quantidade,
                         item.ValorUnitario,
-                        item.Quantidade * item.ValorUnitario,
-                        item.Produto.PrecoReposicao
+                        item.Produto.PrecoReposicao,
+                        item.Quantidade * item.ValorUnitario
                     );
                 }
             }
@@ -111,7 +115,13 @@ namespace EstruturaFesta
                 // Reabilita eventos
                 dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
                 dateTimePickerDataPedido.ValueChanged += dateTimePickerDataPedido_ValueChanged;
+
+                dataGridViewProdutosLocacao.CellEndEdit += dataGridViewProdutosLocacao_CellEndEdit;
+                dataGridViewProdutosLocacao.RowsAdded += dataGridViewProdutosLocacao_RowsAdded;
             }
+
+            CarregarPagamentos();
+            AtualizarSaldoDoPedido();
 
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
@@ -480,9 +490,10 @@ namespace EstruturaFesta
             }
 
             // Recalcula valor total
-            decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
-            row.Cells["ValorTotal"].Value = quantidadeNova * preco;
-            AtualizarTotais();
+             decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
+             row.Cells["ValorTotal"].Value = quantidadeNova * preco;
+             AtualizarTotais();
+            
 
         }
 
@@ -824,16 +835,13 @@ namespace EstruturaFesta
                 {
                     int rowIndex = dataGridViewPagamentos.Rows.Add(
                         pag.Id,
-                        pag.FormaPagamento,      // Coluna 0
-                        pag.DataPagamento,       // Coluna 1
-                        pag.Valor,               // Coluna 2
-                        pag.Pago                 // Coluna 3
+                        pag.FormaPagamento,      
+                        pag.DataPagamento,       
+                        pag.Valor,               
+                        pag.Pago                 
                     );
 
-                  
-                    dataGridViewPagamentos.Rows[rowIndex].Cells["PagamentoId"].Value = pag.Id;
-
-                    var row = dataGridViewPagamentos.Rows[rowIndex];
+                    AtualizarCorLinha(rowIndex);
 
                 }
             }
@@ -845,6 +853,7 @@ namespace EstruturaFesta
 
             AtualizarSaldo();
             AtualizarTotais();
+            
         }
         private decimal CalcularTotalPedido()
         {
@@ -880,24 +889,6 @@ namespace EstruturaFesta
             }
         }
 
-        public void SalvarPagamento(decimal valor, string forma)
-        {
-            if (!_pedidoId.HasValue)
-                return;
-
-            using var db = new EstruturaDataBase();
-
-            db.Pagamentos.Add(new Pagamento
-            {
-                PedidoId = _pedidoId.Value,
-                Valor = valor,
-                FormaPagamento = forma
-            });
-
-            db.SaveChanges();
-
-            CarregarPagamentos();
-        }
 
         private void AtualizarSaldo()
         {
@@ -916,8 +907,8 @@ namespace EstruturaFesta
                 decimal valor = 0;
 
                 // Verifica se o checkbox foi marcado
-                if (row.Cells["Pago"].Value != null)
-                    bool.TryParse(row.Cells["Pago"].Value.ToString(), out pago);
+                if (row.Cells["Pago"].Value != null && row.Cells["Pago"].Value is bool)
+                    pago = (bool)row.Cells["Pago"].Value;
 
                 // Pega o valor digitado
                 if (row.Cells["Valor"].Value != null)
@@ -936,11 +927,13 @@ namespace EstruturaFesta
         private void textBoxAcrescimo_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
+            
         }
 
         private void textBoxDesconto_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
+            
         }
 
         private void dataGridViewPagamentos_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -960,36 +953,7 @@ namespace EstruturaFesta
 
         private void dataGridViewPagamentos_RowLeave(object sender, DataGridViewCellEventArgs e)
         {
-            var row = dataGridViewPagamentos.Rows[e.RowIndex];
-
-            bool pago = false;
-            decimal valor = 0;
-
-            // Verifica se checkbox Pago está marcada
-            if (row.Cells["Pago"].Value != null)
-                bool.TryParse(row.Cells["Pago"].Value.ToString(), out pago);
-
-            // Pega o valor da célula Valor
-            if (row.Cells["Valor"].Value != null)
-                decimal.TryParse(row.Cells["Valor"].Value.ToString(), out valor);
-
-            // Define a cor da linha
-            if (pago)
-            {
-                row.DefaultCellStyle.BackColor = Color.LightGreen;
-                row.DefaultCellStyle.ForeColor = Color.Black;
-            }
-            else if (!pago && valor > 0)
-            {
-                row.DefaultCellStyle.BackColor = Color.LightCoral;
-                row.DefaultCellStyle.ForeColor = Color.Black;
-            }
-            else
-            {
-                // Mantém cor padrão se não houver valor ou pagamento
-                row.DefaultCellStyle.BackColor = Color.White;
-                row.DefaultCellStyle.ForeColor = Color.Black;
-            }
+            AtualizarCorLinha(e.RowIndex);
         }
 
         private void AtualizarCorLinha(int rowIndex)
@@ -1339,6 +1303,9 @@ namespace EstruturaFesta
                     pedido.Produtos.Remove(itemRemovido);
                 }
 
+
+                // PAGAMENTOS
+
                 var pagamentosExistentes = db.Pagamentos
              .Where(p => p.PedidoId == pedido.ID)
              .ToList();
@@ -1349,9 +1316,16 @@ namespace EstruturaFesta
                 {
                     if (row.IsNewRow) continue;
 
+                    // ========== VERIFICA SE FOI PAGO ==========
+                    bool pago = false;
+                    if (row.Cells["Pago"].Value != null && row.Cells["Pago"].Value is bool)
+                        pago = (bool)row.Cells["Pago"].Value;
+
+                    if (!pago) continue;  // ✅ IGNORA SE NÃO ESTÁ MARCADO COMO PAGO
+                                          // =========================================
+
                     // Pega dados do grid
-                    string forma = row.Cells["FormaPagamento"].Value?.ToString();
-                    if (string.IsNullOrWhiteSpace(forma)) continue;
+                    string forma = row.Cells["FormaPagamento"].Value?.ToString() ?? "Sem forma";
 
                     DateTime dataPag = DateTime.Today;
                     if (row.Cells["DataPagamento"].Value != null)
@@ -1359,10 +1333,6 @@ namespace EstruturaFesta
 
                     decimal valor = 0;
                     decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out valor);
-
-                    bool pago = false;
-                    if (row.Cells["Pago"].Value != null)
-                        pago = (bool)row.Cells["Pago"].Value;
 
                     // Verifica se é pagamento existente ou novo
                     int pagamentoId = 0;
@@ -1377,7 +1347,7 @@ namespace EstruturaFesta
                             pagExistente.FormaPagamento = forma;
                             pagExistente.DataPagamento = dataPag;
                             pagExistente.Valor = valor;
-                            pagExistente.Pago = pago;  // ✅ SALVA O CAMPO PAGO
+                            pagExistente.Pago = true;  // ✅ Sempre true, pois só salva se marcou
                             idsMantidos.Add(pagamentoId);
                         }
                     }
@@ -1389,7 +1359,7 @@ namespace EstruturaFesta
                             FormaPagamento = forma,
                             DataPagamento = dataPag,
                             Valor = valor,
-                            Pago = pago  // ✅ SALVA O CAMPO PAGO
+                            Pago = true  // ✅ Sempre true
                         });
                     }
                 }
@@ -1402,7 +1372,6 @@ namespace EstruturaFesta
                         db.Pagamentos.Remove(pagRemover);
                     }
                 }
-
             }
             else // Novo pedido
             {
@@ -1453,8 +1422,15 @@ namespace EstruturaFesta
                 {
                     if (row.IsNewRow) continue;
 
-                    string forma = row.Cells["FormaPagamento"].Value?.ToString();
-                    if (string.IsNullOrWhiteSpace(forma)) continue;
+                    // ========== VERIFICA SE FOI PAGO ==========
+                    bool pago = false;
+                    if (row.Cells["Pago"].Value != null && row.Cells["Pago"].Value is bool)
+                        pago = (bool)row.Cells["Pago"].Value;
+
+                    if (!pago) continue;  // ✅ IGNORA SE NÃO ESTÁ MARCADO COMO PAGO
+                                          // =========================================
+
+                    string forma = row.Cells["FormaPagamento"].Value?.ToString() ?? "Sem forma";
 
                     DateTime dataPag = DateTime.Today;
                     if (row.Cells["DataPagamento"].Value != null)
@@ -1463,18 +1439,15 @@ namespace EstruturaFesta
                     decimal valor = 0;
                     decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out valor);
 
-                    bool pago = false;
-                    if (row.Cells["Pago"].Value != null)
-                        pago = (bool)row.Cells["Pago"].Value;
-
                     var pagamento = new Pagamento
                     {
-                        Pedido = pedido,  // EF vincula automaticamente
+                        Pedido = pedido,
                         FormaPagamento = forma,
                         DataPagamento = dataPag,
                         Valor = valor,
-                        Pago = pago  // ✅ SALVA O CAMPO PAGO
+                        Pago = true  // ✅ Sempre true
                     };
+
                     db.Pagamentos.Add(pagamento);
                 }
 

@@ -87,7 +87,7 @@
             dataGridViewPedidos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewPedidos.Location = new Point(40, 145);
             dataGridViewPedidos.Name = "dataGridViewPedidos";
-            dataGridViewPedidos.Size = new Size(709, 240);
+            dataGridViewPedidos.Size = new Size(709, 293);
             dataGridViewPedidos.TabIndex = 5;
             dataGridViewPedidos.CellDoubleClick += dataGridViewPedidos_CellDoubleClick;
             dataGridViewPedidos.ColumnHeaderMouseClick += dataGridViewPedidos_ColumnHeaderMouseClick;
