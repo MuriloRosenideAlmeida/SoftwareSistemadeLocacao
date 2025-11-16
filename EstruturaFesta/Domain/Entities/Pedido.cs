@@ -17,5 +17,8 @@ namespace EstruturaFesta.Domain.Entities
         public Cliente Cliente { get; set; }
 
         public ICollection<ProdutoPedido> Produtos { get; set; } = new List<ProdutoPedido>();
+        public virtual List<Pagamento> Pagamentos { get; set; } = new();
+
+
     }
 }

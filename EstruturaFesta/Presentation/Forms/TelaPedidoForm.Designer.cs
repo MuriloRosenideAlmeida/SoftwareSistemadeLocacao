@@ -85,10 +85,6 @@
             textBoxValorTotal = new TextBox();
             labelValorTotal = new Label();
             dataGridViewPagamentos = new DataGridView();
-            FormaPagamento = new DataGridViewComboBoxColumn();
-            DataPagamento = new DataGridViewTextBoxColumn();
-            Valor = new DataGridViewTextBoxColumn();
-            Pago = new DataGridViewCheckBoxColumn();
             textBoxSaldoPedido = new TextBox();
             labelSaldoPedido = new Label();
             textBoxSubTotal = new TextBox();
@@ -97,6 +93,11 @@
             labelSubTotal = new Label();
             labelAcrescimo = new Label();
             labelDesconto = new Label();
+            PagamentoId = new DataGridViewTextBoxColumn();
+            FormaPagamento = new DataGridViewComboBoxColumn();
+            DataPagamento = new DataGridViewTextBoxColumn();
+            Valor = new DataGridViewTextBoxColumn();
+            Pago = new DataGridViewCheckBoxColumn();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTelefones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
@@ -602,10 +603,10 @@
             // dataGridViewPagamentos
             // 
             dataGridViewPagamentos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewPagamentos.Columns.AddRange(new DataGridViewColumn[] { FormaPagamento, DataPagamento, Valor, Pago });
+            dataGridViewPagamentos.Columns.AddRange(new DataGridViewColumn[] { PagamentoId, FormaPagamento, DataPagamento, Valor, Pago });
             dataGridViewPagamentos.Location = new Point(42, 438);
             dataGridViewPagamentos.Name = "dataGridViewPagamentos";
-            dataGridViewPagamentos.Size = new Size(441, 150);
+            dataGridViewPagamentos.Size = new Size(478, 150);
             dataGridViewPagamentos.TabIndex = 12;
             dataGridViewPagamentos.CellEnter += dataGridViewPagamentos_CellEnter;
             dataGridViewPagamentos.CellFormatting += dataGridViewPagamentos_CellFormatting;
@@ -614,35 +615,6 @@
             dataGridViewPagamentos.EditingControlShowing += dataGridViewPagamentos_EditingControlShowing;
             dataGridViewPagamentos.RowLeave += dataGridViewPagamentos_RowLeave;
             dataGridViewPagamentos.KeyDown += dataGridViewPagamentos_KeyDown;
-            // 
-            // FormaPagamento
-            // 
-            dataGridViewCellStyle3.NullValue = "Dinheiro";
-            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle3;
-            FormaPagamento.HeaderText = "Forma de Pagamento";
-            FormaPagamento.Items.AddRange(new object[] { "Dinheiro", "Pix", "Credito", "Debito" });
-            FormaPagamento.Name = "FormaPagamento";
-            // 
-            // DataPagamento
-            // 
-            dataGridViewCellStyle4.Format = "d";
-            dataGridViewCellStyle4.NullValue = null;
-            DataPagamento.DefaultCellStyle = dataGridViewCellStyle4;
-            DataPagamento.HeaderText = "Data do Pagamento";
-            DataPagamento.Name = "DataPagamento";
-            // 
-            // Valor
-            // 
-            dataGridViewCellStyle5.Format = "C2";
-            dataGridViewCellStyle5.NullValue = null;
-            Valor.DefaultCellStyle = dataGridViewCellStyle5;
-            Valor.HeaderText = "Valor";
-            Valor.Name = "Valor";
-            // 
-            // Pago
-            // 
-            Pago.HeaderText = "Pago";
-            Pago.Name = "Pago";
             // 
             // textBoxSaldoPedido
             // 
@@ -710,6 +682,52 @@
             labelDesconto.TabIndex = 15;
             labelDesconto.Text = "Desconto";
             // 
+            // PagamentoId
+            // 
+            PagamentoId.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            PagamentoId.DataPropertyName = "Id";
+            PagamentoId.HeaderText = "Codigo";
+            PagamentoId.MaxInputLength = 100;
+            PagamentoId.MinimumWidth = 4;
+            PagamentoId.Name = "PagamentoId";
+            PagamentoId.Width = 71;
+            // 
+            // FormaPagamento
+            // 
+            FormaPagamento.DataPropertyName = "FormaPagamento";
+            dataGridViewCellStyle3.NullValue = "Dinheiro";
+            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle3;
+            FormaPagamento.HeaderText = "Forma de Pagamento";
+            FormaPagamento.Items.AddRange(new object[] { "Dinheiro", "Pix", "Credito", "Debito" });
+            FormaPagamento.Name = "FormaPagamento";
+            // 
+            // DataPagamento
+            // 
+            DataPagamento.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            DataPagamento.DataPropertyName = "DataPagamento";
+            dataGridViewCellStyle4.Format = "d";
+            dataGridViewCellStyle4.NullValue = null;
+            DataPagamento.DefaultCellStyle = dataGridViewCellStyle4;
+            DataPagamento.HeaderText = "Data do Pagamento";
+            DataPagamento.Name = "DataPagamento";
+            // 
+            // Valor
+            // 
+            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Valor.DataPropertyName = "Valor";
+            dataGridViewCellStyle5.Format = "C2";
+            dataGridViewCellStyle5.NullValue = null;
+            Valor.DefaultCellStyle = dataGridViewCellStyle5;
+            Valor.HeaderText = "Valor";
+            Valor.Name = "Valor";
+            // 
+            // Pago
+            // 
+            Pago.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Pago.DataPropertyName = "Pago";
+            Pago.HeaderText = "Pago";
+            Pago.Name = "Pago";
+            // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -739,7 +757,6 @@
             Controls.Add(dateTimePickerDataPedido);
             Controls.Add(dataGridViewProdutosLocacao);
             Controls.Add(InformacoesCliente);
-            FormBorderStyle = FormBorderStyle.None;
             Name = "TelaPedidoForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Tela Pedido";
@@ -817,6 +834,7 @@
         private Label labelSubTotal;
         private Label labelAcrescimo;
         private Label labelDesconto;
+        private DataGridViewTextBoxColumn PagamentoId;
         private DataGridViewComboBoxColumn FormaPagamento;
         private DataGridViewTextBoxColumn DataPagamento;
         private DataGridViewTextBoxColumn Valor;

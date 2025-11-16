@@ -12,7 +12,7 @@
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public string Complemento { get; set; }
-
+  
         public abstract string ObterDocumento();
         
         

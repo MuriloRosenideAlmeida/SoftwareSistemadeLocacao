@@ -137,6 +137,7 @@ namespace EstruturaFesta
         #endregion
 
         #region Parte do cliente
+
         private void bntBuscarCliente_Click(object sender, EventArgs e)
         {
             new FormBuscarClientes().ShowDialog();
@@ -162,6 +163,7 @@ namespace EstruturaFesta
             {
                 dataGridViewTelefones.Rows.Add(contato.NomeContato, contato.Telefone);
             }
+
         }
         private void buttonEditarCliente_Click(object sender, EventArgs e)
         {
@@ -798,6 +800,105 @@ namespace EstruturaFesta
         #endregion
 
         #region Parte do Pagamento
+
+        private void CarregarPagamentos()
+        {
+            if (!_pedidoId.HasValue)
+                return;
+
+            using var db = new EstruturaDataBase();
+
+            var pagamentos = db.Pagamentos
+                .Where(p => p.PedidoId == _pedidoId.Value)
+                .OrderBy(p => p.DataPagamento)
+                .ToList();
+
+            // Desabilita evento temporariamente
+            dataGridViewPagamentos.CellValueChanged -= dataGridViewPagamentos_CellValueChanged;
+
+            try
+            {
+                dataGridViewPagamentos.Rows.Clear();
+
+                foreach (var pag in pagamentos)
+                {
+                    int rowIndex = dataGridViewPagamentos.Rows.Add(
+                        pag.Id,
+                        pag.FormaPagamento,      // Coluna 0
+                        pag.DataPagamento,       // Coluna 1
+                        pag.Valor,               // Coluna 2
+                        pag.Pago                 // Coluna 3
+                    );
+
+                  
+                    dataGridViewPagamentos.Rows[rowIndex].Cells["PagamentoId"].Value = pag.Id;
+
+                    var row = dataGridViewPagamentos.Rows[rowIndex];
+
+                }
+            }
+            finally
+            {
+                // Reabilita evento
+                dataGridViewPagamentos.CellValueChanged += dataGridViewPagamentos_CellValueChanged;
+            }
+
+            AtualizarSaldo();
+            AtualizarTotais();
+        }
+        private decimal CalcularTotalPedido()
+        {
+            decimal subtotal = 0;
+            decimal acrescimo = 0;
+            decimal desconto = 0;
+            decimal quebra = 0;
+
+            decimal.TryParse(textBoxSubTotal.Text, out subtotal);
+            decimal.TryParse(textBoxAcrescimo.Text, out acrescimo);
+            decimal.TryParse(textBoxDesconto.Text, out desconto);
+            decimal.TryParse(textBoxTotalValorQuebra.Text, out quebra);
+
+            decimal total = subtotal + acrescimo + quebra - desconto;
+
+            textBoxValorTotal.Text = total.ToString("N2");
+            return total;
+        }
+
+        private void AtualizarSaldoDoPedido()
+        {
+            using (var db = new EstruturaDataBase())
+            {
+                decimal total = CalcularTotalPedido();
+
+                decimal totalPago = db.Pagamentos
+                    .Where(p => p.PedidoId == _pedidoId.Value)
+                    .Sum(p => (decimal?)p.Valor) ?? 0;
+
+                decimal saldo = total - totalPago;
+
+                textBoxSaldoPedido.Text = saldo.ToString("N2");
+            }
+        }
+
+        public void SalvarPagamento(decimal valor, string forma)
+        {
+            if (!_pedidoId.HasValue)
+                return;
+
+            using var db = new EstruturaDataBase();
+
+            db.Pagamentos.Add(new Pagamento
+            {
+                PedidoId = _pedidoId.Value,
+                Valor = valor,
+                FormaPagamento = forma
+            });
+
+            db.SaveChanges();
+
+            CarregarPagamentos();
+        }
+
         private void AtualizarSaldo()
         {
             // Pega o total do pedido
@@ -1007,8 +1108,6 @@ namespace EstruturaFesta
                     tb.KeyPress += MaskedDate_KeyPress;
                 }
             }
-
-
         }
 
         private void MaskedDate_KeyPress(object sender, KeyPressEventArgs e)
@@ -1132,6 +1231,7 @@ namespace EstruturaFesta
 
                 // Preenche valores padrão apenas quando a linha é nova
                 row.Cells["DataPagamento"].Value ??= DateTime.Today;
+                row.Cells["Valor"].Value ??= decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldoAtual) ? saldoAtual : 0m;
                 row.Cells["Pago"].Value ??= false;
             }
         }
@@ -1153,6 +1253,9 @@ namespace EstruturaFesta
                 MessageBox.Show("ID do cliente inválido.");
                 return;
             }
+
+            decimal.TryParse(textBoxValorTotal.Text, out decimal totalPedido);
+            decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldoPedido);
 
             var dataPedido = dateTimePickerDataPedido.Value.Date;
             var dataEntrega = dateTimePickerEntrega.Value.Date;
@@ -1235,6 +1338,71 @@ namespace EstruturaFesta
                     if (saldo != null) saldo.QuantidadeReservada -= itemRemovido.Quantidade;
                     pedido.Produtos.Remove(itemRemovido);
                 }
+
+                var pagamentosExistentes = db.Pagamentos
+             .Where(p => p.PedidoId == pedido.ID)
+             .ToList();
+
+                var idsMantidos = new List<int>();
+
+                foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    // Pega dados do grid
+                    string forma = row.Cells["FormaPagamento"].Value?.ToString();
+                    if (string.IsNullOrWhiteSpace(forma)) continue;
+
+                    DateTime dataPag = DateTime.Today;
+                    if (row.Cells["DataPagamento"].Value != null)
+                        DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out dataPag);
+
+                    decimal valor = 0;
+                    decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out valor);
+
+                    bool pago = false;
+                    if (row.Cells["Pago"].Value != null)
+                        pago = (bool)row.Cells["Pago"].Value;
+
+                    // Verifica se é pagamento existente ou novo
+                    int pagamentoId = 0;
+                    if (row.Cells["PagamentoId"].Value != null)
+                        int.TryParse(row.Cells["PagamentoId"].Value.ToString(), out pagamentoId);
+
+                    if (pagamentoId > 0) // ATUALIZAR EXISTENTE
+                    {
+                        var pagExistente = pagamentosExistentes.FirstOrDefault(p => p.Id == pagamentoId);
+                        if (pagExistente != null)
+                        {
+                            pagExistente.FormaPagamento = forma;
+                            pagExistente.DataPagamento = dataPag;
+                            pagExistente.Valor = valor;
+                            pagExistente.Pago = pago;  // ✅ SALVA O CAMPO PAGO
+                            idsMantidos.Add(pagamentoId);
+                        }
+                    }
+                    else // ADICIONAR NOVO
+                    {
+                        db.Pagamentos.Add(new Pagamento
+                        {
+                            PedidoId = pedido.ID,
+                            FormaPagamento = forma,
+                            DataPagamento = dataPag,
+                            Valor = valor,
+                            Pago = pago  // ✅ SALVA O CAMPO PAGO
+                        });
+                    }
+                }
+
+                // Remove pagamentos que foram deletados do grid
+                foreach (var pagRemover in pagamentosExistentes)
+                {
+                    if (!idsMantidos.Contains(pagRemover.Id))
+                    {
+                        db.Pagamentos.Remove(pagRemover);
+                    }
+                }
+
             }
             else // Novo pedido
             {
@@ -1279,13 +1447,43 @@ namespace EstruturaFesta
                     DataRetirada = dataRetirada,
                     Produtos = listaProdutos
                 };
-
                 db.Pedidos.Add(pedido);
+
+                foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    string forma = row.Cells["FormaPagamento"].Value?.ToString();
+                    if (string.IsNullOrWhiteSpace(forma)) continue;
+
+                    DateTime dataPag = DateTime.Today;
+                    if (row.Cells["DataPagamento"].Value != null)
+                        DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out dataPag);
+
+                    decimal valor = 0;
+                    decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out valor);
+
+                    bool pago = false;
+                    if (row.Cells["Pago"].Value != null)
+                        pago = (bool)row.Cells["Pago"].Value;
+
+                    var pagamento = new Pagamento
+                    {
+                        Pedido = pedido,  // EF vincula automaticamente
+                        FormaPagamento = forma,
+                        DataPagamento = dataPag,
+                        Valor = valor,
+                        Pago = pago  // ✅ SALVA O CAMPO PAGO
+                    };
+                    db.Pagamentos.Add(pagamento);
+                }
+
             }
 
             db.SaveChanges();
             MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
+
         }
 
         private void buttonQuebra_Click(object sender, EventArgs e)

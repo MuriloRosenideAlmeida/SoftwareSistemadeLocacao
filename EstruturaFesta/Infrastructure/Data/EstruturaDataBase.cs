@@ -16,6 +16,8 @@ namespace EstruturaFesta.Infrastructure.Data
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ProdutoPedido> ProdutosPedidos { get; set; }
         public DbSet<PerdaProduto> PerdaProdutos { get; set; }
+        public DbSet<Pagamento> Pagamentos { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

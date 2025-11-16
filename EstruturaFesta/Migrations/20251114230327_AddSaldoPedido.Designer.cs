@@ -4,6 +4,7 @@ using EstruturaFesta.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    partial class EstruturaDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20251114230327_AddSaldoPedido")]
+    partial class AddSaldoPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,37 +101,6 @@ namespace EstruturaFesta.Migrations
                     b.HasIndex("ClienteID");
 
                     b.ToTable("Contatos");
-                });
-
-            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pagamento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DataPagamento")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("FormaPagamento")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Pago")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("PedidoId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PedidoId");
-
-                    b.ToTable("Pagamentos");
                 });
 
             modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pedido", b =>
@@ -303,6 +275,30 @@ namespace EstruturaFesta.Migrations
                     b.ToTable("SaldosPorData");
                 });
 
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.SaldoPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorPendente")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("SaldosPedidos");
+                });
+
             modelBuilder.Entity("EstruturaFesta.Domain.Entities.ClientePF", b =>
                 {
                     b.HasBaseType("EstruturaFesta.Domain.Entities.Cliente");
@@ -357,17 +353,6 @@ namespace EstruturaFesta.Migrations
                         .IsRequired();
 
                     b.Navigation("Cliente");
-                });
-
-            modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pagamento", b =>
-                {
-                    b.HasOne("EstruturaFesta.Domain.Entities.Pedido", "Pedido")
-                        .WithMany("Pagamentos")
-                        .HasForeignKey("PedidoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pedido");
                 });
 
             modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pedido", b =>
@@ -437,15 +422,26 @@ namespace EstruturaFesta.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("EstruturaFesta.Domain.Entities.SaldoPedido", b =>
+                {
+                    b.HasOne("EstruturaFesta.Domain.Entities.Cliente", "Cliente")
+                        .WithMany("SaldosPendentes")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
             modelBuilder.Entity("EstruturaFesta.Domain.Entities.Cliente", b =>
                 {
                     b.Navigation("Contatos");
+
+                    b.Navigation("SaldosPendentes");
                 });
 
             modelBuilder.Entity("EstruturaFesta.Domain.Entities.Pedido", b =>
                 {
-                    b.Navigation("Pagamentos");
-
                     b.Navigation("Produtos");
                 });
 
