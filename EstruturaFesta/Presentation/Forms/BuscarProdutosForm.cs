@@ -19,6 +19,7 @@ namespace EstruturaFesta
         public BuscarProdutosForm()
         {
             InitializeComponent();
+            dataGridViewFiltroProdutos.AutoGenerateColumns = false;
         }
         public ProdutoDTO ProdutoSelecionado { get; private set; }
 

@@ -17,7 +17,10 @@ namespace EstruturaFesta
         public FiltroPedidosForm()
         {
             InitializeComponent();
+            ConfigurarEstiloDataGrid();
+            dataGridViewPedidos.RowPostPaint += dataGridViewPedidos_RowPostPaint;
         }
+
         private void FiltroPedidos_Load(object sender, EventArgs e)
         {
             dateTimePickerInicial.Value = DateTime.Today;
@@ -28,8 +31,6 @@ namespace EstruturaFesta
         {
             DateTime dataInicial = dateTimePickerInicial.Value.Date;
             DateTime dataFinal = dateTimePickerFinal.Value.Date;
-
-            // Garante que a data final inclua o dia todo
             DateTime dataFinalInclusiva = dataFinal.AddDays(1);
 
             using var db = new EstruturaDataBase();
@@ -46,7 +47,42 @@ namespace EstruturaFesta
                 })
                 .ToList();
 
+            dataGridViewPedidos.AutoGenerateColumns = false;
             dataGridViewPedidos.DataSource = pedidos;
+
+        }
+
+        private void ConfigurarEstiloDataGrid()
+        {
+            dataGridViewPedidos.AllowUserToAddRows = false;
+            dataGridViewPedidos.AllowUserToDeleteRows = false;
+            dataGridViewPedidos.ReadOnly = true;
+            dataGridViewPedidos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridViewPedidos.MultiSelect = false;
+            dataGridViewPedidos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        private void dataGridViewPedidos_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            string numeroLinha = (e.RowIndex + 1).ToString();
+
+            using (SolidBrush brush = new SolidBrush(Color.Black))
+            {
+                StringFormat format = new StringFormat()
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                e.Graphics.DrawString(
+                    numeroLinha,
+                    dataGridViewPedidos.Font,
+                    brush,
+                    e.RowBounds.Left + (dataGridViewPedidos.RowHeadersWidth / 2),
+                    e.RowBounds.Top + (e.RowBounds.Height / 2),
+                    format
+                );
+            }
         }
 
         private void dataGridViewPedidos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)

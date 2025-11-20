@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
             InformacoesCliente = new Panel();
             buttonEditarCliente = new Button();
             labelIdPedido = new Label();
@@ -342,8 +342,8 @@
             // 
             // dataGridViewProdutosLocacao
             // 
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(240, 240, 240);
-            dataGridViewProdutosLocacao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(240, 240, 240);
+            dataGridViewProdutosLocacao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             dataGridViewProdutosLocacao.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoID, Produto, Estoque, Quantidade, ValorUnitario, ValorReposicao, ValorTotal });
@@ -352,8 +352,8 @@
             dataGridViewProdutosLocacao.Location = new Point(31, 239);
             dataGridViewProdutosLocacao.MultiSelect = false;
             dataGridViewProdutosLocacao.Name = "dataGridViewProdutosLocacao";
-            dataGridViewCellStyle2.SelectionBackColor = Color.White;
-            dataGridViewProdutosLocacao.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.SelectionBackColor = Color.White;
+            dataGridViewProdutosLocacao.RowsDefaultCellStyle = dataGridViewCellStyle7;
             dataGridViewProdutosLocacao.RowTemplate.DefaultCellStyle.BackColor = Color.White;
             dataGridViewProdutosLocacao.RowTemplate.Height = 20;
             dataGridViewProdutosLocacao.SelectionMode = DataGridViewSelectionMode.CellSelect;
@@ -606,7 +606,7 @@
             dataGridViewPagamentos.Columns.AddRange(new DataGridViewColumn[] { PagamentoId, FormaPagamento, DataPagamento, Valor, Pago });
             dataGridViewPagamentos.Location = new Point(42, 438);
             dataGridViewPagamentos.Name = "dataGridViewPagamentos";
-            dataGridViewPagamentos.Size = new Size(478, 150);
+            dataGridViewPagamentos.Size = new Size(452, 150);
             dataGridViewPagamentos.TabIndex = 12;
             dataGridViewPagamentos.CellEnter += dataGridViewPagamentos_CellEnter;
             dataGridViewPagamentos.CellFormatting += dataGridViewPagamentos_CellFormatting;
@@ -614,6 +614,7 @@
             dataGridViewPagamentos.CurrentCellDirtyStateChanged += dataGridViewPagamentos_CurrentCellDirtyStateChanged;
             dataGridViewPagamentos.EditingControlShowing += dataGridViewPagamentos_EditingControlShowing;
             dataGridViewPagamentos.RowLeave += dataGridViewPagamentos_RowLeave;
+            dataGridViewPagamentos.RowPostPaint += dataGridViewPagamentos_RowPostPaint;
             dataGridViewPagamentos.KeyDown += dataGridViewPagamentos_KeyDown;
             // 
             // textBoxSaldoPedido
@@ -690,13 +691,14 @@
             PagamentoId.MaxInputLength = 100;
             PagamentoId.MinimumWidth = 4;
             PagamentoId.Name = "PagamentoId";
+            PagamentoId.Visible = false;
             PagamentoId.Width = 71;
             // 
             // FormaPagamento
             // 
             FormaPagamento.DataPropertyName = "FormaPagamento";
-            dataGridViewCellStyle3.NullValue = "Dinheiro";
-            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle8.NullValue = "Dinheiro";
+            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle8;
             FormaPagamento.HeaderText = "Forma de Pagamento";
             FormaPagamento.Items.AddRange(new object[] { "Dinheiro", "Pix", "Credito", "Debito" });
             FormaPagamento.Name = "FormaPagamento";
@@ -705,9 +707,9 @@
             // 
             DataPagamento.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             DataPagamento.DataPropertyName = "DataPagamento";
-            dataGridViewCellStyle4.Format = "d";
-            dataGridViewCellStyle4.NullValue = null;
-            DataPagamento.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle9.Format = "d";
+            dataGridViewCellStyle9.NullValue = null;
+            DataPagamento.DefaultCellStyle = dataGridViewCellStyle9;
             DataPagamento.HeaderText = "Data do Pagamento";
             DataPagamento.Name = "DataPagamento";
             // 
@@ -715,9 +717,9 @@
             // 
             Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Valor.DataPropertyName = "Valor";
-            dataGridViewCellStyle5.Format = "C2";
-            dataGridViewCellStyle5.NullValue = null;
-            Valor.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle10.Format = "C2";
+            dataGridViewCellStyle10.NullValue = null;
+            Valor.DefaultCellStyle = dataGridViewCellStyle10;
             Valor.HeaderText = "Valor";
             Valor.Name = "Valor";
             // 

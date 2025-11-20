@@ -29,6 +29,14 @@
         private void InitializeComponent()
         {
             dataGridViewFiltroProdutos = new DataGridView();
+            ID = new DataGridViewTextBoxColumn();
+            Nome = new DataGridViewTextBoxColumn();
+            Material = new DataGridViewTextBoxColumn();
+            Modelo = new DataGridViewTextBoxColumn();
+            Especificacao = new DataGridViewTextBoxColumn();
+            Estoque = new DataGridViewTextBoxColumn();
+            ValorUnitario = new DataGridViewTextBoxColumn();
+            ValorReposicao = new DataGridViewTextBoxColumn();
             textBoxFiltroNomeProduto = new TextBox();
             textBoxFiltroMaterial = new TextBox();
             textBoxFiltroModelo = new TextBox();
@@ -45,44 +53,105 @@
             // 
             dataGridViewFiltroProdutos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewFiltroProdutos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewFiltroProdutos.Columns.AddRange(new DataGridViewColumn[] { ID, Nome, Material, Modelo, Especificacao, Estoque, ValorUnitario, ValorReposicao });
             dataGridViewFiltroProdutos.Location = new Point(-1, 47);
             dataGridViewFiltroProdutos.Name = "dataGridViewFiltroProdutos";
-            dataGridViewFiltroProdutos.Size = new Size(801, 403);
+            dataGridViewFiltroProdutos.Size = new Size(1132, 553);
             dataGridViewFiltroProdutos.TabIndex = 0;
             dataGridViewFiltroProdutos.CellDoubleClick += dataGridViewFiltroProdutos_CellDoubleClick;
             dataGridViewFiltroProdutos.ColumnHeaderMouseClick += dataGridViewFiltroProdutos_ColumnHeaderMouseClick;
             // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ID.DataPropertyName = "ProdutoId";
+            ID.FillWeight = 45F;
+            ID.HeaderText = "Codigo";
+            ID.Name = "ID";
+            // 
+            // Nome
+            // 
+            Nome.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Nome.DataPropertyName = "Nome";
+            Nome.HeaderText = "Nome";
+            Nome.Name = "Nome";
+            // 
+            // Material
+            // 
+            Material.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Material.DataPropertyName = "Material";
+            Material.HeaderText = "Material";
+            Material.Name = "Material";
+            // 
+            // Modelo
+            // 
+            Modelo.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Modelo.DataPropertyName = "Modelo";
+            Modelo.HeaderText = "Modelo";
+            Modelo.Name = "Modelo";
+            // 
+            // Especificacao
+            // 
+            Especificacao.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Especificacao.DataPropertyName = "Especificacao";
+            Especificacao.HeaderText = "Especificação";
+            Especificacao.Name = "Especificacao";
+            // 
+            // Estoque
+            // 
+            Estoque.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Estoque.DataPropertyName = "QuantidadeEstoque";
+            Estoque.FillWeight = 60F;
+            Estoque.HeaderText = "Quantidade Estoque";
+            Estoque.Name = "Estoque";
+            // 
+            // ValorUnitario
+            // 
+            ValorUnitario.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorUnitario.DataPropertyName = "ValorUnitario";
+            ValorUnitario.FillWeight = 60F;
+            ValorUnitario.HeaderText = "Valor Unitario";
+            ValorUnitario.Name = "ValorUnitario";
+            // 
+            // ValorReposicao
+            // 
+            ValorReposicao.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorReposicao.DataPropertyName = "ValorReposicao";
+            ValorReposicao.FillWeight = 60F;
+            ValorReposicao.HeaderText = "Valor Reposição";
+            ValorReposicao.Name = "ValorReposicao";
+            // 
             // textBoxFiltroNomeProduto
             // 
-            textBoxFiltroNomeProduto.Location = new Point(21, 18);
+            textBoxFiltroNomeProduto.Location = new Point(122, 18);
             textBoxFiltroNomeProduto.Name = "textBoxFiltroNomeProduto";
-            textBoxFiltroNomeProduto.Size = new Size(119, 23);
+            textBoxFiltroNomeProduto.Size = new Size(159, 23);
             textBoxFiltroNomeProduto.TabIndex = 1;
             // 
             // textBoxFiltroMaterial
             // 
-            textBoxFiltroMaterial.Location = new Point(160, 18);
+            textBoxFiltroMaterial.Location = new Point(299, 19);
             textBoxFiltroMaterial.Name = "textBoxFiltroMaterial";
             textBoxFiltroMaterial.Size = new Size(156, 23);
             textBoxFiltroMaterial.TabIndex = 1;
             // 
             // textBoxFiltroModelo
             // 
-            textBoxFiltroModelo.Location = new Point(348, 18);
+            textBoxFiltroModelo.Location = new Point(476, 19);
             textBoxFiltroModelo.Name = "textBoxFiltroModelo";
-            textBoxFiltroModelo.Size = new Size(142, 23);
+            textBoxFiltroModelo.Size = new Size(143, 23);
             textBoxFiltroModelo.TabIndex = 1;
             // 
             // textBoxFiltroEspecificacao
             // 
-            textBoxFiltroEspecificacao.Location = new Point(531, 18);
+            textBoxFiltroEspecificacao.Location = new Point(647, 19);
             textBoxFiltroEspecificacao.Name = "textBoxFiltroEspecificacao";
-            textBoxFiltroEspecificacao.Size = new Size(138, 23);
+            textBoxFiltroEspecificacao.Size = new Size(175, 23);
             textBoxFiltroEspecificacao.TabIndex = 1;
             // 
             // buttonFiltrar
             // 
-            buttonFiltrar.Location = new Point(700, 18);
+            buttonFiltrar.Location = new Point(1043, 18);
             buttonFiltrar.Name = "buttonFiltrar";
             buttonFiltrar.Size = new Size(75, 23);
             buttonFiltrar.TabIndex = 2;
@@ -93,7 +162,7 @@
             // labelNomeProduto
             // 
             labelNomeProduto.AutoSize = true;
-            labelNomeProduto.Location = new Point(21, 0);
+            labelNomeProduto.Location = new Point(122, 1);
             labelNomeProduto.Name = "labelNomeProduto";
             labelNomeProduto.Size = new Size(40, 15);
             labelNomeProduto.TabIndex = 3;
@@ -102,7 +171,7 @@
             // labelMaterial
             // 
             labelMaterial.AutoSize = true;
-            labelMaterial.Location = new Point(160, 0);
+            labelMaterial.Location = new Point(299, 1);
             labelMaterial.Name = "labelMaterial";
             labelMaterial.Size = new Size(50, 15);
             labelMaterial.TabIndex = 3;
@@ -111,7 +180,7 @@
             // labelModelo
             // 
             labelModelo.AutoSize = true;
-            labelModelo.Location = new Point(348, 0);
+            labelModelo.Location = new Point(476, 1);
             labelModelo.Name = "labelModelo";
             labelModelo.Size = new Size(48, 15);
             labelModelo.TabIndex = 3;
@@ -120,7 +189,7 @@
             // labelEspecificacao
             // 
             labelEspecificacao.AutoSize = true;
-            labelEspecificacao.Location = new Point(531, 0);
+            labelEspecificacao.Location = new Point(647, 0);
             labelEspecificacao.Name = "labelEspecificacao";
             labelEspecificacao.Size = new Size(78, 15);
             labelEspecificacao.TabIndex = 3;
@@ -130,7 +199,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1131, 600);
             Controls.Add(labelEspecificacao);
             Controls.Add(labelModelo);
             Controls.Add(labelMaterial);
@@ -142,7 +211,7 @@
             Controls.Add(textBoxFiltroNomeProduto);
             Controls.Add(dataGridViewFiltroProdutos);
             Name = "FiltroProdutoForm";
-            Text = "FiltroProdutoForm";
+            Text = "Filtro de Produtos";
             ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroProdutos).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -160,5 +229,13 @@
         private Label labelMaterial;
         private Label labelModelo;
         private Label labelEspecificacao;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Nome;
+        private DataGridViewTextBoxColumn Material;
+        private DataGridViewTextBoxColumn Modelo;
+        private DataGridViewTextBoxColumn Especificacao;
+        private DataGridViewTextBoxColumn Estoque;
+        private DataGridViewTextBoxColumn ValorUnitario;
+        private DataGridViewTextBoxColumn ValorReposicao;
     }
 }

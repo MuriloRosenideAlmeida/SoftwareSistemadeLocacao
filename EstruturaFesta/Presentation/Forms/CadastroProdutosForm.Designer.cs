@@ -259,7 +259,7 @@ namespace EstruturaFesta
             Controls.Add(labelNome);
             Controls.Add(textBoxNome);
             Name = "CadastroProdutosForm";
-            Text = "CadastroProdutos";
+            Text = "Cadastro de Produtos";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownQuantidade).EndInit();
             ResumeLayout(false);

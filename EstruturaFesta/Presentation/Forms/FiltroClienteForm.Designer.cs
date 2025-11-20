@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             dataGridViewFiltroClientes = new DataGridView();
+            ID = new DataGridViewTextBoxColumn();
+            Nome = new DataGridViewTextBoxColumn();
+            Documento = new DataGridViewTextBoxColumn();
+            Tipo = new DataGridViewTextBoxColumn();
             textBoxNome = new TextBox();
             textBoxDocumentos = new TextBox();
             labelNome = new Label();
@@ -40,11 +44,45 @@
             // dataGridViewFiltroClientes
             // 
             dataGridViewFiltroClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewFiltroClientes.Columns.AddRange(new DataGridViewColumn[] { ID, Nome, Documento, Tipo });
             dataGridViewFiltroClientes.Location = new Point(2, 63);
             dataGridViewFiltroClientes.Name = "dataGridViewFiltroClientes";
             dataGridViewFiltroClientes.Size = new Size(795, 338);
             dataGridViewFiltroClientes.TabIndex = 0;
             dataGridViewFiltroClientes.CellMouseDoubleClick += dataGridViewFiltroClientes_CellMouseDoubleClick;
+            dataGridViewFiltroClientes.ColumnHeaderMouseClick += dataGridViewFiltroClientes_ColumnHeaderMouseClick;
+            // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ID.DataPropertyName = "ID";
+            ID.FillWeight = 10F;
+            ID.HeaderText = "Codigo";
+            ID.Name = "ID";
+            // 
+            // Nome
+            // 
+            Nome.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Nome.DataPropertyName = "Nome";
+            Nome.FillWeight = 50F;
+            Nome.HeaderText = "Nome Cliente";
+            Nome.Name = "Nome";
+            // 
+            // Documento
+            // 
+            Documento.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Documento.DataPropertyName = "Documento";
+            Documento.FillWeight = 25F;
+            Documento.HeaderText = "Documento";
+            Documento.Name = "Documento";
+            // 
+            // Tipo
+            // 
+            Tipo.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Tipo.DataPropertyName = "TipoCliente";
+            Tipo.FillWeight = 15F;
+            Tipo.HeaderText = "Tipo Cliente";
+            Tipo.Name = "Tipo";
             // 
             // textBoxNome
             // 
@@ -100,7 +138,7 @@
             Controls.Add(textBoxNome);
             Controls.Add(dataGridViewFiltroClientes);
             Name = "FiltroClienteForm";
-            Text = "FiltroClienteForm";
+            Text = "Filtro de Cliente";
             ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroClientes).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -114,5 +152,9 @@
         private Label labelNome;
         private Label labelDocumentos;
         private Button buttonFiltro;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Nome;
+        private DataGridViewTextBoxColumn Documento;
+        private DataGridViewTextBoxColumn Tipo;
     }
 }

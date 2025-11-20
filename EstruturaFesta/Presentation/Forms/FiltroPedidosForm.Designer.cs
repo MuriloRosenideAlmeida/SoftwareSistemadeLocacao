@@ -34,6 +34,11 @@
             dateTimePickerFinal = new DateTimePicker();
             bntBuscar = new Button();
             dataGridViewPedidos = new DataGridView();
+            ID = new DataGridViewTextBoxColumn();
+            Cliente = new DataGridViewTextBoxColumn();
+            DataPedido = new DataGridViewTextBoxColumn();
+            DataEntrega = new DataGridViewTextBoxColumn();
+            DataRetirada = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridViewPedidos).BeginInit();
             SuspendLayout();
             // 
@@ -85,12 +90,48 @@
             // dataGridViewPedidos
             // 
             dataGridViewPedidos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewPedidos.Columns.AddRange(new DataGridViewColumn[] { ID, Cliente, DataPedido, DataEntrega, DataRetirada });
             dataGridViewPedidos.Location = new Point(40, 145);
             dataGridViewPedidos.Name = "dataGridViewPedidos";
             dataGridViewPedidos.Size = new Size(709, 293);
             dataGridViewPedidos.TabIndex = 5;
             dataGridViewPedidos.CellDoubleClick += dataGridViewPedidos_CellDoubleClick;
             dataGridViewPedidos.ColumnHeaderMouseClick += dataGridViewPedidos_ColumnHeaderMouseClick;
+            // 
+            // ID
+            // 
+            ID.DataPropertyName = "ID";
+            ID.FillWeight = 10F;
+            ID.HeaderText = "Codigo";
+            ID.Name = "ID";
+            // 
+            // Cliente
+            // 
+            Cliente.DataPropertyName = "Cliente";
+            Cliente.FillWeight = 40F;
+            Cliente.HeaderText = "Cliente";
+            Cliente.Name = "Cliente";
+            // 
+            // DataPedido
+            // 
+            DataPedido.DataPropertyName = "DataPedido";
+            DataPedido.FillWeight = 17F;
+            DataPedido.HeaderText = "Data Pedido";
+            DataPedido.Name = "DataPedido";
+            // 
+            // DataEntrega
+            // 
+            DataEntrega.DataPropertyName = "DataEntrega";
+            DataEntrega.FillWeight = 17F;
+            DataEntrega.HeaderText = "Data Entrega";
+            DataEntrega.Name = "DataEntrega";
+            // 
+            // DataRetirada
+            // 
+            DataRetirada.DataPropertyName = "DataRetirada";
+            DataRetirada.FillWeight = 16F;
+            DataRetirada.HeaderText = "Data Retirada";
+            DataRetirada.Name = "DataRetirada";
             // 
             // FiltroPedidosForm
             // 
@@ -119,5 +160,10 @@
         private DateTimePicker dateTimePickerFinal;
         private Button bntBuscar;
         private DataGridView dataGridViewPedidos;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Cliente;
+        private DataGridViewTextBoxColumn DataPedido;
+        private DataGridViewTextBoxColumn DataEntrega;
+        private DataGridViewTextBoxColumn DataRetirada;
     }
 }

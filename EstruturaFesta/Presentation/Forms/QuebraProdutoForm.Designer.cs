@@ -120,7 +120,7 @@
             Controls.Add(textBoxValorTotalQuebra);
             Controls.Add(dataGridViewQuebra);
             Name = "QuebraProdutoForm";
-            Text = "FormQuebraProduto";
+            Text = "Quebra de Produtos";
             ((System.ComponentModel.ISupportInitialize)dataGridViewQuebra).EndInit();
             ResumeLayout(false);
             PerformLayout();

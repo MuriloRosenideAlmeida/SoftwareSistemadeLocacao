@@ -39,6 +39,14 @@
             textBoxFiltroModelo = new TextBox();
             textBoxFiltroMaterial = new TextBox();
             dataGridViewFiltroProdutos = new DataGridView();
+            ID = new DataGridViewTextBoxColumn();
+            Nome = new DataGridViewTextBoxColumn();
+            Material = new DataGridViewTextBoxColumn();
+            Modelo = new DataGridViewTextBoxColumn();
+            Especificacao = new DataGridViewTextBoxColumn();
+            QuantidadeEstoque = new DataGridViewTextBoxColumn();
+            ValorUnitario = new DataGridViewTextBoxColumn();
+            ValorReposicao = new DataGridViewTextBoxColumn();
             panelFiltros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroProdutos).BeginInit();
             SuspendLayout();
@@ -138,6 +146,7 @@
             // dataGridViewFiltroProdutos
             // 
             dataGridViewFiltroProdutos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewFiltroProdutos.Columns.AddRange(new DataGridViewColumn[] { ID, Nome, Material, Modelo, Especificacao, QuantidadeEstoque, ValorUnitario, ValorReposicao });
             dataGridViewFiltroProdutos.Dock = DockStyle.Fill;
             dataGridViewFiltroProdutos.Location = new Point(0, 24);
             dataGridViewFiltroProdutos.Name = "dataGridViewFiltroProdutos";
@@ -145,6 +154,65 @@
             dataGridViewFiltroProdutos.TabIndex = 1;
             dataGridViewFiltroProdutos.CellDoubleClick += dataGridViewFiltroProdutos_CellDoubleClick;
             dataGridViewFiltroProdutos.ColumnHeaderMouseClick += dataGridViewFiltroProdutos_ColumnHeaderMouseClick;
+            // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ID.DataPropertyName = "ProdutoId";
+            ID.FillWeight = 80F;
+            ID.HeaderText = "Codigo";
+            ID.Name = "ID";
+            // 
+            // Nome
+            // 
+            Nome.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Nome.DataPropertyName = "Nome";
+            Nome.HeaderText = "Nome";
+            Nome.Name = "Nome";
+            // 
+            // Material
+            // 
+            Material.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Material.DataPropertyName = "Material";
+            Material.HeaderText = "Material";
+            Material.Name = "Material";
+            // 
+            // Modelo
+            // 
+            Modelo.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Modelo.DataPropertyName = "Modelo";
+            Modelo.HeaderText = "Modelo";
+            Modelo.Name = "Modelo";
+            // 
+            // Especificacao
+            // 
+            Especificacao.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Especificacao.DataPropertyName = "Especificacao";
+            Especificacao.HeaderText = "Especificação";
+            Especificacao.Name = "Especificacao";
+            // 
+            // QuantidadeEstoque
+            // 
+            QuantidadeEstoque.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            QuantidadeEstoque.DataPropertyName = "QuantidadeEstoque";
+            QuantidadeEstoque.HeaderText = "Quantidade Estoque";
+            QuantidadeEstoque.Name = "QuantidadeEstoque";
+            // 
+            // ValorUnitario
+            // 
+            ValorUnitario.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorUnitario.DataPropertyName = "ValorUnitario";
+            ValorUnitario.FillWeight = 90F;
+            ValorUnitario.HeaderText = "Valor Unitario";
+            ValorUnitario.Name = "ValorUnitario";
+            // 
+            // ValorReposicao
+            // 
+            ValorReposicao.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            ValorReposicao.DataPropertyName = "ValorReposicao";
+            ValorReposicao.FillWeight = 90F;
+            ValorReposicao.HeaderText = "Valor Reposição";
+            ValorReposicao.Name = "ValorReposicao";
             // 
             // BuscarProdutosForm
             // 
@@ -174,5 +242,13 @@
         private Label labelMaterial;
         private Label labelNomeProduto;
         private Label labelEspecificacao;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Nome;
+        private DataGridViewTextBoxColumn Material;
+        private DataGridViewTextBoxColumn Modelo;
+        private DataGridViewTextBoxColumn Especificacao;
+        private DataGridViewTextBoxColumn QuantidadeEstoque;
+        private DataGridViewTextBoxColumn ValorUnitario;
+        private DataGridViewTextBoxColumn ValorReposicao;
     }
 }

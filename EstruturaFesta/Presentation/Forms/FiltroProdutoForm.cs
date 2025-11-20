@@ -18,6 +18,7 @@ namespace EstruturaFesta.Presentation.Forms
         public FiltroProdutoForm()
         {
             InitializeComponent();
+            dataGridViewFiltroProdutos.AutoGenerateColumns = false;
         }
 
         private void buttonFiltrar_Click(object sender, EventArgs e)
@@ -68,6 +69,7 @@ namespace EstruturaFesta.Presentation.Forms
                     })
                     .ToList();
 
+                dataGridViewFiltroProdutos.AutoGenerateColumns = false;
                 dataGridViewFiltroProdutos.DataSource = resultado;
             }
         }

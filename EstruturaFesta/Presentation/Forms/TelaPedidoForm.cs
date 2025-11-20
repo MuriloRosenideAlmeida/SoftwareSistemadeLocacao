@@ -67,7 +67,7 @@ namespace EstruturaFesta
             // Desabilita eventos temporariamente
             dataGridViewProdutosLocacao.CellEndEdit -= dataGridViewProdutosLocacao_CellEndEdit;
             dateTimePickerDataPedido.ValueChanged -= dateTimePickerDataPedido_ValueChanged;
-         
+
             dataGridViewProdutosLocacao.CellEndEdit -= dataGridViewProdutosLocacao_CellEndEdit;
             dataGridViewProdutosLocacao.RowsAdded -= dataGridViewProdutosLocacao_RowsAdded;
 
@@ -490,10 +490,10 @@ namespace EstruturaFesta
             }
 
             // Recalcula valor total
-             decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
-             row.Cells["ValorTotal"].Value = quantidadeNova * preco;
-             AtualizarTotais();
-            
+            decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
+            row.Cells["ValorTotal"].Value = quantidadeNova * preco;
+            AtualizarTotais();
+
 
         }
 
@@ -835,10 +835,10 @@ namespace EstruturaFesta
                 {
                     int rowIndex = dataGridViewPagamentos.Rows.Add(
                         pag.Id,
-                        pag.FormaPagamento,      
-                        pag.DataPagamento,       
-                        pag.Valor,               
-                        pag.Pago                 
+                        pag.FormaPagamento,
+                        pag.DataPagamento,
+                        pag.Valor,
+                        pag.Pago
                     );
 
                     AtualizarCorLinha(rowIndex);
@@ -853,8 +853,9 @@ namespace EstruturaFesta
 
             AtualizarSaldo();
             AtualizarTotais();
-            
+
         }
+
         private decimal CalcularTotalPedido()
         {
             decimal subtotal = 0;
@@ -888,7 +889,6 @@ namespace EstruturaFesta
                 textBoxSaldoPedido.Text = saldo.ToString("N2");
             }
         }
-
 
         private void AtualizarSaldo()
         {
@@ -924,16 +924,17 @@ namespace EstruturaFesta
             // Atualiza a TextBox de saldo
             textBoxSaldoPedido.Text = saldo.ToString("N2");
         }
+
         private void textBoxAcrescimo_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
-            
+
         }
 
         private void textBoxDesconto_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
-            
+
         }
 
         private void dataGridViewPagamentos_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -1197,6 +1198,33 @@ namespace EstruturaFesta
                 row.Cells["DataPagamento"].Value ??= DateTime.Today;
                 row.Cells["Valor"].Value ??= decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldoAtual) ? saldoAtual : 0m;
                 row.Cells["Pago"].Value ??= false;
+            }
+        }
+        private void dataGridViewPagamentos_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            if (dataGridViewPagamentos.Rows[e.RowIndex].IsNewRow)
+                return;
+
+            // Número da linha (começa em 1)
+            string numeroLinha = (e.RowIndex + 1).ToString();
+
+            using (SolidBrush brush = new SolidBrush(Color.Black))
+            {
+                StringFormat format = new StringFormat()
+                {
+                    Alignment = StringAlignment.Center,      // Centraliza horizontalmente
+                    LineAlignment = StringAlignment.Center   // Centraliza verticalmente
+                };
+
+                // Desenha o número no cabeçalho da linha (lateral esquerda)
+                e.Graphics.DrawString(
+                    numeroLinha,
+                    dataGridViewPagamentos.Font,
+                    brush,
+                    e.RowBounds.Left + (dataGridViewPagamentos.RowHeadersWidth / 2),
+                    e.RowBounds.Top + (e.RowBounds.Height / 2),
+                    format
+                );
             }
         }
 
