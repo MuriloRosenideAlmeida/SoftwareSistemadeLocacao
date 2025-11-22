@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuForm));
             panelMenu = new Panel();
             bntFiltrarProduto = new FontAwesome.Sharp.IconButton();
             bntCadastrarProduto = new FontAwesome.Sharp.IconButton();
@@ -46,6 +45,7 @@
             formatoAtualIcone = new FontAwesome.Sharp.IconPictureBox();
             panelSombra = new Panel();
             panelDesktop = new Panel();
+            pictureBox1 = new PictureBox();
             panelMenu.SuspendLayout();
             panelLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)bntLogo).BeginInit();
@@ -54,6 +54,8 @@
             ((System.ComponentModel.ISupportInitialize)bntMaximize).BeginInit();
             ((System.ComponentModel.ISupportInitialize)bntMinimize).BeginInit();
             ((System.ComponentModel.ISupportInitialize)formatoAtualIcone).BeginInit();
+            panelDesktop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // panelMenu
@@ -223,7 +225,7 @@
             // 
             // bntLogo
             // 
-            bntLogo.Image = (Image)resources.GetObject("bntLogo.Image");
+            bntLogo.Image = Properties.Resources.logo_estrutura;
             bntLogo.Location = new Point(0, 0);
             bntLogo.Name = "bntLogo";
             bntLogo.Size = new Size(220, 137);
@@ -332,11 +334,23 @@
             // panelDesktop
             // 
             panelDesktop.BackColor = Color.FromArgb(34, 33, 74);
+            panelDesktop.Controls.Add(pictureBox1);
             panelDesktop.Dock = DockStyle.Fill;
             panelDesktop.Location = new Point(220, 89);
             panelDesktop.Name = "panelDesktop";
             panelDesktop.Size = new Size(782, 431);
             panelDesktop.TabIndex = 3;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = Properties.Resources.LogoSemFundoPreto;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(782, 431);
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
             // 
             // MenuForm
             // 
@@ -360,6 +374,8 @@
             ((System.ComponentModel.ISupportInitialize)bntMaximize).EndInit();
             ((System.ComponentModel.ISupportInitialize)bntMinimize).EndInit();
             ((System.ComponentModel.ISupportInitialize)formatoAtualIcone).EndInit();
+            panelDesktop.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
 
@@ -382,5 +398,6 @@
         private FontAwesome.Sharp.IconPictureBox bntMaximize;
         private FontAwesome.Sharp.IconPictureBox bntMinimize;
         private FontAwesome.Sharp.IconPictureBox bntExit;
+        private PictureBox pictureBox1;
     }
 }

@@ -4,6 +4,7 @@ using EstruturaFesta.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    partial class EstruturaDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20251122223402_AddAcrescimoDescontoPedido")]
+    partial class AddAcrescimoDescontoPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,14 +148,6 @@ namespace EstruturaFesta.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ContatoNome")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ContatoNumero")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("DataEntrega")
                         .HasColumnType("datetime(6)");
 
@@ -164,10 +159,6 @@ namespace EstruturaFesta.Migrations
 
                     b.Property<decimal>("Desconto")
                         .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("Observacoes")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.HasKey("ID");
 

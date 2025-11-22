@@ -121,4 +121,10 @@
   <data name="logo_estrutura" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo_estrutura.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="LogoSemfundoBranco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LogoSemfundoBranco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LogoSemFundoPreto" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LogoSemFundoPreto.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

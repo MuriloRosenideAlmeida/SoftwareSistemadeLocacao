@@ -78,7 +78,12 @@ namespace EstruturaFesta
                 textBoxIDCliente.Text = pedido.ClienteId.ToString();
                 textBoxNomeCliente.Text = pedido.Cliente.Nome;
                 textBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
+                textBoxDescricao.Text = pedido.Observacoes;
+                textBoxContato.Text = pedido.ContatoNome;
+                maskedTextBoxNumeroContato.Text = pedido.ContatoNumero;
                 AtualizarTotalGastoCliente(pedido.ClienteId);
+                textBoxAcrescimo.Text = pedido.Acrescimo.ToString("N2");
+                textBoxDesconto.Text = pedido.Desconto.ToString("N2");
                 dataGridViewTelefones.Rows.Clear();
                 if (pedido.Cliente.Contatos != null)
                 {
@@ -295,26 +300,6 @@ namespace EstruturaFesta
             }
         }
 
-        //Parte do panel
-        private void panelSaldo_Paint(object sender, PaintEventArgs e)
-        {
-
-            decimal valor;
-
-            // Verifica se a TextBox tem um valor válido e se é maior que 0
-            if (decimal.TryParse(textBoxSaldoCliente.Text, out valor) && valor > 0)
-            {
-                // Desenha a borda para vermelho se tiver saldo
-                using (Pen pen = new Pen(Color.Red, 3))
-                {
-                    Rectangle rect = new Rectangle(0, 0, panelSaldo.Width - 1, panelSaldo.Height - 1);
-                    e.Graphics.DrawRectangle(pen, rect);
-                }
-            }
-
-
-
-        }
         private void CarregarSaldoDoCliente()
         {
             if (!int.TryParse(textBoxIDCliente.Text, out int clienteId))
@@ -1337,7 +1322,8 @@ namespace EstruturaFesta
             using var db = new EstruturaDataBase();
             Pedido pedido;
 
-            if (_pedidoId.HasValue) // Editar pedido existente
+            //========== EDITAR PEDIDO EXISTENTE ==========
+            if (_pedidoId.HasValue) 
             {
                 pedido = db.Pedidos.Include(p => p.Produtos).FirstOrDefault(p => p.ID == _pedidoId.Value);
                 if (pedido == null) { MessageBox.Show("Pedido não encontrado."); return; }
@@ -1346,6 +1332,14 @@ namespace EstruturaFesta
                 pedido.DataPedido = dataPedido;
                 pedido.DataEntrega = dataEntrega;
                 pedido.DataRetirada = dataRetirada;
+                pedido.Observacoes = textBoxDescricao.Text;
+                pedido.ContatoNome = textBoxContato.Text;
+                pedido.ContatoNumero = maskedTextBoxNumeroContato.Text;
+                decimal.TryParse(textBoxAcrescimo.Text, out decimal acrescimo);
+                decimal.TryParse(textBoxDesconto.Text, out decimal desconto);
+
+                pedido.Acrescimo = acrescimo;
+                pedido.Desconto = desconto;
 
                 var produtosExistentes = pedido.Produtos.ToList();
 
@@ -1497,7 +1491,8 @@ namespace EstruturaFesta
                     }
                 }
             }
-            else // Novo pedido
+            //========== NOVO PEDIDO ==========
+            else 
             {
                 var listaProdutos = new List<ProdutoPedido>();
 
@@ -1531,6 +1526,8 @@ namespace EstruturaFesta
                         QuantidadeReservada = quantidade
                     });
                 }
+                decimal.TryParse(textBoxAcrescimo.Text, out decimal acrescimo);
+                decimal.TryParse(textBoxDesconto.Text, out decimal desconto);
 
                 pedido = new Pedido
                 {
@@ -1538,6 +1535,11 @@ namespace EstruturaFesta
                     DataPedido = dataPedido,
                     DataEntrega = dataEntrega,
                     DataRetirada = dataRetirada,
+                    Observacoes = textBoxDescricao.Text,
+                    ContatoNome = textBoxContato.Text,
+                    ContatoNumero = maskedTextBoxNumeroContato.Text,
+                    Acrescimo = acrescimo,
+                    Desconto = desconto,
                     Produtos = listaProdutos
                 };
                 db.Pedidos.Add(pedido);

@@ -121,7 +121,12 @@ namespace EstruturaFesta.Presentation.Forms
 
         private void bntLogo_Click(object sender, EventArgs e)
         {
-            formularioFilhoAtual.Close();
+            if (formularioFilhoAtual != null && !formularioFilhoAtual.IsDisposed)
+            {
+                formularioFilhoAtual.Close();
+                formularioFilhoAtual = null;
+            }
+
             Reset();
         }
         private void AbrirFormFilho(Form childForm)

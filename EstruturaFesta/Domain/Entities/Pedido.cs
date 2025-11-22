@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,15 @@ namespace EstruturaFesta.Domain.Entities
 
         public ICollection<ProdutoPedido> Produtos { get; set; } = new List<ProdutoPedido>();
         public virtual List<Pagamento> Pagamentos { get; set; } = new();
+
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Acrescimo { get; set; }
+
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Desconto { get; set; }
+        public string Observacoes { get; set; }
+        public string ContatoNome { get; set; }
+        public string ContatoNumero { get; set; }
 
 
     }

@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             InformacoesCliente = new Panel();
             buttonEditarCliente = new Button();
             labelIdPedido = new Label();
@@ -53,7 +53,7 @@
             labelNomeContato = new Label();
             bntBuscarCliente = new Button();
             textBoxIDCliente = new TextBox();
-            textBoxDescrição = new TextBox();
+            textBoxDescricao = new TextBox();
             textBoxContato = new TextBox();
             textBoxDocumentoCliente = new TextBox();
             textBoxNomeCliente = new TextBox();
@@ -125,7 +125,7 @@
             InformacoesCliente.Controls.Add(labelNomeContato);
             InformacoesCliente.Controls.Add(bntBuscarCliente);
             InformacoesCliente.Controls.Add(textBoxIDCliente);
-            InformacoesCliente.Controls.Add(textBoxDescrição);
+            InformacoesCliente.Controls.Add(textBoxDescricao);
             InformacoesCliente.Controls.Add(textBoxContato);
             InformacoesCliente.Controls.Add(textBoxDocumentoCliente);
             InformacoesCliente.Controls.Add(textBoxNomeCliente);
@@ -309,14 +309,14 @@
             textBoxIDCliente.TabIndex = 1;
             textBoxIDCliente.TextAlign = HorizontalAlignment.Right;
             // 
-            // textBoxDescrição
+            // textBoxDescricao
             // 
-            textBoxDescrição.Anchor = AnchorStyles.Right;
-            textBoxDescrição.Location = new Point(648, 98);
-            textBoxDescrição.Multiline = true;
-            textBoxDescrição.Name = "textBoxDescrição";
-            textBoxDescrição.Size = new Size(356, 63);
-            textBoxDescrição.TabIndex = 6;
+            textBoxDescricao.Anchor = AnchorStyles.Right;
+            textBoxDescricao.Location = new Point(648, 98);
+            textBoxDescricao.Multiline = true;
+            textBoxDescricao.Name = "textBoxDescricao";
+            textBoxDescricao.Size = new Size(356, 63);
+            textBoxDescricao.TabIndex = 6;
             // 
             // textBoxContato
             // 
@@ -344,8 +344,8 @@
             // 
             // dataGridViewProdutosLocacao
             // 
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(240, 240, 240);
-            dataGridViewProdutosLocacao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(240, 240, 240);
+            dataGridViewProdutosLocacao.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewProdutosLocacao.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewProdutosLocacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewProdutosLocacao.Columns.AddRange(new DataGridViewColumn[] { ProdutoID, Produto, Estoque, Quantidade, ValorUnitario, ValorReposicao, ValorTotal });
@@ -354,8 +354,8 @@
             dataGridViewProdutosLocacao.Location = new Point(31, 239);
             dataGridViewProdutosLocacao.MultiSelect = false;
             dataGridViewProdutosLocacao.Name = "dataGridViewProdutosLocacao";
-            dataGridViewCellStyle7.SelectionBackColor = Color.White;
-            dataGridViewProdutosLocacao.RowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.SelectionBackColor = Color.White;
+            dataGridViewProdutosLocacao.RowsDefaultCellStyle = dataGridViewCellStyle2;
             dataGridViewProdutosLocacao.RowTemplate.DefaultCellStyle.BackColor = Color.White;
             dataGridViewProdutosLocacao.RowTemplate.Height = 20;
             dataGridViewProdutosLocacao.SelectionMode = DataGridViewSelectionMode.CellSelect;
@@ -502,6 +502,7 @@
             // 
             textBoxTotalValorQuebra.Location = new Point(955, 507);
             textBoxTotalValorQuebra.Name = "textBoxTotalValorQuebra";
+            textBoxTotalValorQuebra.ReadOnly = true;
             textBoxTotalValorQuebra.Size = new Size(118, 23);
             textBoxTotalValorQuebra.TabIndex = 9;
             textBoxTotalValorQuebra.TextChanged += textBoxTotalValorQuebra_TextChanged;
@@ -519,7 +520,6 @@
             panelSaldo.Name = "panelSaldo";
             panelSaldo.Size = new Size(117, 189);
             panelSaldo.TabIndex = 10;
-            panelSaldo.Paint += panelSaldo_Paint;
             // 
             // labelIDSaldo
             // 
@@ -591,6 +591,7 @@
             // 
             textBoxValorTotal.Location = new Point(955, 536);
             textBoxValorTotal.Name = "textBoxValorTotal";
+            textBoxValorTotal.ReadOnly = true;
             textBoxValorTotal.Size = new Size(118, 23);
             textBoxValorTotal.TabIndex = 9;
             // 
@@ -633,8 +634,8 @@
             // FormaPagamento
             // 
             FormaPagamento.DataPropertyName = "FormaPagamento";
-            dataGridViewCellStyle8.NullValue = "Dinheiro";
-            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.NullValue = "Dinheiro";
+            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle3;
             FormaPagamento.HeaderText = "Forma de Pagamento";
             FormaPagamento.Items.AddRange(new object[] { "Dinheiro", "Pix", "Credito", "Debito" });
             FormaPagamento.Name = "FormaPagamento";
@@ -643,9 +644,9 @@
             // 
             DataPagamento.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             DataPagamento.DataPropertyName = "DataPagamento";
-            dataGridViewCellStyle9.Format = "d";
-            dataGridViewCellStyle9.NullValue = null;
-            DataPagamento.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.Format = "d";
+            dataGridViewCellStyle4.NullValue = null;
+            DataPagamento.DefaultCellStyle = dataGridViewCellStyle4;
             DataPagamento.HeaderText = "Data do Pagamento";
             DataPagamento.Name = "DataPagamento";
             // 
@@ -653,9 +654,9 @@
             // 
             Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Valor.DataPropertyName = "Valor";
-            dataGridViewCellStyle10.Format = "C2";
-            dataGridViewCellStyle10.NullValue = null;
-            Valor.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.Format = "C2";
+            dataGridViewCellStyle5.NullValue = null;
+            Valor.DefaultCellStyle = dataGridViewCellStyle5;
             Valor.HeaderText = "Valor";
             Valor.Name = "Valor";
             // 
@@ -670,6 +671,7 @@
             // 
             textBoxSaldoPedido.Location = new Point(955, 478);
             textBoxSaldoPedido.Name = "textBoxSaldoPedido";
+            textBoxSaldoPedido.ReadOnly = true;
             textBoxSaldoPedido.Size = new Size(118, 23);
             textBoxSaldoPedido.TabIndex = 13;
             // 
@@ -686,6 +688,7 @@
             // 
             textBoxSubTotal.Location = new Point(955, 395);
             textBoxSubTotal.Name = "textBoxSubTotal";
+            textBoxSubTotal.ReadOnly = true;
             textBoxSubTotal.Size = new Size(118, 23);
             textBoxSubTotal.TabIndex = 14;
             // 
@@ -786,7 +789,7 @@
         #endregion
 
         private Panel InformacoesCliente;
-        private TextBox textBoxDescrição;
+        private TextBox textBoxDescricao;
         private TextBox textBoxContato;
         private TextBox textBoxDocumentoCliente;
         private TextBox textBoxNomeCliente;
