@@ -17,6 +17,7 @@ namespace EstruturaFesta.Infrastructure.Data
         public DbSet<ProdutoPedido> ProdutosPedidos { get; set; }
         public DbSet<PerdaProduto> PerdaProdutos { get; set; }
         public DbSet<Pagamento> Pagamentos { get; set; }
+        public DbSet<SaldoPedido> SaldoPedidos { get; set; }
 
 
 

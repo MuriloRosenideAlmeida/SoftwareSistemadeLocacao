@@ -78,6 +78,7 @@ namespace EstruturaFesta
                 textBoxIDCliente.Text = pedido.ClienteId.ToString();
                 textBoxNomeCliente.Text = pedido.Cliente.Nome;
                 textBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
+                AtualizarTotalGastoCliente(pedido.ClienteId);
                 dataGridViewTelefones.Rows.Clear();
                 if (pedido.Cliente.Contatos != null)
                 {
@@ -134,7 +135,7 @@ namespace EstruturaFesta
 
             CarregarPagamentos();
             AtualizarSaldoDoPedido();
-
+            CarregarSaldoDoCliente();
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
         }
@@ -185,7 +186,8 @@ namespace EstruturaFesta
             {
                 dataGridViewTelefones.Rows.Add(contato.NomeContato, contato.Telefone);
             }
-
+            CarregarSaldoDoCliente();
+            AtualizarTotalGastoCliente(id);
         }
         private void buttonEditarCliente_Click(object sender, EventArgs e)
         {
@@ -312,6 +314,53 @@ namespace EstruturaFesta
 
 
 
+        }
+        private void CarregarSaldoDoCliente()
+        {
+            if (!int.TryParse(textBoxIDCliente.Text, out int clienteId))
+                return;
+
+            using var db = new EstruturaDataBase();
+
+            // Busca todos os saldos > 0 desse cliente
+            var saldos = db.SaldoPedidos
+                .Where(s => s.ClienteId == clienteId && s.Saldo > 0)
+                .ToList();
+
+            // Soma dos saldos
+            decimal totalSaldo = saldos.Sum(s => s.Saldo);
+
+            // Exibe saldo total
+            textBoxSaldoCliente.Text = totalSaldo.ToString("N2");
+
+            // Lista IDs dos pedidos que possuem saldo
+            if (saldos.Count == 0)
+                textBoxIDSaldo.Text = "";
+            else
+                textBoxIDSaldo.Text = string.Join(", ", saldos.Select(s => s.PedidoId));
+        }
+        private void AtualizarTotalGastoCliente(int clienteId)
+        {
+            using var db = new EstruturaDataBase();
+
+            // Buscar todos os pedidos do cliente
+            var pedidosCliente = db.Pedidos
+                .Where(p => p.ClienteId == clienteId)
+                .Select(p => p.ID)
+                .ToList();
+
+            if (pedidosCliente.Count == 0)
+            {
+                textBoxTotalGasto.Text = "0,00";
+                return;
+            }
+
+            // Somar todos os pagamentos realizados desses pedidos
+            decimal totalGasto = db.Pagamentos
+                .Where(pg => pedidosCliente.Contains(pg.PedidoId) && pg.Pago == true)
+                .Sum(pg => (decimal?)pg.Valor) ?? 0;
+
+            textBoxTotalGasto.Text = totalGasto.ToString("N2");
         }
         #endregion
 
@@ -1323,10 +1372,10 @@ namespace EstruturaFesta
                     }
 
                     // Ajusta o saldo no banco apenas com a diferença
-                    var saldo = db.SaldosPorData.FirstOrDefault(s => s.ProdutoId == produtoId && s.Data.Date == dataPedido);
-                    if (saldo != null)
+                    var saldoAtual = db.SaldosPorData.FirstOrDefault(s => s.ProdutoId == produtoId && s.Data.Date == dataPedido);
+                    if (saldoAtual != null)
                     {
-                        saldo.QuantidadeReservada += diferenca;
+                        saldoAtual.QuantidadeReservada += diferenca;
                     }
                     else
                     {
@@ -1358,8 +1407,8 @@ namespace EstruturaFesta
                 // Remove produtos que foram excluídos
                 foreach (var itemRemovido in produtosExistentes)
                 {
-                    var saldo = db.SaldosPorData.FirstOrDefault(s => s.ProdutoId == itemRemovido.ProdutoId && s.Data.Date == dataPedido);
-                    if (saldo != null) saldo.QuantidadeReservada -= itemRemovido.Quantidade;
+                    var saldoRemovido = db.SaldosPorData.FirstOrDefault(s => s.ProdutoId == itemRemovido.ProdutoId && s.Data.Date == dataPedido);
+                    if (saldoRemovido != null) saldoRemovido.QuantidadeReservada -= itemRemovido.Quantidade;
                     pedido.Produtos.Remove(itemRemovido);
                 }
 
@@ -1544,6 +1593,41 @@ namespace EstruturaFesta
             }
 
             db.SaveChanges();
+
+            if (decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldo))
+            {
+                var saldoExistente = db.SaldoPedidos
+                    .FirstOrDefault(s => s.PedidoId == pedido.ID);
+
+                if (saldoExistente == null)
+                {
+                    // Pedido novo COM saldo
+                    if (saldo > 0)
+                    {
+                        db.SaldoPedidos.Add(new SaldoPedido
+                        {
+                            PedidoId = pedido.ID,
+                            ClienteId = pedido.ClienteId,
+                            Saldo = saldo
+                        });
+                    }
+                }
+                else
+                {
+                    // Atualização do pedido existente
+                    if (saldo > 0)
+                    {
+                        saldoExistente.Saldo = saldo;
+                    }
+                    else
+                    {
+                        // Saldo zerado → remover o registro
+                        db.SaldoPedidos.Remove(saldoExistente);
+                    }
+                }
+
+                db.SaveChanges();
+            }
             MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
 
