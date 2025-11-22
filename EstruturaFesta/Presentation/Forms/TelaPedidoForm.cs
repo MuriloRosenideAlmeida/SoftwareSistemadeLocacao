@@ -90,6 +90,18 @@ namespace EstruturaFesta
                 dateTimePickerEntrega.Value = pedido.DataEntrega;
                 dateTimePickerRetirada.Value = pedido.DataRetirada;
 
+                using (var db2 = new EstruturaDataBase())
+                {
+                    var perdas = db2.PerdaProdutos
+                        .Include(p => p.Produto)
+                        .Where(p => p.PedidoId == pedido.ID)
+                        .ToList();
+
+                    decimal totalQuebra = perdas.Sum(p => p.Quantidade * p.Produto.PrecoReposicao);
+
+                    textBoxTotalValorQuebra.Text = totalQuebra.ToString("N2");
+                    CarregarTooltipQuebra(perdas);
+                }
                 // Limpa e preenche o grid COMPLETO de uma vez
                 dataGridViewProdutosLocacao.Rows.Clear();
 
@@ -924,7 +936,60 @@ namespace EstruturaFesta
             // Atualiza a TextBox de saldo
             textBoxSaldoPedido.Text = saldo.ToString("N2");
         }
+        private void AtualizarTotais()
+        {
+            decimal subTotal = 0;
+            decimal acrescimo = 0;
+            decimal desconto = 0;
+            decimal total = 0;
+            decimal totalPago = 0;
+            decimal saldo = 0;
+            decimal valorQuebra = 0;
 
+            // Soma os valores dos produtos
+            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                if (row.Cells["ValorTotal"]?.Value != null &&
+                    decimal.TryParse(row.Cells["ValorTotal"].Value.ToString(), out decimal valorTotalProdutos))
+                {
+                    subTotal += valorTotalProdutos;
+                }
+            }
+
+            // Lê acrescimo, desconto e quebra
+            decimal.TryParse(textBoxAcrescimo.Text, out acrescimo);
+            decimal.TryParse(textBoxDesconto.Text, out desconto);
+            decimal.TryParse(textBoxTotalValorQuebra.Text, out valorQuebra);
+
+            // Calcula valor total
+            total = subTotal + acrescimo - desconto;
+
+            // Soma pagamentos marcados como "Pago"
+            foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                bool pago = false;
+                if (row.Cells["Pago"] is DataGridViewCheckBoxCell checkCell && checkCell.Value != null)
+                    pago = (bool)checkCell.Value;
+
+                if (pago && row.Cells["Valor"]?.Value != null &&
+                    decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valorPago))
+                {
+                    totalPago += valorPago;
+                }
+            }
+
+            // Calcula saldo
+            saldo = total - totalPago + valorQuebra;
+
+            // Atualiza as TextBox
+            textBoxSubTotal.Text = subTotal.ToString("N2");
+            textBoxValorTotal.Text = total.ToString("N2");
+            textBoxSaldoPedido.Text = saldo.ToString("N2");
+        }
         private void textBoxAcrescimo_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
@@ -936,7 +1001,27 @@ namespace EstruturaFesta
             AtualizarTotais();
 
         }
+        private void textBoxTotalValorQuebra_TextChanged(object sender, EventArgs e)
+        {
+            AtualizarTotais();
+        }
+        private void CarregarTooltipQuebra(List<PerdaProduto> perdas)
+        {
+            if (perdas == null || perdas.Count == 0)
+            {
+                toolTipQuebra.SetToolTip(textBoxTotalValorQuebra, "Nenhuma quebra registrada.");
+                return;
+            }
 
+            string texto = "";
+
+            foreach (var p in perdas)
+            {
+                texto += $"{p.Produto.Nome} – {p.Quantidade} unidade(s)\n";
+            }
+
+            toolTipQuebra.SetToolTip(textBoxTotalValorQuebra, texto.Trim());
+        }
         private void dataGridViewPagamentos_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             // Necessário para que o check seja "confirmado" logo ao clicar
@@ -975,59 +1060,6 @@ namespace EstruturaFesta
 
             // Mantém texto legível
             row.DefaultCellStyle.ForeColor = Color.Black;
-        }
-
-        private void AtualizarTotais()
-        {
-            decimal subTotal = 0;
-            decimal acrescimo = 0;
-            decimal desconto = 0;
-            decimal total = 0;
-            decimal totalPago = 0;
-            decimal saldo = 0;
-
-            // Soma os valores dos produtos
-            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
-            {
-                if (row.IsNewRow) continue;
-
-                if (row.Cells["ValorTotal"]?.Value != null &&
-                    decimal.TryParse(row.Cells["ValorTotal"].Value.ToString(), out decimal valorTotalProdutos))
-                {
-                    subTotal += valorTotalProdutos;
-                }
-            }
-
-            // Lê acrescimo e desconto
-            decimal.TryParse(textBoxAcrescimo.Text, out acrescimo);
-            decimal.TryParse(textBoxDesconto.Text, out desconto);
-
-            // Calcula valor total
-            total = subTotal + acrescimo - desconto;
-
-            // Soma pagamentos marcados como "Pago"
-            foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
-            {
-                if (row.IsNewRow) continue;
-
-                bool pago = false;
-                if (row.Cells["Pago"] is DataGridViewCheckBoxCell checkCell && checkCell.Value != null)
-                    pago = (bool)checkCell.Value;
-
-                if (pago && row.Cells["Valor"]?.Value != null &&
-                    decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valorPago))
-                {
-                    totalPago += valorPago;
-                }
-            }
-
-            // Calcula saldo
-            saldo = total - totalPago;
-
-            // Atualiza as TextBox
-            textBoxSubTotal.Text = subTotal.ToString("N2");
-            textBoxValorTotal.Text = total.ToString("N2");
-            textBoxSaldoPedido.Text = saldo.ToString("N2");
         }
 
         private void dataGridViewPagamentos_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -1345,24 +1377,38 @@ namespace EstruturaFesta
                     if (row.IsNewRow) continue;
 
                     // ========== VERIFICA SE FOI PAGO ==========
-                    bool pago = false;
-                    if (row.Cells["Pago"].Value != null && row.Cells["Pago"].Value is bool)
-                        pago = (bool)row.Cells["Pago"].Value;
+                    bool pago = row.Cells["Pago"].Value is bool b && b == true;
 
-                    if (!pago) continue;  // ✅ IGNORA SE NÃO ESTÁ MARCADO COMO PAGO
-                                          // =========================================
+                    if (!pago)
+                        continue;  // IGNORA SE NÃO FOI MARCADO
 
-                    // Pega dados do grid
-                    string forma = row.Cells["FormaPagamento"].Value?.ToString() ?? "Sem forma";
+                    // ========== FORMA DE PAGAMENTO PADRÃO ==========
+                    string forma = row.Cells["FormaPagamento"].Value?.ToString();
 
-                    DateTime dataPag = DateTime.Today;
-                    if (row.Cells["DataPagamento"].Value != null)
-                        DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out dataPag);
+                    if (string.IsNullOrWhiteSpace(forma))
+                    {
+                        forma = "Dinheiro";                               // define valor padrão
+                        row.Cells["FormaPagamento"].Value = "Dinheiro";   // mostra no grid
+                    }
 
-                    decimal valor = 0;
-                    decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out valor);
+                    // ========== VERIFICA DATA OBRIGATÓRIA ==========
+                    if (row.Cells["DataPagamento"].Value == null ||
+                        !DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out DateTime dataPag))
+                    {
+                        MessageBox.Show("Informe a DATA do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // Para o salvamento inteiro
+                    }
 
-                    // Verifica se é pagamento existente ou novo
+                    // ========== VERIFICA VALOR OBRIGATÓRIO ==========
+                    if (row.Cells["Valor"].Value == null ||
+                        !decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valor) ||
+                        valor <= 0)
+                    {
+                        MessageBox.Show("Informe o VALOR do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // ========== VERIFICA SE É EXISTENTE OU NOVO ==========
                     int pagamentoId = 0;
                     if (row.Cells["PagamentoId"].Value != null)
                         int.TryParse(row.Cells["PagamentoId"].Value.ToString(), out pagamentoId);
@@ -1375,7 +1421,8 @@ namespace EstruturaFesta
                             pagExistente.FormaPagamento = forma;
                             pagExistente.DataPagamento = dataPag;
                             pagExistente.Valor = valor;
-                            pagExistente.Pago = true;  // ✅ Sempre true, pois só salva se marcou
+                            pagExistente.Pago = true;
+
                             idsMantidos.Add(pagamentoId);
                         }
                     }
@@ -1387,7 +1434,7 @@ namespace EstruturaFesta
                             FormaPagamento = forma,
                             DataPagamento = dataPag,
                             Valor = valor,
-                            Pago = true  // ✅ Sempre true
+                            Pago = true
                         });
                     }
                 }
@@ -1451,29 +1498,44 @@ namespace EstruturaFesta
                     if (row.IsNewRow) continue;
 
                     // ========== VERIFICA SE FOI PAGO ==========
-                    bool pago = false;
-                    if (row.Cells["Pago"].Value != null && row.Cells["Pago"].Value is bool)
-                        pago = (bool)row.Cells["Pago"].Value;
+                    bool pago = row.Cells["Pago"].Value is bool b && b == true;
 
-                    if (!pago) continue;  // ✅ IGNORA SE NÃO ESTÁ MARCADO COMO PAGO
-                                          // =========================================
+                    if (!pago)
+                        continue;
 
-                    string forma = row.Cells["FormaPagamento"].Value?.ToString() ?? "Sem forma";
+                    // ========== FORMA DE PAGAMENTO PADRÃO ==========
+                    string forma = row.Cells["FormaPagamento"].Value?.ToString();
+                    if (string.IsNullOrWhiteSpace(forma))
+                    {
+                        forma = "Dinheiro";
+                        row.Cells["FormaPagamento"].Value = "Dinheiro";
+                    }
 
-                    DateTime dataPag = DateTime.Today;
-                    if (row.Cells["DataPagamento"].Value != null)
-                        DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out dataPag);
+                    // ========== VERIFICA DATA OBRIGATÓRIA ==========
+                    if (row.Cells["DataPagamento"].Value == null ||
+                        !DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out DateTime dataPag))
+                    {
+                        MessageBox.Show("Informe a DATA do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
-                    decimal valor = 0;
-                    decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out valor);
+                    // ========== VERIFICA VALOR OBRIGATÓRIO ==========
+                    if (row.Cells["Valor"].Value == null ||
+                        !decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valor) ||
+                        valor <= 0)
+                    {
+                        MessageBox.Show("Informe o VALOR do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
+                    // ========== CRIA PAGAMENTO NOVO ==========
                     var pagamento = new Pagamento
                     {
                         Pedido = pedido,
                         FormaPagamento = forma,
                         DataPagamento = dataPag,
                         Valor = valor,
-                        Pago = true  // ✅ Sempre true
+                        Pago = true
                     };
 
                     db.Pagamentos.Add(pagamento);
@@ -1536,5 +1598,6 @@ namespace EstruturaFesta
         }
         #endregion
 
+       
     }
 }
