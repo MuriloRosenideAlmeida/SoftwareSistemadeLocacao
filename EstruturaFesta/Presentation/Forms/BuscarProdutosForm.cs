@@ -1,5 +1,5 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
-using EstruturaFesta.Infrastructure.Data;
+using EstruturaFesta.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,8 +16,10 @@ namespace EstruturaFesta
 {
     public partial class BuscarProdutosForm : Form
     {
-        public BuscarProdutosForm()
+        private readonly EstruturaDataBase _db;
+        public BuscarProdutosForm(EstruturaDataBase db)
         {
+            _db = db;
             InitializeComponent();
             dataGridViewFiltroProdutos.AutoGenerateColumns = false;
         }
@@ -25,9 +27,9 @@ namespace EstruturaFesta
 
         private void buttonFiltrar_Click(object sender, EventArgs e)
         {
-            using (var context = new EstruturaDataBase())
-            {
-                var query = context.Produtos.AsQueryable();
+            
+            
+                var query = _db.Produtos.AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(textBoxFiltroNomeProduto.Text))
                 {
@@ -67,7 +69,7 @@ namespace EstruturaFesta
                 })
                 .ToList();
                 dataGridViewFiltroProdutos.DataSource = resultado;
-            }
+            
         }
 
         private void dataGridViewFiltroProdutos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)

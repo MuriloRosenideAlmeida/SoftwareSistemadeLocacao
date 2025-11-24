@@ -1,5 +1,5 @@
-﻿using EstruturaFesta.Domain.Entities;
-using EstruturaFesta.Infrastructure.Data;
+﻿using EstruturaFesta.Data.Entities;
+using EstruturaFesta.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,19 +15,21 @@ namespace EstruturaFesta.Presentation.Forms
 {
     public partial class FiltroClienteForm : Form
     {
+        private readonly EstruturaDataBase _db;
         private bool ordenacaoAscendente = true;
-        public FiltroClienteForm()
+        public FiltroClienteForm(EstruturaDataBase db)
         {
             InitializeComponent();
+            _db = db;
         }
         private void FiltrarClientes()
         {
             string filtroNome = textBoxNome.Text.Trim();
             string filtroDocumento = textBoxDocumentos.Text.Trim();
 
-            using (var db = new EstruturaDataBase())
-            {
-                var query = db.Clientes
+            
+            
+                var query = _db.Clientes
                     .Select(c => new
                     {
                         c.ID,
@@ -47,7 +49,7 @@ namespace EstruturaFesta.Presentation.Forms
 
                 dataGridViewFiltroClientes.AutoGenerateColumns = false;
                 dataGridViewFiltroClientes.DataSource = query.ToList();
-            }
+            
         }
 
         private void buttonFiltro_Click(object sender, EventArgs e)
@@ -64,15 +66,15 @@ namespace EstruturaFesta.Presentation.Forms
 
             if (clienteSelecionado == null) return;
 
-            using var db = new EstruturaDataBase();
+            
 
-            var clienteDoBanco = db.Clientes
+            var clienteDoBanco = _db.Clientes
                 .Include(c => c.Contatos)
                 .FirstOrDefault(c => c.ID == clienteSelecionado.ID);
 
             if (clienteDoBanco == null) return;
 
-            using (var formCadastro = new CadastroClientesForm(clienteDoBanco))
+            using (var formCadastro = new CadastroClientesForm(_db, clienteDoBanco))
                 formCadastro.ShowDialog();
 
             FiltrarClientes();

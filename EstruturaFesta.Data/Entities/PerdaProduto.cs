@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EstruturaFesta.Domain.Entities
+namespace EstruturaFesta.Data.Entities
 {
-    public class SaldoPedido
+    public class PerdaProduto
     {
         public int Id { get; set; }
+
+        public int ProdutoId { get; set; }
+        public Produto Produto { get; set; }
 
         public int PedidoId { get; set; }
         public Pedido Pedido { get; set; }
 
-        public int ClienteId { get; set; }
-        public Cliente Cliente { get; set; }
-
-        public decimal Saldo { get; set; }
+        public int Quantidade { get; set; }
+        public DateTime Data { get; set; }
     }
 }

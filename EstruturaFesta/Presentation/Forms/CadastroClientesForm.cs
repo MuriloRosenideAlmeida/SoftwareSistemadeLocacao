@@ -1,6 +1,6 @@
 ﻿using ViaCep;
-using EstruturaFesta.Infrastructure.Data;
-using EstruturaFesta.Domain.Entities;
+using EstruturaFesta.Data;
+using EstruturaFesta.Data.Entities;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,15 +8,17 @@ namespace EstruturaFesta
 {
     public partial class CadastroClientesForm : Form
     {
+        private readonly EstruturaDataBase _db;
+
         private readonly ViaCepClient _viaCepClient;
         private Cliente _cliente;
         private bool _isEditMode;
         private BindingList<Contato> _contatos;
 
-        public CadastroClientesForm(Cliente cliente = null)
+        public CadastroClientesForm(EstruturaDataBase db, Cliente cliente = null)
         {
             InitializeComponent();
-
+            _db = db;
             var httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri("https://viacep.com.br/ws/");
             _viaCepClient = new ViaCepClient(httpClient);
@@ -125,8 +127,8 @@ namespace EstruturaFesta
         {
             if (_cliente == null) return;
 
-            using var context = new EstruturaDataBase();
-            _cliente = context.Clientes
+            
+            _cliente = _db.Clientes
                 .Include(c => c.Contatos)
                 .FirstOrDefault(c => c.ID == _cliente.ID);
 
@@ -243,17 +245,17 @@ namespace EstruturaFesta
         {
             if (!ValidarCampos()) return;
 
-            using var context = new EstruturaDataBase();
+            
 
             if (!_isEditMode)
             {
                 _cliente = radioButtonPF.Checked ? (Cliente)new ClientePF() : new ClientePJ();
-                context.Clientes.Add(_cliente);
+                _db.Clientes.Add(_cliente);
             }
             else
             {
-                context.Clientes.Attach(_cliente);
-                context.Entry(_cliente).State = EntityState.Modified;
+                _db.Clientes.Attach(_cliente);
+                _db.Entry(_cliente).State = EntityState.Modified;
             }
 
             PreencherCliente(_cliente);
@@ -281,9 +283,9 @@ namespace EstruturaFesta
             // Remove contatos excluídos
             var idsAtuais = _contatos.Select(c => c.ID).ToList();
             foreach (var c in _cliente.Contatos.Where(c => c.ID != 0 && !idsAtuais.Contains(c.ID)).ToList())
-                context.Contatos.Remove(c);
+                _db.Contatos.Remove(c);
 
-            context.SaveChanges();
+            _db.SaveChanges();
 
             MessageBox.Show(_isEditMode ? "Cliente atualizado com sucesso!" : "Cliente adicionado com sucesso!",
                 "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);

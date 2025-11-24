@@ -1,5 +1,5 @@
-﻿using EstruturaFesta.Domain.Entities;
-using EstruturaFesta.Infrastructure.Data;
+﻿using EstruturaFesta.Data.Entities;
+using EstruturaFesta.Data;
 using System.Data;
 
 
@@ -8,17 +8,21 @@ namespace EstruturaFesta
     public partial class CadastroProdutosForm : Form
     {
         private Produto _produto;
-        public CadastroProdutosForm()
+        private readonly EstruturaDataBase _db;
+        public CadastroProdutosForm(EstruturaDataBase db, Produto produto = null)
         {
             InitializeComponent();
+
+            _db = db;
+
             textBoxPrecoLocacao.Text = "R$";
             textBoxPrecoReposicao.Text = "R$";
             textBoxCompra.Text = "R$";
-        }
-        public CadastroProdutosForm(Produto produto) : this()
-        {
+
             _produto = produto;
-            PreencherCampos();
+
+            if (_produto != null)
+                PreencherCampos();
         }
         private void PreencherCampos()
         {
@@ -81,16 +85,16 @@ namespace EstruturaFesta
                 textBoxNome.Focus(); // Redefine o foco para a TextBox
                 return;
             }
-            using (var context = new EstruturaDataBase())
-            {
+           
+            
                 if (_produto == null) // Novo produto
                 {
                     _produto = new Produto();
-                    context.Produtos.Add(_produto);
+                    _db.Produtos.Add(_produto);
                 }
                 else
                 {
-                    context.Produtos.Attach(_produto);
+                    _db.Produtos.Attach(_produto);
                 }
 
                 // Atualiza os dados do produto
@@ -104,13 +108,13 @@ namespace EstruturaFesta
                 _produto.PrecoReposicao = Convert.ToDecimal(textBoxPrecoReposicao.Text.Replace("R$", "").Trim());
                 _produto.DataCompra = dateTimePicker1.Value;
 
-                context.SaveChanges();
+                _db.SaveChanges();
 
                 string mensagem = _produto.ID == 0 ? "Produto adicionado com sucesso!" : "Produto atualizado com sucesso!";
                 MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 this.Close();
-            }
+            
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace EstruturaFesta.Domain.Entities
+﻿namespace EstruturaFesta.Data.Entities
 {
     public class Produto
     {
@@ -10,7 +10,7 @@
         public decimal PrecoLocacao
         {
             get => Math.Round(_precoLocacao, 2);
-            set => _precoLocacao = Math.Round(value, 2); 
+            set => _precoLocacao = Math.Round(value, 2);
         }
         public string Especificacao { get; set; }
         public string Material { get; set; }
@@ -26,11 +26,10 @@
         private decimal _precoReposicao;
         public decimal PrecoReposicao
         {
-            get => Math.Round(_precoReposicao,2);
+            get => Math.Round(_precoReposicao, 2);
             set => _precoReposicao = Math.Round(value, 2);
         }
         public DateTime DataCompra { get; set; }
-        public List<Reserva> Reserva { get; set; }
 
         public Produto()
         {

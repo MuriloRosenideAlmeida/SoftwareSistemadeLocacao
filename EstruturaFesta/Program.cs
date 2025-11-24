@@ -1,24 +1,46 @@
-﻿using EstruturaFesta.Infrastructure.Data;
+﻿using EstruturaFesta.Data;
 using EstruturaFesta.Presentation.Forms;
-using MySql.Data.MySqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace EstruturaFesta
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            //Application.Run(new MenuPrincipal());
-            Application.Run(new MenuForm());
 
+            // 1️⃣ Cria o Host (container de dependências)
+            ApplicationConfiguration.Initialize();
+
+            var services = new ServiceCollection();
+
+            // DbContext
+            services.AddDbContext<EstruturaDataBase>(options =>
+            {
+                options.UseMySql(
+                    "server=localhost;database=DataBaseEstrutura;user=root;password=Modoxclasher2004!",
+                    new MySqlServerVersion(new Version(8, 0, 40)));
+            });
+
+            // Forms
+            services.AddTransient<MenuForm>();
+            services.AddTransient<TelaPedidoForm>();
+            services.AddTransient<BuscarProdutosForm>();
+            services.AddTransient<CadastroProdutosForm>();
+            services.AddTransient<CadastroClientesForm>();
+            services.AddTransient<FiltroClienteForm>();
+            services.AddTransient<FiltroClientePedidoForm>();
+            services.AddTransient<FiltroPedidosForm>();
+            services.AddTransient<FiltroProdutoForm>();
+            services.AddTransient<QuebraProdutoForm>();
+
+            ServiceLocator.Provider = services.BuildServiceProvider();
+
+            Application.Run(ServiceLocator.Provider.GetRequiredService<MenuForm>());
         }
-
     }
 }

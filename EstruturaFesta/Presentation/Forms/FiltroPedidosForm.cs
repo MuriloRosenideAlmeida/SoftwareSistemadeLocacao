@@ -1,5 +1,6 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
-using EstruturaFesta.Infrastructure.Data;
+using EstruturaFesta.Data;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,11 +15,13 @@ namespace EstruturaFesta
 {
     public partial class FiltroPedidosForm : Form
     {
-        public FiltroPedidosForm()
+        private readonly EstruturaDataBase _db;
+        public FiltroPedidosForm(EstruturaDataBase db)
         {
             InitializeComponent();
             ConfigurarEstiloDataGrid();
             dataGridViewPedidos.RowPostPaint += dataGridViewPedidos_RowPostPaint;
+            _db = db;
         }
 
         private void FiltroPedidos_Load(object sender, EventArgs e)
@@ -33,9 +36,9 @@ namespace EstruturaFesta
             DateTime dataFinal = dateTimePickerFinal.Value.Date;
             DateTime dataFinalInclusiva = dataFinal.AddDays(1);
 
-            using var db = new EstruturaDataBase();
+            
 
-            var pedidos = db.Pedidos
+            var pedidos = _db.Pedidos
                 .Where(p => p.DataPedido >= dataInicial && p.DataPedido < dataFinalInclusiva)
                 .Select(p => new PedidoFiltroDTO
                 {
@@ -87,17 +90,21 @@ namespace EstruturaFesta
 
         private void dataGridViewPedidos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return; // Ignora cabeçalho
+            if (e.RowIndex < 0) return;
 
             var row = dataGridViewPedidos.Rows[e.RowIndex];
-
             if (row.Cells["ID"].Value == null) return;
 
             int pedidoId = Convert.ToInt32(row.Cells["ID"].Value);
 
-            // Abre o TelaPedidoForm passando o pedidoId
-            var telaPedido = new TelaPedidoForm(pedidoId);
+            // 🔥 Resolve via DI
+            var telaPedido = ServiceLocator.Provider.GetRequiredService<TelaPedidoForm>();
+
+            // 🔥 Passa o ID
+            telaPedido.CarregarPedidoPorId(pedidoId);
+
             telaPedido.ShowDialog();
+
             bntBuscar_Click(null, null);
         }
 

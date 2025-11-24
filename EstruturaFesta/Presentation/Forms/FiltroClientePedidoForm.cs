@@ -1,24 +1,24 @@
-﻿using EstruturaFesta.Infrastructure.Data;
-using EstruturaFesta.Domain.Entities;
+﻿using EstruturaFesta.Data;
+using EstruturaFesta.Data.Entities;
 
 
 namespace EstruturaFesta
 {
-    public partial class FormBuscarClientes : Form
+    public partial class FiltroClientePedidoForm : Form
     {
-
-        public FormBuscarClientes()
+        private readonly EstruturaDataBase _db;
+        public FiltroClientePedidoForm(EstruturaDataBase db)
         {
             InitializeComponent();
+            _db = db;
             dataGridView1.AutoGenerateColumns = false;
-            //WindowState = FormWindowState.Maximized;
         }
        
         private void FormDataGridView_Load(object sender, EventArgs e)
         {
-            using (var context = new EstruturaDataBase())
-            {
-                var clientes = context.Clientes
+
+
+            var clientes = _db.Clientes
        .Select(c => new
        {
            c.ID,
@@ -30,7 +30,7 @@ namespace EstruturaFesta
 
                 // Vincula a lista ao DataGridView
                 dataGridView1.DataSource = clientes;
-            }
+            
         }
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -62,15 +62,15 @@ namespace EstruturaFesta
 
         private void buttonFiltro_Click(object sender, EventArgs e)
         {
-            using (var context = new EstruturaDataBase())
-            {
+            
+            
                 // Lê o texto digitado nas TextBox
                 string filtroID = textBoxID.Text.Trim();
                 string filtroNome = textBoxNome.Text.Trim();
                 string filtroDocumento = textBoxDocumento.Text.Trim();
                 string filtroFantasia = textBoxNomeFantasia.Text.Trim();
 
-                var query = context.Clientes
+                var query = _db.Clientes
                     .Select(c => new
                     {
                         c.ID,
@@ -113,7 +113,7 @@ namespace EstruturaFesta
 
                 // Preenche o DataGrid
                 dataGridView1.DataSource = query.ToList();
-            }
+            
         }
     }
 }

@@ -1,16 +1,18 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
-using EstruturaFesta.Domain.Entities;
-using EstruturaFesta.Infrastructure.Data;
+using EstruturaFesta.Data.Entities;
+using EstruturaFesta.Data;
 using EstruturaFesta.Presentation.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EstruturaFesta
 {
     public partial class TelaPedidoForm : Form
     {
+        private readonly EstruturaDataBase _db;
         private Button botaoBuscarProduto;
         private int linhaAtualComBotao = 0;
         private bool baixaRealizada = false;
@@ -19,9 +21,10 @@ namespace EstruturaFesta
         private Dictionary<int, int> _estoqueOriginal = new();
 
         #region Contrutores e Inicializadores do Form
-        public TelaPedidoForm()
+        public TelaPedidoForm(EstruturaDataBase db)
         {
             InitializeComponent();
+            _db = db;
             ConfigurarBotaoBuscaProduto();
 
             dataGridViewProdutosLocacao.Resize += (s, e) => AtualizarPosicaoBotao();
@@ -30,9 +33,10 @@ namespace EstruturaFesta
             this.Shown += TelaPedido_Shown;
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
             dataGridViewProdutosLocacao.StandardTab = false;
+            
         }
 
-        public TelaPedidoForm(int pedidoId) : this()
+        public TelaPedidoForm(EstruturaDataBase db, int pedidoId) : this(db)
         {
             _pedidoId = pedidoId;
             CarregarPedido(pedidoId);
@@ -41,9 +45,9 @@ namespace EstruturaFesta
 
         private void CarregarPedido(int pedidoId)
         {
-            using var db = new EstruturaDataBase();
+            
 
-            var pedido = db.Pedidos
+            var pedido = _db.Pedidos
                 .Include(p => p.Produtos)
                     .ThenInclude(pp => pp.Produto)
                 .Include(p => p.Cliente)
@@ -96,9 +100,9 @@ namespace EstruturaFesta
                 dateTimePickerEntrega.Value = pedido.DataEntrega;
                 dateTimePickerRetirada.Value = pedido.DataRetirada;
 
-                using (var db2 = new EstruturaDataBase())
-                {
-                    var perdas = db2.PerdaProdutos
+                
+                
+                    var perdas = _db.PerdaProdutos
                         .Include(p => p.Produto)
                         .Where(p => p.PedidoId == pedido.ID)
                         .ToList();
@@ -107,7 +111,7 @@ namespace EstruturaFesta
 
                     textBoxTotalValorQuebra.Text = totalQuebra.ToString("N2");
                     CarregarTooltipQuebra(perdas);
-                }
+                
                 // Limpa e preenche o grid COMPLETO de uma vez
                 dataGridViewProdutosLocacao.Rows.Clear();
 
@@ -162,13 +166,19 @@ namespace EstruturaFesta
             GarantirLinhaInicial();
             AtualizarPosicaoBotao();
         }
+        public void CarregarPedidoPorId(int pedidoId)
+        {
+            _pedidoId = pedidoId; 
+            CarregarPedido(pedidoId);      
+        }
         #endregion
 
         #region Parte do cliente
 
         private void bntBuscarCliente_Click(object sender, EventArgs e)
         {
-            new FormBuscarClientes().ShowDialog();
+            var form = ServiceLocator.Provider.GetRequiredService<FiltroClientePedidoForm>();
+            form.ShowDialog();
         }
         //Pega as informações necessarias do cliente e preenche as textbox
         public void PreencherCamposCliente(int id, string nome, string documento)
@@ -180,8 +190,8 @@ namespace EstruturaFesta
             dataGridViewTelefones.Rows.Clear();
 
             // Buscar contatos do cliente
-            using var db = new EstruturaDataBase();
-            var contatos = db.Contatos
+            
+            var contatos = _db.Contatos
                              .Where(c => c.ClienteID == id)
                              .OrderBy(c => c.ID)
                              .ToList();
@@ -204,7 +214,7 @@ namespace EstruturaFesta
 
             int clienteId = int.Parse(textBoxIDCliente.Text);
 
-            using var db = new EstruturaDataBase();
+            var db = _db;
             var cliente = db.Clientes
                             .Include(c => c.Contatos)
                             .FirstOrDefault(c => c.ID == clienteId);
@@ -215,7 +225,7 @@ namespace EstruturaFesta
                 return;
             }
 
-            using (var formCliente = new CadastroClientesForm(cliente))
+            using (var formCliente = new CadastroClientesForm(db, cliente))
             {
                 if (formCliente.ShowDialog() == DialogResult.OK)
                 {
@@ -305,7 +315,7 @@ namespace EstruturaFesta
             if (!int.TryParse(textBoxIDCliente.Text, out int clienteId))
                 return;
 
-            using var db = new EstruturaDataBase();
+            var db = _db;
 
             // Busca todos os saldos > 0 desse cliente
             var saldos = db.SaldoPedidos
@@ -326,7 +336,7 @@ namespace EstruturaFesta
         }
         private void AtualizarTotalGastoCliente(int clienteId)
         {
-            using var db = new EstruturaDataBase();
+            var db = _db;
 
             // Buscar todos os pedidos do cliente
             var pedidosCliente = db.Pedidos
@@ -460,7 +470,7 @@ namespace EstruturaFesta
 
         private void AbrirBuscaProduto(int linha)
         {
-            using var buscaForm = new BuscarProdutosForm();
+            using var buscaForm = new BuscarProdutosForm(_db);
             if (buscaForm.ShowDialog() == DialogResult.OK)
             {
                 var produto = buscaForm.ProdutoSelecionado;
@@ -570,10 +580,10 @@ namespace EstruturaFesta
         //Metodo que centraliza a logica de preencher o produto e converte tudo para DTO
         private void PreencherProdutoNoDataGridView(int produtoId, int rowIndex)
         {
-            using (var db = new EstruturaDataBase())
-            {
+            
+            
                 // Busca e converte para DTO 
-                var produtoDTO = db.Produtos
+                var produtoDTO = _db.Produtos
                     .Where(p => p.ID == produtoId)
                     .Select(p => new ProdutoDTO
                     {
@@ -618,13 +628,13 @@ namespace EstruturaFesta
                     row.Cells["Produto"].Value = null;
                     return;
                 }
-            }
+            
         }
 
         // Método para calcular o estoque disponível considerando as reservas da data
         private int CalcularEstoqueDisponivel(int produtoId, DateTime data)
         {
-            using var db = new EstruturaDataBase();
+            var db = _db;
 
             // Busca o estoque total do produto diretamente do banco
             int estoqueTotal = db.Produtos
@@ -863,7 +873,7 @@ namespace EstruturaFesta
             if (!_pedidoId.HasValue)
                 return;
 
-            using var db = new EstruturaDataBase();
+            var db = _db;
 
             var pagamentos = db.Pagamentos
                 .Where(p => p.PedidoId == _pedidoId.Value)
@@ -922,18 +932,18 @@ namespace EstruturaFesta
 
         private void AtualizarSaldoDoPedido()
         {
-            using (var db = new EstruturaDataBase())
-            {
+            
+            
                 decimal total = CalcularTotalPedido();
 
-                decimal totalPago = db.Pagamentos
+                decimal totalPago = _db.Pagamentos
                     .Where(p => p.PedidoId == _pedidoId.Value)
                     .Sum(p => (decimal?)p.Valor) ?? 0;
 
                 decimal saldo = total - totalPago;
 
                 textBoxSaldoPedido.Text = saldo.ToString("N2");
-            }
+            
         }
 
         private void AtualizarSaldo()
@@ -1319,7 +1329,7 @@ namespace EstruturaFesta
             var dataEntrega = dateTimePickerEntrega.Value.Date;
             var dataRetirada = dateTimePickerRetirada.Value.Date;
 
-            using var db = new EstruturaDataBase();
+            var db = _db;
             Pedido pedido;
 
             //========== EDITAR PEDIDO EXISTENTE ==========
@@ -1643,7 +1653,7 @@ namespace EstruturaFesta
                 return;
             }
 
-            using var db = new EstruturaDataBase();
+            var db = _db;
 
             // Verifica se já houve baixa para este pedido
             bool baixaJaRealizada = db.PerdaProdutos.Any(p => p.PedidoId == _pedidoId);
@@ -1671,7 +1681,7 @@ namespace EstruturaFesta
         QuantidadeQuebrada = 0
     }).ToList();
 
-            using var formQuebra = new QuebraProdutoForm(produtosParaQuebra, _pedidoId.Value);
+            using var formQuebra = new QuebraProdutoForm(db, produtosParaQuebra, _pedidoId.Value);
             formQuebra.ShowDialog();
 
             // Se o usuário clicou OK no form, marca que houve baixa

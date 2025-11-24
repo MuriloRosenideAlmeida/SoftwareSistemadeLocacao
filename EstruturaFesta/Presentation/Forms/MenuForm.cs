@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 using FontAwesome.Sharp;
+using Microsoft.Extensions.DependencyInjection;
 using Color = System.Drawing.Color;
 
 namespace EstruturaFesta.Presentation.Forms
@@ -86,37 +87,37 @@ namespace EstruturaFesta.Presentation.Forms
         private void bntPedido_Click(object sender, EventArgs e)
         {
             BotaoAtivado(sender, CoresRGB.cor1);
-            AbrirFormFilho(new TelaPedidoForm());
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<TelaPedidoForm>());
         }
 
         private void bntFiltrarPedido_Click(object sender, EventArgs e)
         {
             BotaoAtivado(sender, CoresRGB.cor2);
-            AbrirFormFilho(new FiltroPedidosForm());
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<FiltroPedidosForm>());
         }
 
         private void bntCadastrarCliente_Click(object sender, EventArgs e)
         {
             BotaoAtivado(sender, CoresRGB.cor3);
-            AbrirFormFilho(new CadastroClientesForm());
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<CadastroClientesForm>());
         }
 
         private void bntFiltrarCliente_Click(object sender, EventArgs e)
         {
             BotaoAtivado(sender, CoresRGB.cor4);
-            AbrirFormFilho(new FiltroClienteForm());
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<FiltroClienteForm>());
         }
 
         private void bntCadastrarProduto_Click(object sender, EventArgs e)
         {
             BotaoAtivado(sender, CoresRGB.cor5);
-            AbrirFormFilho(new CadastroProdutosForm());
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<CadastroProdutosForm>());
         }
 
         private void bntFiltrarProduto_Click(object sender, EventArgs e)
         {
             BotaoAtivado(sender, CoresRGB.cor6);
-            AbrirFormFilho(new FiltroProdutoForm());
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<FiltroProdutoForm>());
         }
 
         private void bntLogo_Click(object sender, EventArgs e)

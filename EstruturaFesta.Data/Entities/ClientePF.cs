@@ -1,4 +1,4 @@
-﻿namespace EstruturaFesta.Domain.Entities
+﻿namespace EstruturaFesta.Data.Entities
 {
     public class ClientePF : Cliente
     {

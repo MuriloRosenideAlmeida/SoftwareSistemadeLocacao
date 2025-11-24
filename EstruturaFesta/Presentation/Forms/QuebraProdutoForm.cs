@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using EstruturaFesta.Domain.Entities; 
-using EstruturaFesta.Infrastructure.Data; 
+using EstruturaFesta.Data.Entities; 
+using EstruturaFesta.Data; 
 
 namespace EstruturaFesta.Presentation.Forms
 {
     public partial class QuebraProdutoForm : Form
     {
+        private readonly EstruturaDataBase _db;
         private int _pedidoId;
         public List<ProdutoQuebra> ProdutosQuebra { get; private set; }
         public decimal TotalValorQuebra
@@ -25,7 +26,7 @@ namespace EstruturaFesta.Presentation.Forms
                 return 0;
             }
         }
-        public QuebraProdutoForm(List<ProdutoQuebra> produtos, int pedidoId)
+        public QuebraProdutoForm(EstruturaDataBase db, List<ProdutoQuebra> produtos, int pedidoId)
         {
             InitializeComponent();
             ProdutosQuebra = produtos;
@@ -148,15 +149,15 @@ namespace EstruturaFesta.Presentation.Forms
                 return; // Cancela
 
             // Salva no banco
-            using (var context = new EstruturaDataBase())
-            {
+            
+            
                 foreach (var item in produtosParaBaixa)
                 {
-                    var produtoDb = context.Produtos.Find(item.ProdutoId);
+                    var produtoDb = _db.Produtos.Find(item.ProdutoId);
                     if (produtoDb != null)
                         produtoDb.Quantidade -= item.QuantidadeQuebrada;
 
-                    context.PerdaProdutos.Add(new PerdaProduto
+                    _db.PerdaProdutos.Add(new PerdaProduto
                     {
                         ProdutoId = item.ProdutoId,
                         Quantidade = item.QuantidadeQuebrada,
@@ -164,8 +165,8 @@ namespace EstruturaFesta.Presentation.Forms
                         PedidoId = _pedidoId // vincula a baixa ao pedido
                     });
                 }
-                context.SaveChanges();
-            }
+                _db.SaveChanges();
+            
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

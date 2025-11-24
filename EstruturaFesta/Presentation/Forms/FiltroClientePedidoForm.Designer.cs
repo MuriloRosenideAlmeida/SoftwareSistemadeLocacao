@@ -1,6 +1,6 @@
 ﻿namespace EstruturaFesta
 {
-    partial class FormBuscarClientes
+    partial class FiltroClientePedidoForm
     {
         /// <summary>
         /// Required designer variable.
@@ -179,14 +179,14 @@
             buttonFiltro.UseVisualStyleBackColor = true;
             buttonFiltro.Click += buttonFiltro_Click;
             // 
-            // FormBuscarClientes
+            // FiltroClientePedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1067, 450);
             Controls.Add(dataGridView1);
             Controls.Add(panel1);
-            Name = "FormBuscarClientes";
+            Name = "FiltroClientePedidoForm";
             Text = "Filtro de Clientes";
             Load += FormDataGridView_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();

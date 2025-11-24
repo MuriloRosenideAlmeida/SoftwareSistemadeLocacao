@@ -1,5 +1,5 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
-using EstruturaFesta.Infrastructure.Data;
+using EstruturaFesta.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,10 +15,12 @@ namespace EstruturaFesta.Presentation.Forms
 {
     public partial class FiltroProdutoForm : Form
     {
-        public FiltroProdutoForm()
+        private readonly EstruturaDataBase _db;
+        public FiltroProdutoForm(EstruturaDataBase db)
         {
             InitializeComponent();
             dataGridViewFiltroProdutos.AutoGenerateColumns = false;
+            _db = db;
         }
 
         private void buttonFiltrar_Click(object sender, EventArgs e)
@@ -27,9 +29,9 @@ namespace EstruturaFesta.Presentation.Forms
         }
         private void CarregarProdutos()
         {
-            using (var context = new EstruturaDataBase())
-            {
-                var query = context.Produtos.AsQueryable();
+            
+            
+                var query = _db.Produtos.AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(textBoxFiltroNomeProduto.Text))
                 {
@@ -71,7 +73,7 @@ namespace EstruturaFesta.Presentation.Forms
 
                 dataGridViewFiltroProdutos.AutoGenerateColumns = false;
                 dataGridViewFiltroProdutos.DataSource = resultado;
-            }
+            
         }
 
         private void dataGridViewFiltroProdutos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -80,13 +82,13 @@ namespace EstruturaFesta.Presentation.Forms
             {
                 int produtoId = (int)dataGridViewFiltroProdutos.Rows[e.RowIndex].Cells["ProdutoId"].Value;
 
-                using (var context = new EstruturaDataBase())
-                {
-                    var produto = context.Produtos.FirstOrDefault(p => p.ID == produtoId);
+              
+                
+                    var produto = _db.Produtos.FirstOrDefault(p => p.ID == produtoId);
 
                     if (produto != null)
                     {
-                        using (var form = new CadastroProdutosForm(produto))
+                        using (var form = new CadastroProdutosForm(_db, produto))
                         {
                             if (form.ShowDialog() == DialogResult.OK) ;
                             {
@@ -94,7 +96,7 @@ namespace EstruturaFesta.Presentation.Forms
                             }
                         }
                     }
-                }
+                
             }
         }
 

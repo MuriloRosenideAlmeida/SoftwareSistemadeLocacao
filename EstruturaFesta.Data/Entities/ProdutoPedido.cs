@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace EstruturaFesta.Domain.Entities
+namespace EstruturaFesta.Data.Entities
 {
     public class ProdutoPedido
     {
