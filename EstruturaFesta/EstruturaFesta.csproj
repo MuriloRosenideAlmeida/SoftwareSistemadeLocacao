@@ -12,8 +12,8 @@
   <ItemGroup>
     <PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="QuestPDF" Version="2025.7.4" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="ViaCep" Version="4.1.511" />
   </ItemGroup>

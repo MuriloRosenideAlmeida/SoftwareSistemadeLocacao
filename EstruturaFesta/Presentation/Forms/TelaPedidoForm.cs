@@ -7,6 +7,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
+using EstruturaFesta.Models;
+using EstruturaFesta.Services;
 
 namespace EstruturaFesta
 {
@@ -1305,10 +1307,213 @@ namespace EstruturaFesta
         }
 
         #endregion
+        #region Impressão de Pedido
 
-        #region Botoes Finais
-        //Logica do botão para finalizar um pedido
-        private void buttonFinalizarPedido_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Coleta todos os dados do formulário e monta o objeto para impressão
+        /// </summary>
+        private DadosPedidoImpressao ObterDadosParaImpressao()
+        {
+            var dados = new DadosPedidoImpressao
+            {
+                // ===== DADOS DO PEDIDO =====
+                NumeroPedido = _pedidoId ?? 0, // 0 se for pedido novo
+                DataPedido = dateTimePickerDataPedido.Value,
+                DataEntrega = dateTimePickerEntrega.Value,
+                DataRetirada = dateTimePickerRetirada.Value,
+                Observacoes = textBoxDescricao.Text,
+
+                // ===== DADOS DO CLIENTE =====
+                ClienteId = int.TryParse(textBoxIDCliente.Text, out int cliId) ? cliId : 0,
+                NomeCliente = textBoxNomeCliente.Text,
+                DocumentoCliente = textBoxDocumentoCliente.Text,
+                ContatoNome = textBoxContato.Text,
+                ContatoNumero = maskedTextBoxNumeroContato.Text,
+
+                // ===== VALORES =====
+                SubTotal = decimal.TryParse(textBoxSubTotal.Text, out decimal sub) ? sub : 0,
+                Acrescimo = decimal.TryParse(textBoxAcrescimo.Text, out decimal acr) ? acr : 0,
+                Desconto = decimal.TryParse(textBoxDesconto.Text, out decimal desc) ? desc : 0,
+                ValorQuebra = decimal.TryParse(textBoxTotalValorQuebra.Text, out decimal quebra) ? quebra : 0,
+                ValorTotal = decimal.TryParse(textBoxValorTotal.Text, out decimal total) ? total : 0,
+                SaldoPedido = decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldo) ? saldo : 0,
+
+                // ===== INFORMAÇÕES EXTRAS =====
+                TotalGastoCliente = decimal.TryParse(textBoxTotalGasto.Text, out decimal gasto) ? gasto : 0,
+                SaldoCliente = decimal.TryParse(textBoxSaldoCliente.Text, out decimal saldoCli) ? saldoCli : 0,
+                IDsSaldoCliente = textBoxIDSaldo.Text
+            };
+
+            // ===== OUTROS CONTATOS DO CLIENTE =====
+            foreach (DataGridViewRow row in dataGridViewTelefones.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                var nomeContato = row.Cells[0].Value?.ToString();
+                var telefone = row.Cells[1].Value?.ToString();
+
+                if (!string.IsNullOrWhiteSpace(nomeContato) && !string.IsNullOrWhiteSpace(telefone))
+                {
+                    dados.OutrosContatos.Add(new ContatoInfo
+                    {
+                        NomeContato = nomeContato,
+                        Telefone = telefone
+                    });
+                }
+            }
+
+            // ===== PRODUTOS DO PEDIDO =====
+            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                // Verifica se tem ProdutoID válido
+                if (row.Cells["ProdutoID"].Value == null ||
+                    !int.TryParse(row.Cells["ProdutoID"].Value.ToString(), out int prodId))
+                    continue;
+
+                dados.Itens.Add(new ItemPedidoImpressao
+                {
+                    ProdutoId = prodId,
+                    DescricaoProduto = row.Cells["Produto"].Value?.ToString() ?? "",
+                    Quantidade = int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int qtd) ? qtd : 0,
+                    ValorUnitario = decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal vlr) ? vlr : 0
+                });
+            }
+
+            // ===== PAGAMENTOS =====
+            foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                // Verifica se tem forma de pagamento
+                var forma = row.Cells["FormaPagamento"].Value?.ToString();
+                if (string.IsNullOrWhiteSpace(forma))
+                    continue;
+
+                dados.Pagamentos.Add(new PagamentoImpressao
+                {
+                    FormaPagamento = forma,
+                    DataPagamento = row.Cells["DataPagamento"].Value is DateTime dt ? dt : DateTime.Today,
+                    Valor = decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out decimal valor) ? valor : 0,
+                    Pago = row.Cells["Pago"].Value is bool pago && pago
+                });
+            }
+
+            return dados;
+        }
+
+        /// <summary>
+        /// Visualiza o PDF do pedido (abre no visualizador padrão)
+        /// </summary>
+        private void VisualizarPDF()
+        {
+            try
+            {
+                // Validações básicas
+                if (string.IsNullOrWhiteSpace(textBoxNomeCliente.Text))
+                {
+                    MessageBox.Show("Selecione um cliente antes de gerar o PDF.",
+                        "Cliente obrigatório", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!dataGridViewProdutosLocacao.Rows.Cast<DataGridViewRow>()
+                    .Any(r => !r.IsNewRow && r.Cells["ProdutoID"].Value != null))
+                {
+                    MessageBox.Show("Adicione ao menos um produto antes de gerar o PDF.",
+                        "Produtos obrigatórios", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Coleta os dados
+                var dados = ObterDadosParaImpressao();
+
+                // Gera e visualiza
+                PedidoImpressaoService.VisualizarPDF(dados);
+
+                MessageBox.Show("PDF gerado com sucesso!\nO arquivo foi aberto no visualizador padrão.",
+                    "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao gerar PDF:\n{ex.Message}",
+                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Salva o PDF em um local escolhido pelo usuário
+        /// </summary>
+        private void SalvarPDF()
+        {
+            try
+            {
+                // Validações básicas
+                if (string.IsNullOrWhiteSpace(textBoxNomeCliente.Text))
+                {
+                    MessageBox.Show("Selecione um cliente antes de salvar o PDF.",
+                        "Cliente obrigatório", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!dataGridViewProdutosLocacao.Rows.Cast<DataGridViewRow>()
+                    .Any(r => !r.IsNewRow && r.Cells["ProdutoID"].Value != null))
+                {
+                    MessageBox.Show("Adicione ao menos um produto antes de salvar o PDF.",
+                        "Produtos obrigatórios", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Coleta os dados
+                var dados = ObterDadosParaImpressao();
+
+                // Salva com diálogo
+                if (PedidoImpressaoService.SalvarPDFComDialogo(dados, out string caminhoSalvo))
+                {
+                    MessageBox.Show($"PDF salvo com sucesso em:\n{caminhoSalvo}",
+                        "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Pergunta se quer abrir
+                    var resultado = MessageBox.Show("Deseja abrir o arquivo agora?",
+                        "Abrir PDF", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = caminhoSalvo,
+                            UseShellExecute = true
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao salvar PDF:\n{ex.Message}",
+                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ===================================================================
+        // EVENTOS DOS BOTÕES (você vai adicionar esses botões no Designer)
+        // ===================================================================
+
+        private void buttonVisualizarPDF_Click(object sender, EventArgs e)
+        {
+            VisualizarPDF();
+        }
+
+        private void buttonSalvarPDF_Click(object sender, EventArgs e)
+        {
+            SalvarPDF();
+        }
+
+        #endregion
+
+    #region Botoes Finais
+    //Logica do botão para finalizar um pedido
+    private void buttonFinalizarPedido_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBoxIDCliente.Text))
             {
@@ -1693,7 +1898,5 @@ namespace EstruturaFesta
 
         }
         #endregion
-
-       
     }
 }

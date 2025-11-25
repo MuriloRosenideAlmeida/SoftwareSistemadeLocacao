@@ -3,6 +3,7 @@ using EstruturaFesta.Presentation.Forms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using QuestPDF.Infrastructure;
 
 namespace EstruturaFesta
 {
@@ -15,6 +16,8 @@ namespace EstruturaFesta
 
             // 1️⃣ Cria o Host (container de dependências)
             ApplicationConfiguration.Initialize();
+            QuestPDF.Settings.License = LicenseType.Community;
+
 
             var services = new ServiceCollection();
 

@@ -100,6 +100,8 @@
             labelAcrescimo = new Label();
             labelDesconto = new Label();
             toolTipQuebra = new ToolTip(components);
+            buttonSalvarPDF = new Button();
+            buttonVisualizarPDF = new Button();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTelefones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
@@ -742,11 +744,33 @@
             toolTipQuebra.ReshowDelay = 100;
             toolTipQuebra.ShowAlways = true;
             // 
+            // buttonSalvarPDF
+            // 
+            buttonSalvarPDF.Location = new Point(648, 565);
+            buttonSalvarPDF.Name = "buttonSalvarPDF";
+            buttonSalvarPDF.Size = new Size(75, 23);
+            buttonSalvarPDF.TabIndex = 16;
+            buttonSalvarPDF.Text = "Salvar PDF";
+            buttonSalvarPDF.UseVisualStyleBackColor = true;
+            buttonSalvarPDF.Click += buttonSalvarPDF_Click;
+            // 
+            // buttonVisualizarPDF
+            // 
+            buttonVisualizarPDF.Location = new Point(745, 565);
+            buttonVisualizarPDF.Name = "buttonVisualizarPDF";
+            buttonVisualizarPDF.Size = new Size(75, 23);
+            buttonVisualizarPDF.TabIndex = 16;
+            buttonVisualizarPDF.Text = "Visualizar PDF";
+            buttonVisualizarPDF.UseVisualStyleBackColor = true;
+            buttonVisualizarPDF.Click += buttonVisualizarPDF_Click;
+            // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1130, 600);
+            Controls.Add(buttonVisualizarPDF);
+            Controls.Add(buttonSalvarPDF);
             Controls.Add(labelDesconto);
             Controls.Add(labelAcrescimo);
             Controls.Add(labelSubTotal);
@@ -854,5 +878,7 @@
         private DataGridViewTextBoxColumn Valor;
         private DataGridViewCheckBoxColumn Pago;
         private ToolTip toolTipQuebra;
+        private Button buttonSalvarPDF;
+        private Button buttonVisualizarPDF;
     }
 }
