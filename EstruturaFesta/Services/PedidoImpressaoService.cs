@@ -7,8 +7,6 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using EstruturaFesta.Models;
-using EstruturaFesta.Data.Entities;
-using MySqlX.XDevAPI;
 
 namespace EstruturaFesta.Services
 {
@@ -17,13 +15,13 @@ namespace EstruturaFesta.Services
     /// </summary>
     public static class PedidoImpressaoService
     {
-        // ===== CONFIGURAÇÃO INICIAL =====
+        private const string CAMINHO_LOGO = @"Resources\logo.png";
+
         public static void Inicializar()
         {
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        // ===== MÉTODO PRINCIPAL DE GERAÇÃO =====
         public static void GerarPDF(DadosPedidoImpressao pedido, string caminhoArquivo)
         {
             Document.Create(container =>
@@ -31,409 +29,495 @@ namespace EstruturaFesta.Services
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A4);
-                    page.Margin(1.5f, Unit.Centimetre);
+                    page.Margin(20);
                     page.PageColor(Colors.White);
                     page.DefaultTextStyle(x => x.FontSize(9).FontFamily("Arial"));
 
-                    // CABEÇALHO
                     page.Header().Element(c => CriarCabecalho(c, pedido));
 
-                    // CONTEÚDO
-                    page.Content().PaddingVertical(10).Column(col =>
+                    page.Content().Column(col =>
                     {
-                        // Dados do Cliente
-                        col.Item().Element(c => CriarSecaoCliente(c, pedido));
+                        col.Item().Element(c => CriarBoxCliente(c, pedido));
+                        col.Item().PaddingTop(5).Element(c => CriarBoxDatasObservacoes(c, pedido));
 
-                        // Dados do Pedido (Datas)
-                        col.Item().PaddingTop(10).Element(c => CriarSecaoPeriodo(c, pedido));
+                        col.Item().PaddingTop(8).AlignCenter()
+                            .Text("PEDIDO").FontSize(14).Bold();
 
-                        // Tabela de Produtos
-                        col.Item().PaddingTop(10).Element(c => CriarTabelaProdutos(c, pedido));
+                        col.Item().PaddingTop(5).Element(c => CriarTabelaProdutos(c, pedido));
 
-                        col.Item().PaddingTop(10).Row(row =>
+                        // VALORES E PAGAMENTOS NA MESMA LINHA
+                        col.Item().PaddingTop(5).Row(row =>
                         {
-                            // PAGAMENTOS (ESQUERDA)
-                            if(pedido.Pagamentos.Any())
-                            row.RelativeItem().Element(c => CriarTabelaPagamentos(c, pedido));
+                            // Condições de pagamento à ESQUERDA
+                            row.RelativeItem().Element(c => CriarCondicoesPagamento(c, pedido));
 
-                            row.ConstantItem(15); // Espaço entre os blocos
+                            row.ConstantItem(10); // Espaçamento
 
-                            // RESUMO FINANCEIRO (DIREITA)
-                            row.ConstantItem(260).Element(c => CriarResumoFinanceiro(c, pedido));
+                            // Resumo financeiro à DIREITA
+                            row.ConstantItem(200).Element(c => CriarResumoFinanceiro(c, pedido));
                         });
-                        // Observações (se houver)
-                        if (!string.IsNullOrWhiteSpace(pedido.Observacoes))
-                            col.Item().PaddingTop(10).Element(c => CriarSecaoObservacoes(c, pedido));
 
-                        // Assinaturas
-                        col.Item().PaddingTop(30).Element(c => CriarSecaoAssinaturas(c, pedido));
+                        col.Item().PaddingTop(8).Element(CriarObservacoesFinais);
+                        col.Item().PaddingTop(10).Element(CriarAssinatura);
                     });
-
-                    // RODAPÉ
-                    page.Footer().Element(CriarRodape);
                 });
             })
             .GeneratePdf(caminhoArquivo);
         }
-        // ===== CABEÇALHO =====
+
+        // ===== CABEÇALHO (SEM CAIXA NO NÚMERO) =====
         private static void CriarCabecalho(IContainer container, DadosPedidoImpressao pedido)
         {
-            container.Row(row =>
+            container.Border(1).BorderColor(Colors.Black).Padding(8).Row(row =>
             {
-                // LOGO
-                row.ConstantItem(90).AlignLeft().Height(60).Image("C:\\Users\\Murilo\\Pictures\\Ideias de logo\\LogoSemFundoBranco.png");
-
-                // INFO DA EMPRESA
-                row.RelativeItem().AlignRight().Column(col =>
+                // Logo
+                row.ConstantItem(100).Column(col =>
                 {
-                    col.Item().Text("ESTRUTURA FESTA")
-                        .FontSize(12).Bold();
+                    if (File.Exists(CAMINHO_LOGO))
+                    {
+                        col.Item().Height(65).Image(CAMINHO_LOGO);
+                    }
+                    else
+                    {
+                        col.Item().Height(65).Border(1).BorderColor(Colors.Grey.Medium)
+                            .AlignCenter().AlignMiddle()
+                            .Text("LOGO").FontSize(10).FontColor(Colors.Grey.Medium);
+                    }
+                });
 
-                    col.Item().Text("CNPJ: 00.000.000/0001-00")
-                        .FontSize(8);
+                // Dados da empresa (LETRAS MAIORES)
+                row.RelativeItem().PaddingLeft(10).Column(col =>
+                {
+                    col.Item().Text("Estrutura Festa Comercio e Locação de Materiais para Festa Ltda ME")
+                        .FontSize(12).Bold(); // Aumentado
 
-                    col.Item().Text("Tel: (00) 0000-0000")
-                        .FontSize(8);
+                    col.Item().PaddingTop(3).Text("Rua Jucelino Kubitschek de Oliveira, 04 - Jd. Europa")
+                        .FontSize(11); // Aumentado
 
-                    col.Item().Text("contato@estruturafesta.com")
-                        .FontSize(8);
+                    col.Item().Text("13460-000 - Nova Odessa - SP")
+                        .FontSize(11); // Aumentado
 
-                    col.Item().Text("Endereço: Rua tal, Nº tal, Bairro tal")
-                        .FontSize(8);
+                    col.Item().Text("Fone: (19) 3476-5005")
+                        .FontSize(11); // Aumentado
+                });
 
-                    col.Item().Text("CEP: 00000-000")
-                        .FontSize(8);
+                // Número do pedido e data (SEM CAIXA, LETRAS MAIORES)
+                row.ConstantItem(90).Column(col =>
+                {
+                    col.Item().PaddingTop(3).AlignCenter()
+                    .Text("Numero do Pedido").FontSize(11);
+
+                    col.Item().AlignCenter()
+                        .Text(pedido.NumeroPedido.ToString())
+                        .FontSize(12).Bold(); // Maior e sem caixa
+
+                    col.Item().PaddingTop(10).AlignCenter()
+                        .Text("Data do Pedido").FontSize(10); // Aumentado
+
+                    col.Item().AlignCenter()
+                        .Text(pedido.DataPedido.ToString("dd/MM/yyyy"))
+                        .FontSize(11).Bold(); // Aumentado
                 });
             });
         }
 
-        // ===== DADOS DO CLIENTE =====
-        private static void CriarSecaoCliente(IContainer container, DadosPedidoImpressao pedido)
+        // ===== DADOS DO CLIENTE (REFORMULADO) =====
+        private static void CriarBoxCliente(IContainer container, DadosPedidoImpressao pedido)
         {
-            container.Background(Colors.Grey.Lighten3).Padding(8).Column(col =>
+            container.Border(1).BorderColor(Colors.Black).Padding(8).Column(col =>
             {
-                col.Item().Text("DADOS DO CLIENTE").Bold().FontSize(10);
+                // Título
+                col.Item().Text("DADOS DO CLIENTE").FontSize(10).Bold();
 
                 col.Item().PaddingTop(5).Row(row =>
                 {
-                    row.RelativeItem().Text($"Nome: {pedido.NomeCliente}").FontSize(8);
-                    row.RelativeItem().Text($"Doc: {pedido.DocumentoCliente}").FontSize(8);
+                    // COLUNA ESQUERDA - Dados principais
+                    row.RelativeItem().Column(colEsq =>
+                    {
+                        colEsq.Item().Text(txt =>
+                        {
+                            txt.Span("Nome: ").FontSize(9);
+                            txt.Span(pedido.NomeCliente).FontSize(9).Bold();
+                        });
+
+                        colEsq.Item().PaddingTop(3).Text(txt =>
+                        {
+                            txt.Span("CPF/CNPJ: ").FontSize(9);
+                            txt.Span(pedido.DocumentoCliente).FontSize(9).Bold();
+                        });
+
+                        colEsq.Item().PaddingTop(3).Text(txt =>
+                        {
+                            txt.Span("Endereço: ").FontSize(9);
+                            // Aqui você pode adicionar Rua e Número se tiver no modelo
+                            txt.Span("").FontSize(9);
+                        });
+
+                        colEsq.Item().PaddingTop(3).Text(txt =>
+                        {
+                            txt.Span("Bairro: ").FontSize(9);
+                            // Bairro e Complemento
+                            txt.Span("").FontSize(9);
+                        });
+
+                        colEsq.Item().PaddingTop(3).Text(txt =>
+                        {
+                            txt.Span("CEP: ").FontSize(9);
+                            txt.Span("").FontSize(9);
+                            txt.Span("  Cidade: ").FontSize(9);
+                            txt.Span("Nova Odessa").FontSize(9);
+                            txt.Span("  UF: ").FontSize(9);
+                            txt.Span("SP").FontSize(9);
+                        });
+                    });
+
+                    // COLUNA DIREITA - Contatos alinhados
+                    row.ConstantItem(200).Column(colDir =>
+                    {
+                        if (pedido.OutrosContatos.Any())
+                        {
+                            foreach (var contato in pedido.OutrosContatos.Take(5))
+                            {
+                                colDir.Item().Row(rowContato =>
+                                {
+                                    rowContato.RelativeItem()
+                                        .Text(contato.NomeContato).FontSize(9);
+
+                                    rowContato.ConstantItem(100).AlignRight()
+                                        .Text(contato.Telefone).FontSize(9).Bold();
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
+        // ===== DATAS E OBSERVAÇÕES =====
+        private static void CriarBoxDatasObservacoes(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(1).BorderColor(Colors.Black).Padding(6).Column(col =>
+            {
+                col.Item().Row(row =>
+                {
+                    row.RelativeItem().Text(txt =>
+                    {
+                        txt.Span("Evento: ").FontSize(9);
+                        txt.Span(pedido.DataPedido.ToString("dd/MM/yyyy")).FontSize(9).Bold();
+                    });
+
+                    row.RelativeItem().Text(txt =>
+                    {
+                        txt.Span("Entrega: ").FontSize(9);
+                        txt.Span(pedido.DataEntrega.ToString("dd/MM/yyyy")).FontSize(9).Bold();
+                    });
+
+                    row.RelativeItem().Text(txt =>
+                    {
+                        txt.Span("Devolução: ").FontSize(9);
+                        txt.Span(pedido.DataRetirada.ToString("dd/MM/yyyy")).FontSize(9).Bold();
+                    });
+                });
+
+                col.Item().PaddingTop(3).Text(txt =>
+                {
+                    txt.Span("Observação: ").FontSize(9);
+                    txt.Span(pedido.Observacoes ?? "").FontSize(9);
+                });
+            });
+        }
+
+        // ===== TABELA DE PRODUTOS (NOVA ORDEM, SEM GRADES INTERNAS) =====
+        private static void CriarTabelaProdutos(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(1).BorderColor(Colors.Black).Table(table =>
+            {
+                // Ordem: Item, Código, Produto, Faltas, Quantidade, Valor Unit., Valor Total, Reposição
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.ConstantColumn(35);   // Item
+                    columns.ConstantColumn(55);   // Código
+                    columns.RelativeColumn(5);    // Produto (sem grade)
+                    columns.ConstantColumn(50);   // Faltas (COM grade)
+                    columns.ConstantColumn(55);   // Quantidade
+                    columns.ConstantColumn(75);   // Valor Unitário
+                    columns.ConstantColumn(75);   // Valor Total
+                    columns.ConstantColumn(75);   // Reposição
+                });
+
+                // Cabeçalho
+                table.Header(header =>
+                {
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Item").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Código").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Produto").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Faltas").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Qtd.").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Valor Unit.").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Valor Total").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Reposição").FontSize(8).Bold();
+                });
+
+                // Linhas dos produtos
+                int itemNumero = 1;
+                foreach (var item in pedido.Itens)
+                {
+                    var corLinha = itemNumero % 2 == 0 ? Colors.White : Colors.Grey.Lighten4;
+
+                    // Item
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(1).BorderColor(Colors.Grey.Lighten1)
+                        .Padding(3).AlignCenter().Text(itemNumero.ToString()).FontSize(8);
+
+                    // Código
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(1).BorderColor(Colors.Grey.Lighten1)
+                        .Padding(3).AlignCenter().Text(item.ProdutoId.ToString()).FontSize(8);
+
+                    // Produto (SEM grade lateral)
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(1).BorderColor(Colors.Grey.Lighten1)
+                        .Padding(3).Text(item.DescricaoProduto).FontSize(8);
+
+                    // Faltas (COM grade)
+                    table.Cell().Background(Colors.White)
+                        .Border(1).BorderColor(Colors.Black)
+                        .Padding(3).Text("").FontSize(8);
+
+                    // Quantidade
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(1).BorderColor(Colors.Grey.Lighten1)
+                        .Padding(3).AlignCenter().Text(item.Quantidade.ToString()).FontSize(8);
+
+                    // Valor Unitário
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(1).BorderColor(Colors.Grey.Lighten1)
+                        .Padding(3).AlignRight().Text(item.ValorUnitario.ToString("N2")).FontSize(8);
+
+                    // Valor Total
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(1).BorderColor(Colors.Grey.Lighten1)
+                        .Padding(3).AlignRight().Text(item.ValorTotal.ToString("N2")).FontSize(8);
+
+                    // Reposição
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(1).BorderColor(Colors.Grey.Lighten1)
+                        .Padding(3).AlignRight().Text("").FontSize(8);
+
+                    itemNumero++;
+                }
+
+                // Linha do total
+                table.Cell().ColumnSpan(4)
+                    .Border(1).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignRight().Text($"Total Itens: {pedido.Itens.Count}")
+                    .FontSize(9).Bold();
+
+                table.Cell().ColumnSpan(2)
+                    .Border(1).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignRight().Text("Valor Total:")
+                    .FontSize(9).Bold();
+
+                table.Cell().ColumnSpan(2)
+                    .Border(1).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignRight().Text(pedido.SubTotal.ToString("N2"))
+                    .FontSize(9).Bold();
+            });
+        }
+
+        // ===== CONDIÇÕES DE PAGAMENTO (À ESQUERDA) =====
+        private static void CriarCondicoesPagamento(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Column(col =>
+            {
+                col.Item().Text("Condições de Pagamento").FontSize(9).Bold();
+
+                col.Item().PaddingTop(3).Border(1).BorderColor(Colors.Black).Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(50);   // Parcela
+                        columns.RelativeColumn(2);    // Tipo
+                        columns.ConstantColumn(80);   // Vencimento
+                        columns.ConstantColumn(80);   // Valor
+                    });
+
+                    // Cabeçalho
+                    table.Header(header =>
+                    {
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(1).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Parcela").FontSize(8).Bold();
+
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(1).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Tipo").FontSize(8).Bold();
+
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(1).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Vencimento").FontSize(8).Bold();
+
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(1).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Valor").FontSize(8).Bold();
+                    });
+
+                    // Linhas
+                    int parcela = 1;
+                    foreach (var pag in pedido.Pagamentos.Where(p => p.Pago))
+                    {
+                        table.Cell().Border(1).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text(parcela.ToString()).FontSize(8);
+
+                        // Tipo com "PAGO" se estiver pago
+                        table.Cell().Border(1).BorderColor(Colors.Black)
+                            .Padding(3).Text(txt =>
+                            {
+                                txt.Span(pag.FormaPagamento).FontSize(8);
+                                if (pag.Pago)
+                                {
+                                    txt.Span(" - PAGO").FontSize(8).Bold().FontColor(Colors.Green.Darken1);
+                                }
+                            });
+
+                        table.Cell().Border(1).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text(pag.DataPagamento.ToString("dd/MM/yyyy")).FontSize(8);
+
+                        table.Cell().Border(1).BorderColor(Colors.Black)
+                            .Padding(3).AlignRight().Text(pag.Valor.ToString("N2")).FontSize(8);
+
+                        parcela++;
+                    }
+
+                    // Total
+                    table.Cell().ColumnSpan(3)
+                        .Border(1).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                        .Padding(3).AlignRight().Text("Total....:").FontSize(9).Bold();
+
+                    table.Cell().Border(1).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                        .Padding(3).AlignRight().Text(pedido.TotalPago.ToString("N2")).FontSize(9).Bold();
+                });
+            });
+        }
+
+        // ===== RESUMO FINANCEIRO (À DIREITA) =====
+        private static void CriarResumoFinanceiro(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(1).BorderColor(Colors.Black).Padding(8).Column(col =>
+            {
+                col.Item().Row(row =>
+                {
+                    row.RelativeItem().Text("Sub Total...:").FontSize(9);
+                    row.ConstantItem(80).AlignRight().Text(pedido.SubTotal.ToString("N2")).FontSize(9).Bold();
+                });
+
+                if (pedido.Acrescimo > 0)
+                {
+                    col.Item().PaddingTop(3).Row(row =>
+                    {
+                        row.RelativeItem().Text("Acréscimo:").FontSize(9);
+                        row.ConstantItem(80).AlignRight().Text(pedido.Acrescimo.ToString("N2")).FontSize(9);
+                    });
+                }
+
+                if (pedido.Desconto > 0)
+                {
+                    col.Item().PaddingTop(3).Row(row =>
+                    {
+                        row.RelativeItem().Text("Desconto:").FontSize(9);
+                        row.ConstantItem(80).AlignRight().Text(pedido.Desconto.ToString("N2"))
+                            .FontSize(9).FontColor(Colors.Red.Darken1);
+                    });
+                }
+
+                col.Item().PaddingTop(3).Row(row =>
+                {
+                    row.RelativeItem().Text("Sinal......:").FontSize(9);
+                    row.ConstantItem(80).AlignRight().Text("").FontSize(9);
                 });
 
                 col.Item().PaddingTop(3).Row(row =>
                 {
-                    row.RelativeItem().Text($"Contato: {pedido.ContatoNome}").FontSize(8);
-                    row.RelativeItem().Text($"Telefone: {pedido.ContatoNumero}").FontSize(8);
+                    row.RelativeItem().Text("Faltas.........:").FontSize(9);
+                    row.ConstantItem(80).AlignRight().Text("").FontSize(9);
                 });
 
-                // Outros contatos (se houver)
-                if (pedido.OutrosContatos.Any())
+                col.Item().PaddingTop(5).BorderTop(1).BorderColor(Colors.Black);
+
+                col.Item().PaddingTop(3).Row(row =>
                 {
-                    col.Item().PaddingTop(3).Text("Outros contatos:").FontSize(7).Italic();
-                    foreach (var contato in pedido.OutrosContatos.Take(3)) // Máximo 3
-                    {
-                        col.Item().Text($"  • {contato.NomeContato}: {contato.Telefone}")
-                            .FontSize(7);
-                    }
-                }
+                    row.RelativeItem().Text("Saldo....:").FontSize(10).Bold();
+                    row.ConstantItem(80).AlignRight().Text(pedido.SaldoPedido.ToString("N2"))
+                        .FontSize(10).Bold().FontColor(Colors.Red.Darken1);
+                });
+
+                col.Item().PaddingTop(3).Row(row =>
+                {
+                    row.RelativeItem().Text("Total....:").FontSize(10).Bold();
+                    row.ConstantItem(80).AlignRight().Text(pedido.ValorTotal.ToString("N2"))
+                        .FontSize(10).Bold();
+                });
             });
         }
 
-        // ===== PERÍODO DO PEDIDO =====
-        private static void CriarSecaoPeriodo(IContainer container, DadosPedidoImpressao pedido)
+        // ===== OBSERVAÇÕES FINAIS =====
+        private static void CriarObservacoesFinais(IContainer container)
         {
-            var dias = (pedido.DataRetirada - pedido.DataEntrega).Days;
+            container.Padding(5).Text(texto =>
+            {
+                texto.DefaultTextStyle(x => x.FontSize(7).LineHeight(1.2f));
 
-            container.Background(Colors.Grey.Lighten3).Padding(8).Row(row =>
+                texto.Line("Ps. As quebras e danos correrão por conta do Locatário. Pede-se conferir o Material");
+                texto.Line("no ato da entrega ou retirada, não se atendem reclamações posteriores. As merca_");
+                texto.Line("dorias deverão ser devolvidas limpas e embaladas, caso contrário incidirá um novo");
+                texto.Line("aluguel a cada dia. Aos materiais não devolvidos no prazo marcado incidem novos");
+                texto.Line("aluguéis. O Valor desta locação se refere a um dia de aluguel. Nos objetos de Prata");
+                texto.Line("não utilizar Bom Bril ou outro material abrasivo, nem levar ao fogo.");
+            });
+        }
+
+        // ===== ASSINATURA =====
+        private static void CriarAssinatura(IContainer container)
+        {
+            container.Row(row =>
             {
                 row.RelativeItem().Column(col =>
                 {
-                    col.Item().Text("PERÍODO DE LOCAÇÃO").Bold().FontSize(10);
-                    col.Item().PaddingTop(3).Text($"Entrega: {pedido.DataEntrega:dd/MM/yyyy}").FontSize(8);
+                    col.Item().Text("Conferi(mos) e Recebi(mos) os Materiais Relacionados.").FontSize(8);
+                    col.Item().PaddingTop(15).BorderTop(1).BorderColor(Colors.Black);
                 });
+
+                row.ConstantItem(20);
 
                 row.RelativeItem().Column(col =>
                 {
-                    col.Item().Text(" "); // Espaço
-                    col.Item().PaddingTop(3).Text($"Retirada: {pedido.DataRetirada:dd/MM/yyyy}").FontSize(8);
+                    col.Item().Text("De acordo e ciente.").FontSize(8);
+                    col.Item().PaddingTop(3).Text("Data.: ______/______/_________").FontSize(8);
+                    col.Item().PaddingTop(8).BorderTop(1).BorderColor(Colors.Black);
                 });
-
-                row.RelativeItem().Column(col =>
-                {
-                    col.Item().Text(" "); // Espaço
-                    col.Item().PaddingTop(3).Text($"Total: {dias} dia(s)").FontSize(8);
-                });
-            });
-        }
-
-        // ===== TABELA DE PRODUTOS =====
-        private static void CriarTabelaProdutos(IContainer container, DadosPedidoImpressao pedido)
-        {
-            container.Column(col =>
-            {
-                col.Item().Text("PRODUTOS DO PEDIDO").Bold().FontSize(10);
-
-                col.Item().PaddingTop(5).Table(table =>
-                {
-                    // Colunas
-                    table.ColumnsDefinition(columns =>
-                    {
-                        columns.ConstantColumn(50);   // ID
-                        columns.RelativeColumn(5);    // Descrição
-                        columns.ConstantColumn(60);   // Quantidade
-                        columns.ConstantColumn(80);   // Valor Unit.
-                        columns.ConstantColumn(80);   // Total
-                    });
-
-                    // Cabeçalho
-                    table.Header(header =>
-                    {
-                        header.Cell().Background(Colors.Blue.Darken2)
-                            .Padding(5).Text("ID").FontColor(Colors.White).Bold().FontSize(8);
-
-                        header.Cell().Background(Colors.Blue.Darken2)
-                            .Padding(5).Text("Descrição").FontColor(Colors.White).Bold().FontSize(8);
-
-                        header.Cell().Background(Colors.Blue.Darken2)
-                            .Padding(5).Text("Qtd").FontColor(Colors.White).Bold().FontSize(8);
-
-                        header.Cell().Background(Colors.Blue.Darken2)
-                            .Padding(5).Text("Valor Unit.").FontColor(Colors.White).Bold().FontSize(8);
-
-                        header.Cell().Background(Colors.Blue.Darken2)
-                            .Padding(5).Text("Total").FontColor(Colors.White).Bold().FontSize(8);
-                    });
-
-                    // Linhas dos produtos
-                    foreach (var item in pedido.Itens)
-                    {
-                        table.Cell()
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).Text(item.ProdutoId.ToString()).FontSize(8);
-
-                        table.Cell()
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).Text(item.DescricaoProduto).FontSize(8);
-
-                        table.Cell()
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).AlignCenter().Text(item.Quantidade.ToString()).FontSize(8);
-
-                        table.Cell()
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).AlignRight().Text(item.ValorUnitario.ToString("C2")).FontSize(8);
-
-                        table.Cell()
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).AlignRight().Text(item.ValorTotal.ToString("C2")).FontSize(8);
-                    }
-                });
-            });
-        }
-
-        // ===== RESUMO FINANCEIRO =====
-        private static void CriarResumoFinanceiro(IContainer container, DadosPedidoImpressao pedido)
-        {
-            container.AlignRight().Column(col =>
-            {
-                col.Item().Width(250).Background(Colors.Grey.Lighten3).Padding(8).Column(resumoCol =>
-                {
-                    resumoCol.Item().Row(row =>
-                    {
-                        row.RelativeItem().Text("Subtotal:").FontSize(9);
-                        row.ConstantItem(80).AlignRight().Text(pedido.SubTotal.ToString("C2")).FontSize(9);
-                    });
-
-                    if (pedido.Acrescimo > 0)
-                    {
-                        resumoCol.Item().PaddingTop(3).Row(row =>
-                        {
-                            row.RelativeItem().Text("Acréscimo:").FontSize(9);
-                            row.ConstantItem(80).AlignRight().Text(pedido.Acrescimo.ToString("C2"))
-                                .FontSize(9).FontColor(Colors.Green.Darken1);
-                        });
-                    }
-
-                    if (pedido.Desconto > 0)
-                    {
-                        resumoCol.Item().PaddingTop(3).Row(row =>
-                        {
-                            row.RelativeItem().Text("Desconto:").FontSize(9);
-                            row.ConstantItem(80).AlignRight().Text($"-{pedido.Desconto:C2}")
-                                .FontSize(9).FontColor(Colors.Red.Darken1);
-                        });
-                    }
-
-                    if (pedido.ValorQuebra > 0)
-                    {
-                        resumoCol.Item().PaddingTop(3).Row(row =>
-                        {
-                            row.RelativeItem().Text("Quebra:").FontSize(9);
-                            row.ConstantItem(80).AlignRight().Text(pedido.ValorQuebra.ToString("C2"))
-                                .FontSize(9).FontColor(Colors.Orange.Darken1);
-                        });
-                    }
-
-                    resumoCol.Item().PaddingTop(5).BorderTop(1).BorderColor(Colors.Grey.Medium);
-
-                    resumoCol.Item().PaddingTop(5).Row(row =>
-                    {
-                        row.RelativeItem().Text("TOTAL:").Bold().FontSize(11);
-                        row.ConstantItem(80).AlignRight().Text(pedido.ValorTotal.ToString("C2"))
-                            .Bold().FontSize(11).FontColor(Colors.Blue.Darken2);
-                    });
-
-                    resumoCol.Item().PaddingTop(3).Row(row =>
-                    {
-                        row.RelativeItem().Text("Pago:").FontSize(9);
-                        row.ConstantItem(80).AlignRight().Text(pedido.TotalPago.ToString("C2"))
-                            .FontSize(9).FontColor(Colors.Green.Darken1);
-                    });
-
-                    resumoCol.Item().PaddingTop(3).Row(row =>
-                    {
-                        row.RelativeItem().Text("Saldo:").Bold().FontSize(10);
-                        row.ConstantItem(80).AlignRight().Text(pedido.SaldoPedido.ToString("C2"))
-                            .Bold().FontSize(10).FontColor(pedido.SaldoPedido > 0 ? Colors.Red.Darken1 : Colors.Green.Darken1);
-                    });
-                });
-            });
-        }
-
-        // ===== TABELA DE PAGAMENTOS =====
-        private static void CriarTabelaPagamentos(IContainer container, DadosPedidoImpressao pedido)
-        {
-            container.Column(col =>
-            {
-                col.Item().Text("PAGAMENTOS REALIZADOS").Bold().FontSize(10);
-
-                col.Item().PaddingTop(5).Table(table =>
-                {
-                    table.ColumnsDefinition(columns =>
-                    {
-                        columns.RelativeColumn(2);    // Forma Pagamento
-                        columns.ConstantColumn(80);   // Data
-                        columns.ConstantColumn(80);   // Valor
-                        columns.ConstantColumn(50);   // Status
-                    });
-
-                    // Cabeçalho
-                    table.Header(header =>
-                    {
-                        header.Cell().Background(Colors.Green.Darken1)
-                            .Padding(5).Text("Forma Pagamento").FontColor(Colors.White).Bold().FontSize(8);
-
-                        header.Cell().Background(Colors.Green.Darken1)
-                            .Padding(5).Text("Data").FontColor(Colors.White).Bold().FontSize(8);
-
-                        header.Cell().Background(Colors.Green.Darken1)
-                            .Padding(5).Text("Valor").FontColor(Colors.White).Bold().FontSize(8);
-
-                        header.Cell().Background(Colors.Green.Darken1)
-                            .Padding(5).Text("Pago").FontColor(Colors.White).Bold().FontSize(8);
-                    });
-
-                    // Linhas
-                    foreach (var pag in pedido.Pagamentos)
-                    {
-                        var cor = pag.Pago ? Colors.Green.Lighten3 : Colors.Red.Lighten3;
-
-                        table.Cell().Background(cor)
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).Text(pag.FormaPagamento).FontSize(8);
-
-                        table.Cell().Background(cor)
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).Text(pag.DataPagamento.ToString("dd/MM/yyyy")).FontSize(8);
-
-                        table.Cell().Background(cor)
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).AlignRight().Text(pag.Valor.ToString("C2")).FontSize(8);
-
-                        table.Cell().Background(cor)
-                            .BorderBottom(1).BorderColor(Colors.Grey.Lighten2)
-                            .Padding(5).AlignCenter().Text(pag.Pago ? "✓" : "✗").FontSize(8);
-                    }
-                });
-            });
-        }
-
-        // ===== OBSERVAÇÕES =====
-        private static void CriarSecaoObservacoes(IContainer container, DadosPedidoImpressao pedido)
-        {
-            container.Column(col =>
-            {
-                col.Item().Text("OBSERVAÇÕES").Bold().FontSize(10);
-                col.Item().PaddingTop(3)
-                    .Border(1).BorderColor(Colors.Grey.Medium)
-                    .Padding(8)
-                    .Text(pedido.Observacoes).FontSize(8);
-            });
-        }
-
-        // ===== ASSINATURAS =====
-        private static void CriarSecaoAssinaturas(IContainer container, DadosPedidoImpressao pedido)
-        {
-            container.Padding(10).Border(1).Column(col =>
-            {
-                // Titulo
-                col.Item().AlignCenter().Text("NOTA PROMISSÓRIA")
-                    .Bold().FontSize(14);
-
-                col.Item().PaddingVertical(8);
-
-                // Numero / Vencimento / Valor
-                col.Item().Row(row =>
-                {
-                    row.RelativeItem().Text($"PEDIDO Nº: {pedido.NumeroPedido}");
-                    row.RelativeItem().AlignCenter().Text($"Vencimento: {pedido.DataRetirada:dd/MM/yyyy}");
-                    row.RelativeItem().AlignRight().Text("R$: __________________");
-                });
-
-                col.Item().PaddingVertical(12);
-
-                // Texto principal da nota (igual ao formulário)
-                col.Item().Text(txt =>
-                {
-                    txt.Span("Aos ___________________, pagarei(emos), por esta única via de NOTA PROMISSÓRIA a ");
-                    txt.Span(pedido.NomeCliente).Underline();
-                    txt.Span(", ou à sua ordem, a quantia de ____________________________________, ");
-                    txt.Span("em moeda corrente deste país.");
-                });
-
-                col.Item().PaddingVertical(10);
-
-                // Local do pagamento
-                col.Item().Text("Pagável em: __________________________________________");
-
-                col.Item().PaddingVertical(10);
-
-                // Local e data
-                col.Item().Row(row =>
-                {
-                    row.RelativeItem().Text("Cidade: __________________________");
-                    row.RelativeItem().Text("Data: ____/____/________");
-                });
-
-                col.Item().PaddingTop(40);
-
-                // Assinatura emitente
-                col.Item().AlignRight().Text("________________________________________");
-                col.Item().AlignRight().Text(pedido.NomeCliente).FontSize(9);
-                col.Item().AlignRight().Text("Assinatura do Emitente").FontSize(8).Italic();
-            });
-        }
-
-        // ===== RODAPÉ =====
-        private static void CriarRodape(IContainer container)
-        {
-            container.AlignCenter().Text(txt =>
-            {
-                txt.Span("Página ").FontSize(7).FontColor(Colors.Grey.Darken1);
-                txt.CurrentPageNumber().FontSize(7).FontColor(Colors.Grey.Darken1);
-                txt.Span(" de ").FontSize(7).FontColor(Colors.Grey.Darken1);
-                txt.TotalPages().FontSize(7).FontColor(Colors.Grey.Darken1);
-                txt.Span($" • Gerado em {DateTime.Now:dd/MM/yyyy HH:mm}").FontSize(7).FontColor(Colors.Grey.Darken1);
             });
         }
 
