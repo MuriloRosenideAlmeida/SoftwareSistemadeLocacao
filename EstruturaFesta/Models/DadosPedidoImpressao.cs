@@ -22,6 +22,15 @@ namespace EstruturaFesta.Models
         public string ContatoNome { get; set; }
         public string ContatoNumero { get; set; }
         public List<ContatoInfo> OutrosContatos { get; set; } = new List<ContatoInfo>();
+        
+        // ===== ENDEREÇO DO CLIENTE =====
+        public string EnderecoRua { get; set; }
+        public int EnderecoNumero { get; set; }
+        public string Bairro { get; set; }
+        public string Complemento { get; set; }
+        public string CEP { get; set; }
+        public string Cidade { get; set; }
+        public string UF { get; set; }
 
         // ===== PRODUTOS DO PEDIDO =====
         public List<ItemPedidoImpressao> Itens { get; set; } = new List<ItemPedidoImpressao>();
@@ -54,6 +63,7 @@ namespace EstruturaFesta.Models
         public int Quantidade { get; set; }
         public decimal ValorUnitario { get; set; }
         public decimal ValorTotal => Quantidade * ValorUnitario;
+        public decimal ValorReposicao { get; set; }
     }
 
     /// <summary>

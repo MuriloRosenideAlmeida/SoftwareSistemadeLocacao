@@ -9,6 +9,7 @@ using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using EstruturaFesta.Models;
 using EstruturaFesta.Services;
+using MySqlX.XDevAPI;
 
 namespace EstruturaFesta
 {
@@ -1317,7 +1318,7 @@ namespace EstruturaFesta
             var dados = new DadosPedidoImpressao
             {
                 // ===== DADOS DO PEDIDO =====
-                NumeroPedido = _pedidoId ?? 0, // 0 se for pedido novo
+                NumeroPedido = _pedidoId ?? 0,
                 DataPedido = dateTimePickerDataPedido.Value,
                 DataEntrega = dateTimePickerEntrega.Value,
                 DataRetirada = dateTimePickerRetirada.Value,
@@ -1330,7 +1331,7 @@ namespace EstruturaFesta
                 ContatoNome = textBoxContato.Text,
                 ContatoNumero = maskedTextBoxNumeroContato.Text,
 
-                // ===== VALORES =====
+                // ===== VALORES ===== (ESSES DEVEM ESTAR AQUI DENTRO)
                 SubTotal = decimal.TryParse(textBoxSubTotal.Text, out decimal sub) ? sub : 0,
                 Acrescimo = decimal.TryParse(textBoxAcrescimo.Text, out decimal acr) ? acr : 0,
                 Desconto = decimal.TryParse(textBoxDesconto.Text, out decimal desc) ? desc : 0,
@@ -1342,8 +1343,24 @@ namespace EstruturaFesta
                 TotalGastoCliente = decimal.TryParse(textBoxTotalGasto.Text, out decimal gasto) ? gasto : 0,
                 SaldoCliente = decimal.TryParse(textBoxSaldoCliente.Text, out decimal saldoCli) ? saldoCli : 0,
                 IDsSaldoCliente = textBoxIDSaldo.Text
-            };
+            }; // ← A CHAVE FECHA AQUI, DEPOIS DE TODOS OS CAMPOS!
 
+            // ===== BUSCA ENDEREÇO DO BANCO (FORA DA INICIALIZAÇÃO) =====
+            if (int.TryParse(textBoxIDCliente.Text, out int clienteId) && clienteId > 0)
+            {
+                var cliente = _db.Clientes.FirstOrDefault(c => c.ID == clienteId);
+
+                if (cliente != null)
+                {
+                    dados.EnderecoRua = cliente.Rua;
+                    dados.EnderecoNumero = cliente.Numero;
+                    dados.Bairro = cliente.Bairro;
+                    dados.Complemento = cliente.Complemento;
+                    dados.CEP = cliente.CEP;
+                    dados.Cidade = cliente.Cidade;
+                    dados.UF = cliente.Estado;
+                }
+            }
             // ===== OUTROS CONTATOS DO CLIENTE =====
             foreach (DataGridViewRow row in dataGridViewTelefones.Rows)
             {
@@ -1377,7 +1394,8 @@ namespace EstruturaFesta
                     ProdutoId = prodId,
                     DescricaoProduto = row.Cells["Produto"].Value?.ToString() ?? "",
                     Quantidade = int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int qtd) ? qtd : 0,
-                    ValorUnitario = decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal vlr) ? vlr : 0
+                    ValorUnitario = decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal vlr) ? vlr : 0,
+                    ValorReposicao = decimal.TryParse(row.Cells["ValorReposicao"].Value?.ToString(), out decimal vlrRep) ? vlrRep : 0
                 });
             }
 
