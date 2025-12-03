@@ -388,8 +388,8 @@ namespace EstruturaFesta.Services
                     foreach (var pag in pedido.Pagamentos.Where(p => p.Pago))
                     {
                         // Tipo com "PAGO" se estiver pago
-                        table.Cell().Border(0.25f).BorderColor(Colors.Black);
-                        
+                        table.Cell().Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).Text(pag.FormaPagamento).FontSize(8);
                         table.Cell().Border(0.25f).BorderColor(Colors.Black)
                             .Padding(3).AlignCenter().Text(pag.DataPagamento.ToString("dd/MM/yyyy")).FontSize(8);
 
