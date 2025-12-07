@@ -38,7 +38,7 @@ namespace EstruturaFesta.Services
                     page.Content().Column(col =>
                     {
                         col.Item().Element(c => CriarBoxCliente(c, pedido));
-                        col.Item().PaddingTop(10).Element(c => CriarBoxDatas(c, pedido));
+                        col.Item().Element(c => CriarBoxDatas(c, pedido));
                         col.Item().Element(c => CriarBoxObservacao(c, pedido));
                         col.Item().PaddingTop(8).AlignCenter();
                         col.Item().PaddingTop(5).Element(c => CriarTabelaProdutos(c, pedido));
@@ -52,11 +52,15 @@ namespace EstruturaFesta.Services
                             row.ConstantItem(155); // Espaçamento
 
                             // Resumo financeiro à DIREITA
-                            row.ConstantItem(150).Element(c => CriarResumoFinanceiro(c, pedido));
+                            row.ConstantItem(150).Height(100).Element(c => CriarResumoFinanceiro(c, pedido));
                         });
 
-                        col.Item().PaddingTop(15).Element(CriarObservacoesFinais);
-                        col.Item().PaddingTop(10).Element(CriarAssinatura);
+                        col.Item().PaddingTop(5).Row(row =>
+                        {
+                            row.RelativeItem(1).Element(CriarObservacoesFinais);
+                            row.ConstantItem(20);
+                            row.RelativeItem(1).AlignRight().Element(CriarAssinatura);
+                        });
                     });
                 });
             })
@@ -136,37 +140,29 @@ namespace EstruturaFesta.Services
                         {
                             txt.Span("Nome: ").FontSize(9);
                             txt.Span(pedido.NomeCliente).FontSize(9).Bold();
-                        });
-
-                        colEsq.Item().PaddingTop(3).Text(txt =>
-                        {
-                            txt.Span("CPF/CNPJ: ").FontSize(9);
+                            txt.Span("  CPF/CNPJ: ").FontSize(9);
                             txt.Span(pedido.DocumentoCliente).FontSize(9).Bold();
                         });
 
                         colEsq.Item().PaddingTop(3).Text(txt =>
                         {
-                            txt.Span("Endereço: ").FontSize(9);
-                            txt.Span(pedido.EnderecoRua ?? "").FontSize(9).Bold();
-                            txt.Span("   Número: ").FontSize(9);
-                            txt.Span(pedido.EnderecoNumero.ToString() ?? "").FontSize(9).Bold();
-                        });
-
-                        colEsq.Item().PaddingTop(3).Text(txt =>
-                        {
-                            txt.Span("Bairro: ").FontSize(9);
+                            txt.Span("Endereço: ").FontSize(10);
+                            txt.Span(pedido.EnderecoRua ?? "").FontSize(10).Bold();
+                            txt.Span("   Número: ").FontSize(10);
+                            txt.Span(pedido.EnderecoNumero.ToString() ?? "").FontSize(10).Bold();
+                            txt.Span("  Bairro: ").FontSize(10);
                             // Bairro e Complemento
-                            txt.Span($"{pedido.Bairro ?? ""} {pedido.Complemento ?? ""}".Trim()).FontSize(9);
+                            txt.Span($"{pedido.Bairro ?? ""} {pedido.Complemento ?? ""}".Trim()).FontSize(10 );
                         });
 
                         colEsq.Item().PaddingTop(3).Text(txt =>
                         {
-                            txt.Span("CEP: ").FontSize(9);
-                            txt.Span(pedido.CEP ?? "").FontSize(9);
-                            txt.Span("  Cidade: ").FontSize(9);
-                            txt.Span(pedido.Cidade ?? "").FontSize(9);
-                            txt.Span("  UF: ").FontSize(9);
-                            txt.Span(pedido.UF ?? "").FontSize(9);
+                            txt.Span("CEP: ").FontSize(10);
+                            txt.Span(pedido.CEP ?? "").FontSize(10);
+                            txt.Span("  Cidade: ").FontSize(10);
+                            txt.Span(pedido.Cidade ?? "").FontSize(10);
+                            txt.Span("  UF: ").FontSize(10);
+                            txt.Span(pedido.UF ?? "").FontSize(10);
                         });
                     });
 
@@ -223,7 +219,7 @@ namespace EstruturaFesta.Services
         }
         private static void CriarBoxObservacao(IContainer container, DadosPedidoImpressao pedido)
         {
-            container.Border(0.5f).BorderColor(Colors.Black).PaddingLeft(3).PaddingTop(2).Height(25).Column(col =>
+            container.Border(0.5f).BorderColor(Colors.Black).PaddingLeft(3).PaddingTop(2).Height(30).Column(col =>
             {
                 col.Item().Text(txt =>
                 {
@@ -295,17 +291,17 @@ namespace EstruturaFesta.Services
 
                     // Item
                     table.Cell().Background(corLinha)
-                        .BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten1)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
                         .Padding(3).AlignCenter().Text(itemNumero.ToString()).FontSize(8);
 
                     // Código
                     table.Cell().Background(corLinha)
-                        .BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten1)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
                         .Padding(3).AlignCenter().Text(item.ProdutoId.ToString()).FontSize(8);
 
                     // Produto (SEM grade lateral)
                     table.Cell().Background(corLinha)
-                        .BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten1)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
                         .Padding(3).Text(item.DescricaoProduto).FontSize(8);
 
                     // Faltas (COM grade)
@@ -315,42 +311,50 @@ namespace EstruturaFesta.Services
 
                     // Quantidade
                     table.Cell().Background(corLinha)
-                        .BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten1)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
                         .Padding(3).AlignCenter().Text(item.Quantidade.ToString()).FontSize(8);
 
                     // Valor Unitário
                     table.Cell().Background(corLinha)
-                        .BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten1)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
                         .Padding(3).AlignRight().Text(item.ValorUnitario.ToString("C2")).FontSize(8);
 
                     // Valor Total
                     table.Cell().Background(corLinha)
-                        .BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten1)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
                         .Padding(3).AlignRight().Text(item.ValorTotal.ToString("C2")).FontSize(8);
 
                     // Reposição
                     table.Cell().Background(corLinha)
-                        .BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten1)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
                         .Padding(3).AlignRight().Text(item.ValorReposicao.ToString("C2")).FontSize(8);
 
                     itemNumero++;
                 }
 
                 // Linha do total
+                
+
                 table.Cell().ColumnSpan(4)
                     .Border(0.5f).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
-                    .Padding(3).AlignRight().Text($"Total Itens: {pedido.Itens.Count}")
-                    .FontSize(9).Bold();
+                    .Padding(3).AlignLeft().Text($"Total Itens: {pedido.Itens.Count}")
+                    .FontSize(8).Bold();
 
-                table.Cell().ColumnSpan(3)
+                table.Cell().ColumnSpan(2)
                     .Background(Colors.Grey.Lighten3)
-                    .Padding(3).AlignLeft().Text("Valor Total:")
-                    .FontSize(9).Bold();
+                    .Padding(3).AlignRight().Text("Valor Total:")
+                    .FontSize(8).Bold();
 
                 table.Cell().ColumnSpan(1)
                     .Background(Colors.Grey.Lighten3)
                     .Padding(3).AlignRight().Text(pedido.SubTotal.ToString("C2"))
-                    .FontSize(9).Bold();
+                    .FontSize(8).Bold();
+
+                table.Cell().ColumnSpan(1)
+                    .Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignRight()
+                    .Text(pedido.Itens.Sum(i => i.ValorReposicao).ToString("C2"))
+                    .FontSize(8).Bold();
             });
         }
 
@@ -422,39 +426,33 @@ namespace EstruturaFesta.Services
 
                     col.Item().PaddingTop(3).Row(row =>
                     {
-                        row.RelativeItem().Text("Acréscimo:").FontSize(9);
+                        row.RelativeItem().Text("Acréscimo..:").FontSize(9);
                         row.ConstantItem(60).AlignRight().Text(pedido.Acrescimo.ToString("C2")).FontSize(9);
                     });
                 
                     col.Item().PaddingTop(3).Row(row =>
                     {
-                        row.RelativeItem().Text("Desconto:").FontSize(9);
+                        row.RelativeItem().Text("Desconto...:").FontSize(9);
                         row.ConstantItem(60).AlignRight().Text(pedido.Desconto.ToString("C2"))
                             .FontSize(9);
                     });
                 
                 col.Item().PaddingTop(3).Row(row =>
                 {
-                    row.RelativeItem().Text("Sinal......:").FontSize(9);
+                    row.RelativeItem().Text("Faltas........:").FontSize(9);
                     row.ConstantItem(60).AlignRight().Text("").FontSize(9);
                 });
 
                 col.Item().PaddingTop(3).Row(row =>
                 {
-                    row.RelativeItem().Text("Faltas.........:").FontSize(9);
-                    row.ConstantItem(60).AlignRight().Text("").FontSize(9);
-                });
-
-                col.Item().PaddingTop(3).Row(row =>
-                {
-                    row.RelativeItem().Text("Saldo....:").FontSize(10);
+                    row.RelativeItem().Text("Saldo.......:").FontSize(10);
                     row.ConstantItem(60).AlignRight().Text(pedido.SaldoPedido.ToString("C2"))
                         .FontSize(9);
                 });
 
                 col.Item().PaddingTop(3).Row(row =>
                 {
-                    row.RelativeItem().Text("Total....:").FontSize(10);
+                    row.RelativeItem().Text("Total.........:").FontSize(10);
                     row.ConstantItem(80).AlignRight().Text(pedido.ValorTotal.ToString("C2"))
                         .FontSize(9);
                 });
@@ -464,38 +462,33 @@ namespace EstruturaFesta.Services
         // ===== OBSERVAÇÕES FINAIS =====
         private static void CriarObservacoesFinais(IContainer container)
         {
-            container.Padding(5).Text(texto =>
+            container.Text(t =>
             {
-                texto.DefaultTextStyle(x => x.FontSize(9).LineHeight(1.2f));
-
-                texto.Line("Ps. As quebras e danos correrão por conta do Locatário. Pede-se conferir o Material");
-                texto.Line("no ato da entrega ou retirada, não se atendem reclamações posteriores. As merca_");
-                texto.Line("dorias deverão ser devolvidas limpas e embaladas, caso contrário incidirá um novo");
-                texto.Line("aluguel a cada dia. Aos materiais não devolvidos no prazo marcado incidem novos");
-                texto.Line("aluguéis. O Valor desta locação se refere a um dia de aluguel. Nos objetos de Prata");
-                texto.Line("não utilizar Bom Bril ou outro material abrasivo, nem levar ao fogo.");
+                t.DefaultTextStyle(x => x.FontSize(8).LineHeight(1.2f));
+                t.Span(
+                    "Ps. As quebras e danos correrão por conta do Locatário. Pede-se conferir o Material " +
+                    "no ato da entrega ou retirada, não se atendem reclamações posteriores. As mercadorias " +
+                    "deverão ser devolvidas limpas e embaladas, caso contrário incidirá um novo aluguel a " +
+                    "cada dia. Aos materiais não devolvidos no prazo marcado incidem novos aluguéis. O " +
+                    "Valor desta locação se refere a um dia de aluguel. Nos objetos de Prata não utilizar " +
+                    "Bom Bril ou outro material abrasivo, nem levar ao fogo."
+                );
             });
         }
 
         // ===== ASSINATURA =====
         private static void CriarAssinatura(IContainer container)
         {
-            container.Row(row =>
+            container.Border(0.5f).BorderColor(Colors.Black).Padding(8).Column(col =>
             {
-                row.RelativeItem().Column(col =>
-                {
-                    col.Item().Text("Conferi(mos) e Recebi(mos) os Materiais Relacionados.").FontSize(8);
-                    col.Item().PaddingTop(15).BorderTop(0.5f).BorderColor(Colors.Black);
-                });
+                col.Item().Text("Conferi(mos) e Recebi(mos) os Materiais Relacionados.").FontSize(8);
+                col.Item().PaddingTop(2).Text("De acordo e ciente.").FontSize(8);
+                col.Item().PaddingTop(8).Text("Data.: ______/______/_________").FontSize(8);
 
-                row.ConstantItem(20);
-
-                row.RelativeItem().Column(col =>
-                {
-                    col.Item().Text("De acordo e ciente.").FontSize(8);
-                    col.Item().PaddingTop(3).Text("Data.: ______/______/_________").FontSize(8);
-                    col.Item().PaddingTop(8).BorderTop(0.5f).BorderColor(Colors.Black);
-                });
+                col.Item().PaddingTop(45)
+                    .BorderTop(0.5f)
+                    .BorderColor(Colors.Black)
+                    .Text("Assinatura");
             });
         }
 

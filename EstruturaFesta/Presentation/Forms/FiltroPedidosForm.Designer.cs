@@ -39,13 +39,15 @@
             DataPedido = new DataGridViewTextBoxColumn();
             DataEntrega = new DataGridViewTextBoxColumn();
             DataRetirada = new DataGridViewTextBoxColumn();
+            textBoxID = new TextBox();
+            labelID = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewPedidos).BeginInit();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(104, 65);
+            label1.Location = new Point(244, 65);
             label1.Name = "label1";
             label1.Size = new Size(65, 15);
             label1.TabIndex = 0;
@@ -63,7 +65,7 @@
             // dateTimePickerInicial
             // 
             dateTimePickerInicial.Format = DateTimePickerFormat.Short;
-            dateTimePickerInicial.Location = new Point(95, 83);
+            dateTimePickerInicial.Location = new Point(235, 83);
             dateTimePickerInicial.Name = "dateTimePickerInicial";
             dateTimePickerInicial.Size = new Size(96, 23);
             dateTimePickerInicial.TabIndex = 2;
@@ -79,7 +81,7 @@
             // 
             // bntBuscar
             // 
-            bntBuscar.Location = new Point(686, 83);
+            bntBuscar.Location = new Point(674, 82);
             bntBuscar.Name = "bntBuscar";
             bntBuscar.Size = new Size(75, 23);
             bntBuscar.TabIndex = 4;
@@ -133,11 +135,29 @@
             DataRetirada.HeaderText = "Data Retirada";
             DataRetirada.Name = "DataRetirada";
             // 
+            // textBoxID
+            // 
+            textBoxID.Location = new Point(40, 83);
+            textBoxID.Name = "textBoxID";
+            textBoxID.Size = new Size(100, 23);
+            textBoxID.TabIndex = 6;
+            // 
+            // labelID
+            // 
+            labelID.AutoSize = true;
+            labelID.Location = new Point(64, 65);
+            labelID.Name = "labelID";
+            labelID.Size = new Size(46, 15);
+            labelID.TabIndex = 7;
+            labelID.Text = "Codigo";
+            // 
             // FiltroPedidosForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(labelID);
+            Controls.Add(textBoxID);
             Controls.Add(dataGridViewPedidos);
             Controls.Add(bntBuscar);
             Controls.Add(dateTimePickerFinal);
@@ -165,5 +185,7 @@
         private DataGridViewTextBoxColumn DataPedido;
         private DataGridViewTextBoxColumn DataEntrega;
         private DataGridViewTextBoxColumn DataRetirada;
+        private TextBox textBoxID;
+        private Label labelID;
     }
 }

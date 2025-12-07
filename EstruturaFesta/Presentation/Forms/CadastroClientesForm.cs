@@ -3,6 +3,7 @@ using EstruturaFesta.Data;
 using EstruturaFesta.Data.Entities;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
+using EstruturaFesta.Utils;
 
 namespace EstruturaFesta
 {
@@ -39,6 +40,10 @@ namespace EstruturaFesta
 
             if (_isEditMode)
                 CarregarCliente();
+        }
+        private void CadastroClientesForm_Load(object sender, EventArgs e)
+        {
+            SistemaUpperCase.AplicarMaiusculo(this);
         }
 
         #region RadioButtons
@@ -127,7 +132,7 @@ namespace EstruturaFesta
         {
             if (_cliente == null) return;
 
-            
+
             _cliente = _db.Clientes
                 .Include(c => c.Contatos)
                 .FirstOrDefault(c => c.ID == _cliente.ID);
@@ -245,7 +250,7 @@ namespace EstruturaFesta
         {
             if (!ValidarCampos()) return;
 
-            
+
 
             if (!_isEditMode)
             {
@@ -294,5 +299,6 @@ namespace EstruturaFesta
         }
         #endregion
 
+       
     }
 }

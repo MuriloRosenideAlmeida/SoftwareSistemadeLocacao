@@ -537,6 +537,7 @@
             Controls.Add(panelCadastroPJ);
             Name = "CadastroClientesForm";
             Text = "Cadastro de Clientes";
+            Load += CadastroClientesForm_Load;
             groupBoxTipoCliente.ResumeLayout(false);
             groupBoxTipoCliente.PerformLayout();
             groupBox2.ResumeLayout(false);

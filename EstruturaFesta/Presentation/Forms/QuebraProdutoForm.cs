@@ -149,28 +149,27 @@ namespace EstruturaFesta.Presentation.Forms
                 return; // Cancela
 
             // Salva no banco
-            
-            
-                foreach (var item in produtosParaBaixa)
-                {
-                    var produtoDb = _db.Produtos.Find(item.ProdutoId);
-                    if (produtoDb != null)
-                        produtoDb.Quantidade -= item.QuantidadeQuebrada;
 
-                    _db.PerdaProdutos.Add(new PerdaProduto
-                    {
-                        ProdutoId = item.ProdutoId,
-                        Quantidade = item.QuantidadeQuebrada,
-                        Data = DateTime.Now,
-                        PedidoId = _pedidoId // vincula a baixa ao pedido
-                    });
-                }
-                _db.SaveChanges();
-            
+
+            foreach (var item in produtosParaBaixa)
+            {
+                var produtoDb = _db.Produtos.Find(item.ProdutoId);
+                if (produtoDb != null)
+                    produtoDb.Quantidade -= item.QuantidadeQuebrada;
+
+                _db.PerdaProdutos.Add(new PerdaProduto
+                {
+                    ProdutoId = item.ProdutoId,
+                    Quantidade = item.QuantidadeQuebrada,
+                    Data = DateTime.Now,
+                    PedidoId = _pedidoId // vincula a baixa ao pedido
+                });
+            }
+            _db.SaveChanges();
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-
     }
 }
     

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using EstruturaFesta.Utils;
 
 namespace EstruturaFesta.Presentation.Forms
 {
@@ -22,34 +23,38 @@ namespace EstruturaFesta.Presentation.Forms
             InitializeComponent();
             _db = db;
         }
+        private void FiltroClienteForm_Load(object sender, EventArgs e)
+        {
+            SistemaUpperCase.AplicarMaiusculo(this);
+        }
         private void FiltrarClientes()
         {
             string filtroNome = textBoxNome.Text.Trim();
             string filtroDocumento = textBoxDocumentos.Text.Trim();
 
-            
-            
-                var query = _db.Clientes
-                    .Select(c => new
-                    {
-                        c.ID,
-                        c.Nome,
-                        Documento = c is ClientePF ? ((ClientePF)c).CPF :
-                                    c is ClientePJ ? ((ClientePJ)c).CNPJ : "",
-                        TipoCliente = c is ClientePF ? "Pessoa Física" : "Pessoa Jurídica",
-                        ClienteEntity = c
-                    })
-                    .AsQueryable();
 
-                if (!string.IsNullOrEmpty(filtroNome))
-                    query = query.Where(c => c.Nome.Contains(filtroNome));
 
-                if (!string.IsNullOrEmpty(filtroDocumento))
-                    query = query.Where(c => c.Documento.Contains(filtroDocumento));
+            var query = _db.Clientes
+                .Select(c => new
+                {
+                    c.ID,
+                    c.Nome,
+                    Documento = c is ClientePF ? ((ClientePF)c).CPF :
+                                c is ClientePJ ? ((ClientePJ)c).CNPJ : "",
+                    TipoCliente = c is ClientePF ? "Pessoa Física" : "Pessoa Jurídica",
+                    ClienteEntity = c
+                })
+                .AsQueryable();
 
-                dataGridViewFiltroClientes.AutoGenerateColumns = false;
-                dataGridViewFiltroClientes.DataSource = query.ToList();
-            
+            if (!string.IsNullOrEmpty(filtroNome))
+                query = query.Where(c => c.Nome.Contains(filtroNome));
+
+            if (!string.IsNullOrEmpty(filtroDocumento))
+                query = query.Where(c => c.Documento.Contains(filtroDocumento));
+
+            dataGridViewFiltroClientes.AutoGenerateColumns = false;
+            dataGridViewFiltroClientes.DataSource = query.ToList();
+
         }
 
         private void buttonFiltro_Click(object sender, EventArgs e)
@@ -66,7 +71,7 @@ namespace EstruturaFesta.Presentation.Forms
 
             if (clienteSelecionado == null) return;
 
-            
+
 
             var clienteDoBanco = _db.Clientes
                 .Include(c => c.Contatos)
@@ -121,5 +126,6 @@ namespace EstruturaFesta.Presentation.Forms
             dataGridViewFiltroClientes.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection =
                 ordenacaoAscendente ? SortOrder.Ascending : SortOrder.Descending;
         }
+
     }
 }

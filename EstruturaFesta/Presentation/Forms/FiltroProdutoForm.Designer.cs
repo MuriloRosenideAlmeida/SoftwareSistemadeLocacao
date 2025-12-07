@@ -212,6 +212,7 @@
             Controls.Add(dataGridViewFiltroProdutos);
             Name = "FiltroProdutoForm";
             Text = "Filtro de Produtos";
+            Load += FiltroProdutoForm_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroProdutos).EndInit();
             ResumeLayout(false);
             PerformLayout();

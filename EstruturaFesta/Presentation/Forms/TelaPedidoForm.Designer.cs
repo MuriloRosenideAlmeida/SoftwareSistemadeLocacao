@@ -86,11 +86,6 @@
             textBoxValorTotal = new TextBox();
             labelValorTotal = new Label();
             dataGridViewPagamentos = new DataGridView();
-            PagamentoId = new DataGridViewTextBoxColumn();
-            FormaPagamento = new DataGridViewComboBoxColumn();
-            DataPagamento = new DataGridViewTextBoxColumn();
-            Valor = new DataGridViewTextBoxColumn();
-            Pago = new DataGridViewCheckBoxColumn();
             textBoxSaldoPedido = new TextBox();
             labelSaldoPedido = new Label();
             textBoxSubTotal = new TextBox();
@@ -102,6 +97,11 @@
             toolTipQuebra = new ToolTip(components);
             buttonSalvarPDF = new Button();
             buttonVisualizarPDF = new Button();
+            PagamentoId = new DataGridViewTextBoxColumn();
+            FormaPagamento = new DataGridViewComboBoxColumn();
+            DataPagamento = new DataGridViewTextBoxColumn();
+            Valor = new DataGridViewTextBoxColumn();
+            Pago = new DataGridViewCheckBoxColumn();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTelefones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
@@ -623,52 +623,6 @@
             dataGridViewPagamentos.RowPostPaint += dataGridViewPagamentos_RowPostPaint;
             dataGridViewPagamentos.KeyDown += dataGridViewPagamentos_KeyDown;
             // 
-            // PagamentoId
-            // 
-            PagamentoId.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-            PagamentoId.DataPropertyName = "Id";
-            PagamentoId.HeaderText = "Codigo";
-            PagamentoId.MaxInputLength = 100;
-            PagamentoId.MinimumWidth = 4;
-            PagamentoId.Name = "PagamentoId";
-            PagamentoId.Visible = false;
-            // 
-            // FormaPagamento
-            // 
-            FormaPagamento.DataPropertyName = "FormaPagamento";
-            dataGridViewCellStyle3.NullValue = "Dinheiro";
-            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle3;
-            FormaPagamento.HeaderText = "Forma de Pagamento";
-            FormaPagamento.Items.AddRange(new object[] { "Dinheiro", "Pix", "Credito", "Debito" });
-            FormaPagamento.Name = "FormaPagamento";
-            // 
-            // DataPagamento
-            // 
-            DataPagamento.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            DataPagamento.DataPropertyName = "DataPagamento";
-            dataGridViewCellStyle4.Format = "d";
-            dataGridViewCellStyle4.NullValue = null;
-            DataPagamento.DefaultCellStyle = dataGridViewCellStyle4;
-            DataPagamento.HeaderText = "Data do Pagamento";
-            DataPagamento.Name = "DataPagamento";
-            // 
-            // Valor
-            // 
-            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Valor.DataPropertyName = "Valor";
-            dataGridViewCellStyle5.Format = "C2";
-            dataGridViewCellStyle5.NullValue = null;
-            Valor.DefaultCellStyle = dataGridViewCellStyle5;
-            Valor.HeaderText = "Valor";
-            Valor.Name = "Valor";
-            // 
-            // Pago
-            // 
-            Pago.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Pago.DataPropertyName = "Pago";
-            Pago.HeaderText = "Pago";
-            Pago.Name = "Pago";
-            // 
             // textBoxSaldoPedido
             // 
             textBoxSaldoPedido.Location = new Point(955, 478);
@@ -763,6 +717,53 @@
             buttonVisualizarPDF.Text = "Visualizar PDF";
             buttonVisualizarPDF.UseVisualStyleBackColor = true;
             buttonVisualizarPDF.Click += buttonVisualizarPDF_Click;
+            // 
+            // PagamentoId
+            // 
+            PagamentoId.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            PagamentoId.DataPropertyName = "Id";
+            PagamentoId.HeaderText = "Codigo";
+            PagamentoId.MaxInputLength = 100;
+            PagamentoId.MinimumWidth = 4;
+            PagamentoId.Name = "PagamentoId";
+            PagamentoId.Visible = false;
+            PagamentoId.Width = 71;
+            // 
+            // FormaPagamento
+            // 
+            FormaPagamento.DataPropertyName = "FormaPagamento";
+            dataGridViewCellStyle3.NullValue = "DINHEIRO";
+            FormaPagamento.DefaultCellStyle = dataGridViewCellStyle3;
+            FormaPagamento.HeaderText = "Forma de Pagamento";
+            FormaPagamento.Items.AddRange(new object[] { "DINHEIRO", "PIX", "CREDITO", "DEBITO" });
+            FormaPagamento.Name = "FormaPagamento";
+            // 
+            // DataPagamento
+            // 
+            DataPagamento.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            DataPagamento.DataPropertyName = "DataPagamento";
+            dataGridViewCellStyle4.Format = "d";
+            dataGridViewCellStyle4.NullValue = null;
+            DataPagamento.DefaultCellStyle = dataGridViewCellStyle4;
+            DataPagamento.HeaderText = "Data do Pagamento";
+            DataPagamento.Name = "DataPagamento";
+            // 
+            // Valor
+            // 
+            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Valor.DataPropertyName = "Valor";
+            dataGridViewCellStyle5.Format = "C2";
+            dataGridViewCellStyle5.NullValue = null;
+            Valor.DefaultCellStyle = dataGridViewCellStyle5;
+            Valor.HeaderText = "Valor";
+            Valor.Name = "Valor";
+            // 
+            // Pago
+            // 
+            Pago.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Pago.DataPropertyName = "Pago";
+            Pago.HeaderText = "Pago";
+            Pago.Name = "Pago";
             // 
             // TelaPedidoForm
             // 
@@ -872,13 +873,13 @@
         private Label labelSubTotal;
         private Label labelAcrescimo;
         private Label labelDesconto;
+        private ToolTip toolTipQuebra;
+        private Button buttonSalvarPDF;
+        private Button buttonVisualizarPDF;
         private DataGridViewTextBoxColumn PagamentoId;
         private DataGridViewComboBoxColumn FormaPagamento;
         private DataGridViewTextBoxColumn DataPagamento;
         private DataGridViewTextBoxColumn Valor;
         private DataGridViewCheckBoxColumn Pago;
-        private ToolTip toolTipQuebra;
-        private Button buttonSalvarPDF;
-        private Button buttonVisualizarPDF;
     }
 }

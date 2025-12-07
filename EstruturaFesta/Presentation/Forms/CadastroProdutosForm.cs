@@ -1,6 +1,7 @@
 ﻿using EstruturaFesta.Data.Entities;
 using EstruturaFesta.Data;
 using System.Data;
+using EstruturaFesta.Utils;
 
 
 namespace EstruturaFesta
@@ -24,6 +25,10 @@ namespace EstruturaFesta
             if (_produto != null)
                 PreencherCampos();
         }
+        private void CadastroProdutosForm_Load(object sender, EventArgs e)
+        {
+            SistemaUpperCase.AplicarMaiusculo(this);
+        }
         private void PreencherCampos()
         {
             if (_produto == null) return;
@@ -38,7 +43,7 @@ namespace EstruturaFesta
             textBoxPrecoReposicao.Text = $"R$ {_produto.PrecoReposicao:N2}";
             dateTimePicker1.Value = _produto.DataCompra;
         }
-        
+
         //Metodo generico que utiliza nas 3 textbox
         private void TextBoxPreco_TextChanged(object sender, EventArgs e)
         {
@@ -85,36 +90,37 @@ namespace EstruturaFesta
                 textBoxNome.Focus(); // Redefine o foco para a TextBox
                 return;
             }
-           
-            
-                if (_produto == null) // Novo produto
-                {
-                    _produto = new Produto();
-                    _db.Produtos.Add(_produto);
-                }
-                else
-                {
-                    _db.Produtos.Attach(_produto);
-                }
 
-                // Atualiza os dados do produto
-                _produto.Nome = textBoxNome.Text;
-                _produto.Quantidade = (int)numericUpDownQuantidade.Value;
-                _produto.PrecoLocacao = Convert.ToDecimal(textBoxPrecoLocacao.Text.Replace("R$", "").Trim());
-                _produto.Especificacao = textBoxEspecificacao.Text;
-                _produto.Material = textBoxMaterial.Text;
-                _produto.Modelo = textBoxModelo.Text;
-                _produto.PrecoCompra = Convert.ToDecimal(textBoxCompra.Text.Replace("R$", "").Trim());
-                _produto.PrecoReposicao = Convert.ToDecimal(textBoxPrecoReposicao.Text.Replace("R$", "").Trim());
-                _produto.DataCompra = dateTimePicker1.Value;
 
-                _db.SaveChanges();
+            if (_produto == null) // Novo produto
+            {
+                _produto = new Produto();
+                _db.Produtos.Add(_produto);
+            }
+            else
+            {
+                _db.Produtos.Attach(_produto);
+            }
 
-                string mensagem = _produto.ID == 0 ? "Produto adicionado com sucesso!" : "Produto atualizado com sucesso!";
-                MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Atualiza os dados do produto
+            _produto.Nome = textBoxNome.Text;
+            _produto.Quantidade = (int)numericUpDownQuantidade.Value;
+            _produto.PrecoLocacao = Convert.ToDecimal(textBoxPrecoLocacao.Text.Replace("R$", "").Trim());
+            _produto.Especificacao = textBoxEspecificacao.Text;
+            _produto.Material = textBoxMaterial.Text;
+            _produto.Modelo = textBoxModelo.Text;
+            _produto.PrecoCompra = Convert.ToDecimal(textBoxCompra.Text.Replace("R$", "").Trim());
+            _produto.PrecoReposicao = Convert.ToDecimal(textBoxPrecoReposicao.Text.Replace("R$", "").Trim());
+            _produto.DataCompra = dateTimePicker1.Value;
 
-                this.Close();
-            
+            _db.SaveChanges();
+
+            string mensagem = _produto.ID == 0 ? "Produto adicionado com sucesso!" : "Produto atualizado com sucesso!";
+            MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            this.Close();
+
         }
+
     }
 }

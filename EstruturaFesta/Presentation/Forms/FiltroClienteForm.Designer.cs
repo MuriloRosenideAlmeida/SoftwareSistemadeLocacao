@@ -139,6 +139,7 @@
             Controls.Add(dataGridViewFiltroClientes);
             Name = "FiltroClienteForm";
             Text = "Filtro de Cliente";
+            Load += FiltroClienteForm_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroClientes).EndInit();
             ResumeLayout(false);
             PerformLayout();

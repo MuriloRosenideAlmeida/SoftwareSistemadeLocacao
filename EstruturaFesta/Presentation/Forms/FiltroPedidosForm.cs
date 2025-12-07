@@ -1,5 +1,6 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
 using EstruturaFesta.Data;
+using EstruturaFesta.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -28,10 +29,37 @@ namespace EstruturaFesta
         {
             dateTimePickerInicial.Value = DateTime.Today;
             dateTimePickerFinal.Value = DateTime.Today.AddDays(1);
+            SistemaUpperCase.AplicarMaiusculo(this);
         }
 
         private void bntBuscar_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrWhiteSpace(textBoxID.Text))
+            {
+                if (int.TryParse(textBoxID.Text, out int idProcurado))
+                {
+                    var pedido = _db.Pedidos
+                        .Where(p => p.ID == idProcurado)
+                        .Select(p => new PedidoFiltroDTO
+                        {
+                            ID = p.ID,
+                            DataPedido = p.DataPedido,
+                            Cliente = p.Cliente.Nome,
+                            DataEntrega = p.DataEntrega,
+                            DataRetirada = p.DataRetirada
+                        })
+                        .ToList();
+
+                    dataGridViewPedidos.AutoGenerateColumns = false;
+                    dataGridViewPedidos.DataSource = pedido;
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("ID inválido!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
             DateTime dataInicial = dateTimePickerInicial.Value.Date;
             DateTime dataFinal = dateTimePickerFinal.Value.Date;
             DateTime dataFinalInclusiva = dataFinal.AddDays(1);

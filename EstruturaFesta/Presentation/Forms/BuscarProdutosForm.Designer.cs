@@ -223,6 +223,7 @@
             Controls.Add(panelFiltros);
             Name = "BuscarProdutosForm";
             Text = "Buscar Produto";
+            Load += BuscarProdutosForm_Load;
             panelFiltros.ResumeLayout(false);
             panelFiltros.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroProdutos).EndInit();

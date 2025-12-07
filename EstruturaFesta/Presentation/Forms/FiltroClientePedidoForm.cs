@@ -1,5 +1,6 @@
 ﻿using EstruturaFesta.Data;
 using EstruturaFesta.Data.Entities;
+using EstruturaFesta.Utils;
 
 
 namespace EstruturaFesta
@@ -16,7 +17,7 @@ namespace EstruturaFesta
        
         private void FormDataGridView_Load(object sender, EventArgs e)
         {
-
+            SistemaUpperCase.AplicarMaiusculo(this);
 
             var clientes = _db.Clientes
        .Select(c => new

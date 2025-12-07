@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using EstruturaFesta.Models;
 using EstruturaFesta.Services;
 using MySqlX.XDevAPI;
+using EstruturaFesta.Utils;
 
 namespace EstruturaFesta
 {
@@ -154,6 +155,7 @@ namespace EstruturaFesta
 
         private void TelaPedidoForm_Load(object sender, EventArgs e)
         {
+            SistemaUpperCase.AplicarMaiusculo(this);
             dateTimePickerEntrega.Value = DateTime.Today;
             dateTimePickerRetirada.Value = DateTime.Today.AddDays(1);
             // Só define data atual se for um pedido NOVO
@@ -1308,6 +1310,7 @@ namespace EstruturaFesta
         }
 
         #endregion
+
         #region Impressão de Pedido
 
         /// <summary>
@@ -1663,8 +1666,8 @@ namespace EstruturaFesta
 
                     if (string.IsNullOrWhiteSpace(forma))
                     {
-                        forma = "Dinheiro";                               // define valor padrão
-                        row.Cells["FormaPagamento"].Value = "Dinheiro";   // mostra no grid
+                        forma = "DINHEIRO";                               // define valor padrão
+                        row.Cells["FormaPagamento"].Value = "DINHEIRO";   // mostra no grid
                     }
 
                     // ========== VERIFICA DATA OBRIGATÓRIA ==========
@@ -1791,8 +1794,8 @@ namespace EstruturaFesta
                     string forma = row.Cells["FormaPagamento"].Value?.ToString();
                     if (string.IsNullOrWhiteSpace(forma))
                     {
-                        forma = "Dinheiro";
-                        row.Cells["FormaPagamento"].Value = "Dinheiro";
+                        forma = "DINHEIRO";
+                        row.Cells["FormaPagamento"].Value = "DINHEIRO";
                     }
 
                     // ========== VERIFICA DATA OBRIGATÓRIA ==========
@@ -1864,7 +1867,7 @@ namespace EstruturaFesta
                 db.SaveChanges();
             }
             MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close();
+            
 
         }
 

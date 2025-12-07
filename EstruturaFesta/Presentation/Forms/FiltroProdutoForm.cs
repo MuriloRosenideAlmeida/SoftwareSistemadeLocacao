@@ -1,5 +1,6 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
 using EstruturaFesta.Data;
+using EstruturaFesta.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,58 +23,61 @@ namespace EstruturaFesta.Presentation.Forms
             dataGridViewFiltroProdutos.AutoGenerateColumns = false;
             _db = db;
         }
-
+        private void FiltroProdutoForm_Load(object sender, EventArgs e)
+        {
+            SistemaUpperCase.AplicarMaiusculo(this);
+        }
         private void buttonFiltrar_Click(object sender, EventArgs e)
         {
             CarregarProdutos();
         }
         private void CarregarProdutos()
         {
-            
-            
-                var query = _db.Produtos.AsQueryable();
 
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroNomeProduto.Text))
+
+            var query = _db.Produtos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroNomeProduto.Text))
+            {
+                string filtro = $"{textBoxFiltroNomeProduto.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Nome, filtro));
+            }
+
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroMaterial.Text))
+            {
+                string filtro = $"{textBoxFiltroMaterial.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Material, filtro));
+            }
+
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroModelo.Text))
+            {
+                string filtro = $"{textBoxFiltroModelo.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Modelo, filtro));
+            }
+
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroEspecificacao.Text))
+            {
+                string filtro = $"{textBoxFiltroEspecificacao.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Especificacao, filtro));
+            }
+
+            var resultado = query
+                .Select(p => new ProdutoDTO
                 {
-                    string filtro = $"{textBoxFiltroNomeProduto.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Nome, filtro));
-                }
+                    ProdutoId = p.ID,
+                    Nome = p.Nome,
+                    Material = p.Material,
+                    Modelo = p.Modelo,
+                    Especificacao = p.Especificacao,
+                    QuantidadeEstoque = p.Quantidade,
+                    ValorUnitario = p.PrecoLocacao,
+                    ValorReposicao = p.PrecoReposicao,
+                })
+                .ToList();
 
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroMaterial.Text))
-                {
-                    string filtro = $"{textBoxFiltroMaterial.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Material, filtro));
-                }
+            dataGridViewFiltroProdutos.AutoGenerateColumns = false;
+            dataGridViewFiltroProdutos.DataSource = resultado;
 
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroModelo.Text))
-                {
-                    string filtro = $"{textBoxFiltroModelo.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Modelo, filtro));
-                }
-
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroEspecificacao.Text))
-                {
-                    string filtro = $"{textBoxFiltroEspecificacao.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Especificacao, filtro));
-                }
-
-                var resultado = query
-                    .Select(p => new ProdutoDTO
-                    {
-                        ProdutoId = p.ID,
-                        Nome = p.Nome,
-                        Material = p.Material,
-                        Modelo = p.Modelo,
-                        Especificacao = p.Especificacao,
-                        QuantidadeEstoque = p.Quantidade,
-                        ValorUnitario = p.PrecoLocacao,
-                        ValorReposicao = p.PrecoReposicao,
-                    })
-                    .ToList();
-
-                dataGridViewFiltroProdutos.AutoGenerateColumns = false;
-                dataGridViewFiltroProdutos.DataSource = resultado;
-            
         }
 
         private void dataGridViewFiltroProdutos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -82,21 +86,21 @@ namespace EstruturaFesta.Presentation.Forms
             {
                 int produtoId = (int)dataGridViewFiltroProdutos.Rows[e.RowIndex].Cells["ProdutoId"].Value;
 
-              
-                
-                    var produto = _db.Produtos.FirstOrDefault(p => p.ID == produtoId);
 
-                    if (produto != null)
+
+                var produto = _db.Produtos.FirstOrDefault(p => p.ID == produtoId);
+
+                if (produto != null)
+                {
+                    using (var form = new CadastroProdutosForm(_db, produto))
                     {
-                        using (var form = new CadastroProdutosForm(_db, produto))
+                        if (form.ShowDialog() == DialogResult.OK) ;
                         {
-                            if (form.ShowDialog() == DialogResult.OK) ;
-                            {
-                                CarregarProdutos();
-                            }
+                            CarregarProdutos();
                         }
                     }
-                
+                }
+
             }
         }
 
@@ -128,5 +132,7 @@ namespace EstruturaFesta.Presentation.Forms
             dataGridViewFiltroProdutos.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection =
                 ascending ? SortOrder.Ascending : SortOrder.Descending;
         }
+
+       
     }
 }

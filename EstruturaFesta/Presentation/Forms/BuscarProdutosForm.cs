@@ -1,5 +1,6 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
 using EstruturaFesta.Data;
+using EstruturaFesta.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,49 +28,49 @@ namespace EstruturaFesta
 
         private void buttonFiltrar_Click(object sender, EventArgs e)
         {
-            
-            
-                var query = _db.Produtos.AsQueryable();
 
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroNomeProduto.Text))
-                {
-                    string filtro = $"{textBoxFiltroNomeProduto.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Nome, filtro));
-                }
 
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroMaterial.Text))
-                {
-                    string filtro = $"{textBoxFiltroMaterial.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Material, filtro));
-                }
+            var query = _db.Produtos.AsQueryable();
 
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroModelo.Text))
-                {
-                    string filtro = $"{textBoxFiltroModelo.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Modelo, filtro));
-                }
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroNomeProduto.Text))
+            {
+                string filtro = $"{textBoxFiltroNomeProduto.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Nome, filtro));
+            }
 
-                if (!string.IsNullOrWhiteSpace(textBoxFiltroEspecificacao.Text))
-                {
-                    string filtro = $"{textBoxFiltroEspecificacao.Text}%";
-                    query = query.Where(p => EF.Functions.Like(p.Especificacao, filtro));
-                }
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroMaterial.Text))
+            {
+                string filtro = $"{textBoxFiltroMaterial.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Material, filtro));
+            }
 
-                var resultado = query
-                .Select(p => new ProdutoDTO
-                {
-                    ProdutoId = p.ID,
-                    Nome = p.Nome,
-                    Material = p.Material,
-                    Modelo = p.Modelo,
-                    Especificacao = p.Especificacao,
-                    QuantidadeEstoque = p.Quantidade,
-                    ValorUnitario = p.PrecoLocacao,
-                    ValorReposicao = p.PrecoReposicao,
-                })
-                .ToList();
-                dataGridViewFiltroProdutos.DataSource = resultado;
-            
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroModelo.Text))
+            {
+                string filtro = $"{textBoxFiltroModelo.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Modelo, filtro));
+            }
+
+            if (!string.IsNullOrWhiteSpace(textBoxFiltroEspecificacao.Text))
+            {
+                string filtro = $"{textBoxFiltroEspecificacao.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.Especificacao, filtro));
+            }
+
+            var resultado = query
+            .Select(p => new ProdutoDTO
+            {
+                ProdutoId = p.ID,
+                Nome = p.Nome,
+                Material = p.Material,
+                Modelo = p.Modelo,
+                Especificacao = p.Especificacao,
+                QuantidadeEstoque = p.Quantidade,
+                ValorUnitario = p.PrecoLocacao,
+                ValorReposicao = p.PrecoReposicao,
+            })
+            .ToList();
+            dataGridViewFiltroProdutos.DataSource = resultado;
+
         }
 
         private void dataGridViewFiltroProdutos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -109,6 +110,11 @@ namespace EstruturaFesta
             // Atualiza o ícone de ordenação
             dataGridViewFiltroProdutos.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection =
                 ascending ? SortOrder.Ascending : SortOrder.Descending;
+        }
+
+        private void BuscarProdutosForm_Load(object sender, EventArgs e)
+        {
+            SistemaUpperCase.AplicarMaiusculo(this);
         }
     }
 }

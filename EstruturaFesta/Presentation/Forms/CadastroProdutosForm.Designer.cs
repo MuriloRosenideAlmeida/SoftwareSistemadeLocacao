@@ -218,6 +218,7 @@ namespace EstruturaFesta
             // numericUpDownQuantidade
             // 
             numericUpDownQuantidade.Location = new Point(193, 86);
+            numericUpDownQuantidade.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericUpDownQuantidade.Name = "numericUpDownQuantidade";
             numericUpDownQuantidade.Size = new Size(85, 23);
             numericUpDownQuantidade.TabIndex = 1;
@@ -260,6 +261,7 @@ namespace EstruturaFesta
             Controls.Add(textBoxNome);
             Name = "CadastroProdutosForm";
             Text = "Cadastro de Produtos";
+            Load += CadastroProdutosForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownQuantidade).EndInit();
             ResumeLayout(false);
