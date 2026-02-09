@@ -83,6 +83,18 @@ namespace EstruturaFesta.Presentation.Forms
                 botaoAtual.ImageAlign = ContentAlignment.MiddleLeft;
             }
         }
+        //Isso serve para abrir o pedido ja existente
+        private void AbrirPedidoDoFiltro(int pedidoId)
+        {
+            // ativa visualmente o botão Pedido
+            BotaoAtivado(bntPedido, CoresRGB.cor1);
+
+            // abre o pedido no panel
+            var telaPedido = ServiceLocator.Provider.GetRequiredService<TelaPedidoForm>();
+            telaPedido.CarregarPedidoPorId(pedidoId);
+
+            AbrirFormFilho(telaPedido);
+        }
 
         private void bntPedido_Click(object sender, EventArgs e)
         {
@@ -93,7 +105,12 @@ namespace EstruturaFesta.Presentation.Forms
         private void bntFiltrarPedido_Click(object sender, EventArgs e)
         {
             BotaoAtivado(sender, CoresRGB.cor2);
-            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<FiltroPedidosForm>());
+            var filtro = ServiceLocator.Provider.GetRequiredService<FiltroPedidosForm>();
+
+            // escuta o evento do filtro
+            filtro.PedidoSelecionado += AbrirPedidoDoFiltro;
+
+            AbrirFormFilho(filtro);
         }
 
         private void bntCadastrarCliente_Click(object sender, EventArgs e)

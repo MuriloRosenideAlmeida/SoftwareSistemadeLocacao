@@ -84,9 +84,7 @@ namespace EstruturaFesta.Presentation.Forms
         {
             if (e.RowIndex >= 0)
             {
-                int produtoId = (int)dataGridViewFiltroProdutos.Rows[e.RowIndex].Cells["ProdutoId"].Value;
-
-
+                int produtoId = (int)dataGridViewFiltroProdutos.Rows[e.RowIndex].Cells["ID"].Value;
 
                 var produto = _db.Produtos.FirstOrDefault(p => p.ID == produtoId);
 

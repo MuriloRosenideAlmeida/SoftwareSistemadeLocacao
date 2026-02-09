@@ -1532,7 +1532,7 @@ namespace EstruturaFesta
 
         #endregion
 
-    #region Botoes Finais
+        #region Botoes Finais
     //Logica do botão para finalizar um pedido
     private void buttonFinalizarPedido_Click(object sender, EventArgs e)
         {
@@ -1831,6 +1831,9 @@ namespace EstruturaFesta
             }
 
             db.SaveChanges();
+            _pedidoId = pedido.ID;
+            textBoxIDPedido.Text = pedido.ID.ToString();
+            this.Text = "pedido.ID";
 
             if (decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldo))
             {

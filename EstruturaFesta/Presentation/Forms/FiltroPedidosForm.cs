@@ -1,5 +1,6 @@
 ﻿using EstruturaFesta.AppServices.DTOs;
 using EstruturaFesta.Data;
+using EstruturaFesta.Presentation.Forms;
 using EstruturaFesta.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -24,7 +25,7 @@ namespace EstruturaFesta
             dataGridViewPedidos.RowPostPaint += dataGridViewPedidos_RowPostPaint;
             _db = db;
         }
-
+        public event Action<int> PedidoSelecionado;
         private void FiltroPedidos_Load(object sender, EventArgs e)
         {
             dateTimePickerInicial.Value = DateTime.Today;
@@ -125,15 +126,8 @@ namespace EstruturaFesta
 
             int pedidoId = Convert.ToInt32(row.Cells["ID"].Value);
 
-            // 🔥 Resolve via DI
-            var telaPedido = ServiceLocator.Provider.GetRequiredService<TelaPedidoForm>();
 
-            // 🔥 Passa o ID
-            telaPedido.CarregarPedidoPorId(pedidoId);
-
-            telaPedido.ShowDialog();
-
-            bntBuscar_Click(null, null);
+            PedidoSelecionado?.Invoke(pedidoId);
         }
 
         private void dataGridViewPedidos_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)

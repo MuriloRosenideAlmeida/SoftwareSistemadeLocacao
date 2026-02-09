@@ -153,7 +153,7 @@ namespace EstruturaFesta.Presentation.Forms
 
             foreach (var item in produtosParaBaixa)
             {
-                var produtoDb = _db.Produtos.Find(item.ProdutoId);
+                var produtoDb = _db.Produtos.Find(item.ProdutoId); // tem erro no codigo da quebra
                 if (produtoDb != null)
                     produtoDb.Quantidade -= item.QuantidadeQuebrada;
 

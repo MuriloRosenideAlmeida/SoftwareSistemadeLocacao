@@ -69,37 +69,6 @@ public class EstruturaDataBase : DbContext
             .Property(p => p.PrecoCompra)
             .HasColumnType("decimal(10,2)");
     }
-    public override int SaveChanges()
-    {
-        ConverterStringsParaMaiusculo();
-        return base.SaveChanges();
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        ConverterStringsParaMaiusculo();
-        return await base.SaveChangesAsync(cancellationToken);
-    }
-
-    private void ConverterStringsParaMaiusculo()
-    {
-        var entries = ChangeTracker.Entries()
-            .Where(e =>
-                e.State == EntityState.Added ||
-                e.State == EntityState.Modified);
-
-        foreach (var entry in entries)
-        {
-            foreach (var prop in entry.Properties)
-            {
-                if (prop.Metadata.ClrType == typeof(string) &&
-                    prop.CurrentValue is string valor &&
-                    !string.IsNullOrEmpty(valor))
-                {
-                    prop.CurrentValue = valor.ToUpper();
-                }
-            }
-        }
-    }
+  
 }
 
