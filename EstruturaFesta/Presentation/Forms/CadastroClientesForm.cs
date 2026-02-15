@@ -155,7 +155,10 @@ namespace EstruturaFesta
                 textBoxNomeCliente.Text = pf.Nome;
                 textBoxCPF.Text = pf.CPF;
                 textBoxRG.Text = pf.RG;
-                maskedTextBoxNascimento.Text = pf.DataNascimento.ToString("dd/MM/yyyy");
+                if (pf.DataNascimento.HasValue)
+                    maskedTextBoxNascimento.Text = pf.DataNascimento.Value.ToString("dd/MM/yyyy");
+                else
+                    maskedTextBoxNascimento.Text = "";
             }
             else if (_cliente is ClientePJ pj)
             {
@@ -219,7 +222,7 @@ namespace EstruturaFesta
             // Dados comuns
             cliente.Rua = textBoxRua.Text?.Trim();
             cliente.Bairro = textBoxBairro.Text?.Trim();
-            cliente.Numero = int.Parse(textBoxNumero.Text);
+            cliente.Numero = textBoxNumero.Text;
             cliente.CEP = textBoxCEP.Text?.Trim();
             cliente.Cidade = textBoxCidade.Text?.Trim();
             cliente.Estado = textBoxEstado.Text?.Trim();
@@ -299,6 +302,6 @@ namespace EstruturaFesta
         }
         #endregion
 
-       
+
     }
 }

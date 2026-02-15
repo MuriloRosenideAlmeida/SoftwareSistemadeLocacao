@@ -4,6 +4,7 @@ using EstruturaFesta.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    partial class EstruturaDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260213022126_AlterandoNumeroParaString")]
+    partial class AlterandoNumeroParaString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,15 +34,19 @@ namespace EstruturaFesta.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Bairro")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CEP")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Cidade")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Complemento")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Discriminador")
@@ -48,15 +55,18 @@ namespace EstruturaFesta.Migrations
                         .HasColumnType("varchar(13)");
 
                     b.Property<string>("Estado")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Nome")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Numero")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Rua")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("ID");
@@ -322,7 +332,7 @@ namespace EstruturaFesta.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("DataNascimento")
+                    b.Property<DateTime>("DataNascimento")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("RG")

@@ -12,7 +12,8 @@ namespace EstruturaFesta.Migrations
 
             var conn = "server=localhost;database=DataBaseEstrutura;user=root;password=Modoxclasher2004!;";
 
-            optionsBuilder.UseMySql(conn, new MySqlServerVersion(new Version(8, 0, 34)));
+            optionsBuilder.UseMySql(conn, new MySqlServerVersion(new Version(8, 0, 34)), b => b.MigrationsAssembly("EstruturaFesta.Migrations")
+ );
 
             return new EstruturaDataBase(optionsBuilder.Options);
         }

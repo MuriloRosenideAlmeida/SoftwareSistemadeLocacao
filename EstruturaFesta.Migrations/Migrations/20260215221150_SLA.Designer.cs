@@ -4,6 +4,7 @@ using EstruturaFesta.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    partial class EstruturaDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260215221150_SLA")]
+    partial class SLA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,6 +60,7 @@ namespace EstruturaFesta.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Rua")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("ID");

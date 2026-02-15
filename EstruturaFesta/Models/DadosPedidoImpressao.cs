@@ -25,7 +25,7 @@ namespace EstruturaFesta.Models
         
         // ===== ENDEREÇO DO CLIENTE =====
         public string EnderecoRua { get; set; }
-        public int EnderecoNumero { get; set; }
+        public string EnderecoNumero { get; set; }
         public string Bairro { get; set; }
         public string Complemento { get; set; }
         public string CEP { get; set; }

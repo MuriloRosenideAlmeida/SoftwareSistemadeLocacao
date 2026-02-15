@@ -4,9 +4,11 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstruturaFesta", "EstruturaFesta.csproj", "{0B93D259-CE6B-DDFE-CE8D-1D0DDBA937D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstruturaFesta.Data", "..\EstruturaFesta.Data\EstruturaFesta.Data.csproj", "{541CFF61-2533-4A63-BF30-AA53A7ACD9C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstruturaFesta.Data", "..\EstruturaFesta.Data\EstruturaFesta.Data.csproj", "{541CFF61-2533-4A63-BF30-AA53A7ACD9C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstruturaFesta.Migrations", "..\EstruturaFesta.Migrations\EstruturaFesta.Migrations.csproj", "{93D8103D-D9C0-44C6-9553-3E664FB00961}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstruturaFesta.Migrations", "..\EstruturaFesta.Migrations\EstruturaFesta.Migrations.csproj", "{93D8103D-D9C0-44C6-9553-3E664FB00961}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstruturaFesta.Migracao", "..\EstruturaFesta.Migracao\EstruturaFesta.Migracao.csproj", "{232A9A26-AE78-4586-8C54-368AC50A18F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{93D8103D-D9C0-44C6-9553-3E664FB00961}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93D8103D-D9C0-44C6-9553-3E664FB00961}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93D8103D-D9C0-44C6-9553-3E664FB00961}.Release|Any CPU.Build.0 = Release|Any CPU
+		{232A9A26-AE78-4586-8C54-368AC50A18F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{232A9A26-AE78-4586-8C54-368AC50A18F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{232A9A26-AE78-4586-8C54-368AC50A18F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{232A9A26-AE78-4586-8C54-368AC50A18F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

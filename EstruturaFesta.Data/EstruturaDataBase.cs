@@ -11,7 +11,7 @@ public class EstruturaDataBase : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseMySql("server=localhost;database=DataBaseEstrutura;user=root;password=Modoxclasher2004!",
-            new MySqlServerVersion(new Version(8, 0, 40)));
+            new MySqlServerVersion(new Version(8, 0, 40)), b => b.MigrationsAssembly("EstruturaFesta.Migrations"));
     }
     public DbSet<Produto> Produtos { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
