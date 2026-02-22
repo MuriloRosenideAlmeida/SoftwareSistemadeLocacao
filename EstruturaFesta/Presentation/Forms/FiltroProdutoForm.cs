@@ -92,7 +92,7 @@ namespace EstruturaFesta.Presentation.Forms
                 {
                     using (var form = new CadastroProdutosForm(_db, produto))
                     {
-                        if (form.ShowDialog() == DialogResult.OK) ;
+                        if (form.ShowDialog() == DialogResult.OK);
                         {
                             CarregarProdutos();
                         }

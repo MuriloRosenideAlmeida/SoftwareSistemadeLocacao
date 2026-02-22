@@ -4,6 +4,7 @@ using EstruturaFesta.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    partial class EstruturaDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260219012912_Contatos")]
+    partial class Contatos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -323,9 +326,6 @@ namespace EstruturaFesta.Migrations
 
                     b.Property<DateTime?>("DataNascimento")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("NomeMae")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("RG")
                         .IsRequired()

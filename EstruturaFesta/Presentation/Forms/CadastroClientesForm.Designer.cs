@@ -49,10 +49,6 @@
             buttonAdicionarCliente = new Button();
             AdicionarCliente = new Label();
             panelCadastroPJ = new Panel();
-            dataGridViewContatosPJ = new DataGridView();
-            Contato = new DataGridViewTextBoxColumn();
-            NomePJ = new DataGridViewTextBoxColumn();
-            labelTelefone = new Label();
             textBoxInscricaoMunicipal = new TextBox();
             InscricaoMunicipal = new Label();
             textBoxInscricaoEstadual = new TextBox();
@@ -64,6 +60,8 @@
             textBoxRazaoSocial = new TextBox();
             RazaoSocial = new Label();
             panelCadastroPF = new Panel();
+            labelNomeMae = new Label();
+            textBoxNomeMae = new TextBox();
             maskedTextBoxNascimento = new MaskedTextBox();
             dataGridViewContatos = new DataGridView();
             TelefoneContato = new DataGridViewTextBoxColumn();
@@ -79,7 +77,6 @@
             groupBoxTipoCliente.SuspendLayout();
             groupBox2.SuspendLayout();
             panelCadastroPJ.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridViewContatosPJ).BeginInit();
             panelCadastroPF.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewContatos).BeginInit();
             SuspendLayout();
@@ -253,9 +250,9 @@
             groupBox2.Controls.Add(Rua);
             groupBox2.Controls.Add(Complemento);
             groupBox2.Controls.Add(textBoxComplemento);
-            groupBox2.Location = new Point(24, 176);
+            groupBox2.Location = new Point(24, 320);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(969, 178);
+            groupBox2.Size = new Size(1014, 178);
             groupBox2.TabIndex = 27;
             groupBox2.TabStop = false;
             groupBox2.Text = "Endereço";
@@ -281,8 +278,6 @@
             // 
             // panelCadastroPJ
             // 
-            panelCadastroPJ.Controls.Add(dataGridViewContatosPJ);
-            panelCadastroPJ.Controls.Add(labelTelefone);
             panelCadastroPJ.Controls.Add(textBoxInscricaoMunicipal);
             panelCadastroPJ.Controls.Add(InscricaoMunicipal);
             panelCadastroPJ.Controls.Add(textBoxInscricaoEstadual);
@@ -295,40 +290,9 @@
             panelCadastroPJ.Controls.Add(RazaoSocial);
             panelCadastroPJ.Location = new Point(189, 12);
             panelCadastroPJ.Name = "panelCadastroPJ";
-            panelCadastroPJ.Size = new Size(804, 160);
+            panelCadastroPJ.Size = new Size(849, 186);
             panelCadastroPJ.TabIndex = 27;
             panelCadastroPJ.Visible = false;
-            // 
-            // dataGridViewContatosPJ
-            // 
-            dataGridViewContatosPJ.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewContatosPJ.Columns.AddRange(new DataGridViewColumn[] { Contato, NomePJ });
-            dataGridViewContatosPJ.Location = new Point(530, 98);
-            dataGridViewContatosPJ.Name = "dataGridViewContatosPJ";
-            dataGridViewContatosPJ.ScrollBars = ScrollBars.Vertical;
-            dataGridViewContatosPJ.Size = new Size(230, 50);
-            dataGridViewContatosPJ.TabIndex = 48;
-            // 
-            // Contato
-            // 
-            Contato.DataPropertyName = "Telefone";
-            Contato.HeaderText = "Telefone";
-            Contato.Name = "Contato";
-            // 
-            // NomePJ
-            // 
-            NomePJ.DataPropertyName = "NomeContato";
-            NomePJ.HeaderText = "Nome";
-            NomePJ.Name = "NomePJ";
-            // 
-            // labelTelefone
-            // 
-            labelTelefone.AutoSize = true;
-            labelTelefone.Location = new Point(473, 111);
-            labelTelefone.Name = "labelTelefone";
-            labelTelefone.Size = new Size(51, 15);
-            labelTelefone.TabIndex = 5;
-            labelTelefone.Text = "Telefone";
             // 
             // textBoxInscricaoMunicipal
             // 
@@ -412,11 +376,11 @@
             // 
             // panelCadastroPF
             // 
+            panelCadastroPF.Controls.Add(labelNomeMae);
+            panelCadastroPF.Controls.Add(textBoxNomeMae);
             panelCadastroPF.Controls.Add(maskedTextBoxNascimento);
-            panelCadastroPF.Controls.Add(dataGridViewContatos);
             panelCadastroPF.Controls.Add(textBoxCPF);
             panelCadastroPF.Controls.Add(label1);
-            panelCadastroPF.Controls.Add(telefone);
             panelCadastroPF.Controls.Add(textBoxRG);
             panelCadastroPF.Controls.Add(rg);
             panelCadastroPF.Controls.Add(cpf);
@@ -424,8 +388,24 @@
             panelCadastroPF.Controls.Add(nomeCliente);
             panelCadastroPF.Location = new Point(189, 12);
             panelCadastroPF.Name = "panelCadastroPF";
-            panelCadastroPF.Size = new Size(804, 160);
+            panelCadastroPF.Size = new Size(849, 186);
             panelCadastroPF.TabIndex = 28;
+            // 
+            // labelNomeMae
+            // 
+            labelNomeMae.AutoSize = true;
+            labelNomeMae.Location = new Point(75, 108);
+            labelNomeMae.Name = "labelNomeMae";
+            labelNomeMae.Size = new Size(82, 15);
+            labelNomeMae.TabIndex = 50;
+            labelNomeMae.Text = "Nome da Mãe";
+            // 
+            // textBoxNomeMae
+            // 
+            textBoxNomeMae.Location = new Point(75, 125);
+            textBoxNomeMae.Name = "textBoxNomeMae";
+            textBoxNomeMae.Size = new Size(395, 23);
+            textBoxNomeMae.TabIndex = 49;
             // 
             // maskedTextBoxNascimento
             // 
@@ -441,20 +421,22 @@
             // 
             dataGridViewContatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewContatos.Columns.AddRange(new DataGridViewColumn[] { TelefoneContato, NomeContato });
-            dataGridViewContatos.Location = new Point(543, 75);
+            dataGridViewContatos.Location = new Point(189, 204);
             dataGridViewContatos.Name = "dataGridViewContatos";
             dataGridViewContatos.ScrollBars = ScrollBars.Vertical;
-            dataGridViewContatos.Size = new Size(230, 50);
+            dataGridViewContatos.Size = new Size(250, 50);
             dataGridViewContatos.TabIndex = 47;
             // 
             // TelefoneContato
             // 
+            TelefoneContato.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             TelefoneContato.DataPropertyName = "Telefone";
             TelefoneContato.HeaderText = "Telefone";
             TelefoneContato.Name = "TelefoneContato";
             // 
             // NomeContato
             // 
+            NomeContato.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             NomeContato.DataPropertyName = "NomeContato";
             NomeContato.HeaderText = "Nome";
             NomeContato.Name = "NomeContato";
@@ -479,7 +461,7 @@
             // telefone
             // 
             telefone.AutoSize = true;
-            telefone.Location = new Point(486, 85);
+            telefone.Location = new Point(132, 214);
             telefone.Name = "telefone";
             telefone.Size = new Size(51, 15);
             telefone.TabIndex = 44;
@@ -530,9 +512,11 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1005, 378);
-            Controls.Add(groupBox2);
+            ClientSize = new Size(1151, 523);
             Controls.Add(groupBoxTipoCliente);
+            Controls.Add(groupBox2);
+            Controls.Add(dataGridViewContatos);
+            Controls.Add(telefone);
             Controls.Add(panelCadastroPF);
             Controls.Add(panelCadastroPJ);
             Name = "CadastroClientesForm";
@@ -544,11 +528,11 @@
             groupBox2.PerformLayout();
             panelCadastroPJ.ResumeLayout(false);
             panelCadastroPJ.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridViewContatosPJ).EndInit();
             panelCadastroPF.ResumeLayout(false);
             panelCadastroPF.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewContatos).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -591,13 +575,11 @@
         private Label InscricaoMunicipal;
         private TextBox textBoxInscricaoEstadual;
         private Label labelInscricaoEstadual;
-        private Label labelTelefone;
         private Button buttonAdicionarCliente;
         private Label AdicionarCliente;
-        private DataGridView dataGridViewContatosPJ;
         private MaskedTextBox maskedTextBoxNascimento;
-        private DataGridViewTextBoxColumn Contato;
-        private DataGridViewTextBoxColumn NomePJ;
+        private Label labelNomeMae;
+        private TextBox textBoxNomeMae;
         private DataGridViewTextBoxColumn TelefoneContato;
         private DataGridViewTextBoxColumn NomeContato;
     }

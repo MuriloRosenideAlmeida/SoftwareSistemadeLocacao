@@ -6,6 +6,7 @@ public class SqlServerContext : DbContext
     public DbSet<EnderecoAntigo> Enderecos { get; set; }
     public DbSet<MunicipioAntigo> Municipios { get; set; }
     public DbSet<EstadoAntigo> Estados { get; set; }
+    public DbSet<TelefoneAntigo> COF_TELEFONES { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -37,6 +38,10 @@ public class SqlServerContext : DbContext
             modelBuilder.Entity<EstadoAntigo>()
                 .ToTable("GLB_ESTADO", "dbo")
                 .HasKey(e => e.SIGLAESTADO);
+
+            modelBuilder.Entity<TelefoneAntigo>().HasNoKey();
+
+            base.OnModelCreating(modelBuilder);
 
         });
     }

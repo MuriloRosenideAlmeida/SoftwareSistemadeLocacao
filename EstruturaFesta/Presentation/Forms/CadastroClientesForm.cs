@@ -23,6 +23,7 @@ namespace EstruturaFesta
             var httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri("https://viacep.com.br/ws/");
             _viaCepClient = new ViaCepClient(httpClient);
+            dataGridViewContatos.AutoGenerateColumns = false;
 
             _cliente = cliente;
             _isEditMode = cliente != null;
@@ -132,10 +133,10 @@ namespace EstruturaFesta
         {
             if (_cliente == null) return;
 
-
             _cliente = _db.Clientes
                 .Include(c => c.Contatos)
                 .FirstOrDefault(c => c.ID == _cliente.ID);
+            
 
             if (_cliente == null) return;
 
@@ -155,6 +156,7 @@ namespace EstruturaFesta
                 textBoxNomeCliente.Text = pf.Nome;
                 textBoxCPF.Text = pf.CPF;
                 textBoxRG.Text = pf.RG;
+                textBoxNomeMae.Text = pf.NomeMae;
                 if (pf.DataNascimento.HasValue)
                     maskedTextBoxNascimento.Text = pf.DataNascimento.Value.ToString("dd/MM/yyyy");
                 else
@@ -177,6 +179,7 @@ namespace EstruturaFesta
                 _contatos.Add(new Contato
                 {
                     ID = contato.ID,
+                    ClienteID = contato.ClienteID,
                     NomeContato = contato.NomeContato,
                     Telefone = contato.Telefone
                 });
@@ -234,6 +237,7 @@ namespace EstruturaFesta
                 pf.Nome = textBoxNomeCliente.Text?.Trim();
                 pf.CPF = textBoxCPF.Text?.Trim();
                 pf.RG = textBoxRG.Text?.Trim();
+                pf.NomeMae = textBoxNomeMae.Text?.Trim();
                 if (DateTime.TryParse(maskedTextBoxNascimento.Text, out DateTime dt))
                     pf.DataNascimento = dt;
             }

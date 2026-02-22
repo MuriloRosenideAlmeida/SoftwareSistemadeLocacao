@@ -18,7 +18,6 @@ namespace EstruturaFesta.Migracao.EntidadesAntigas
         public DateTime? DATANASCIMENTO { get; set; }
         public string? RG_NUMERO { get; set; }
         public string? SIGLAESTADO { get; set; }
-        public string NOMEPAI { get; set; }
         public string NOMEMAE { get; set; }
     }
 
