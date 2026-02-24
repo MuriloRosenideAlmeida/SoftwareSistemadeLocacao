@@ -16,11 +16,6 @@ namespace EstruturaFesta
             InitializeComponent();
 
             _db = db;
-
-            textBoxPrecoLocacao.Text = "R$";
-            textBoxPrecoReposicao.Text = "R$";
-            textBoxCompra.Text = "R$";
-
             _produto = produto;
 
             if (_produto != null)
@@ -29,66 +24,83 @@ namespace EstruturaFesta
         private void CadastroProdutosForm_Load(object sender, EventArgs e)
         {
             SistemaUpperCase.AplicarMaiusculo(this);
+
+            if (_produto == null)
+            {
+                designButtonExcluir.Visible = false;
+            }
         }
         private void PreencherCampos()
         {
             if (_produto == null) return;
-
-            textBoxNome.Text = _produto.Nome;
+            designTextBoxNome.Text = _produto.Nome;
             numericUpDownQuantidade.Value = _produto.Quantidade;
-            textBoxPrecoLocacao.Text = $"R$ {_produto.PrecoLocacao:N2}";
-            textBoxEspecificacao.Text = _produto.Especificacao;
-            textBoxMaterial.Text = _produto.Material;
-            textBoxModelo.Text = _produto.Modelo;
-            textBoxCompra.Text = $"R$ {_produto.PrecoCompra:N2}";
-            textBoxPrecoReposicao.Text = $"R$ {_produto.PrecoReposicao:N2}";
+            designTextBoxPrecoLocacao.Text = $"R$ {_produto.PrecoLocacao:N2}";
+            designTextBoxEspecificacao.Text = _produto.Especificacao;
+            designTextBoxMaterial.Text = _produto.Material;
+            designTextBoxModelo.Text = _produto.Modelo;
+            designTextBoxPrecoCompra.Text = $"R$ {_produto.PrecoCompra:N2}";
+            designTextBoxPrecoReposicao.Text = $"R$ {_produto.PrecoReposicao:N2}";
             dateTimePicker1.Value = _produto.DataCompra;
+            if (!string.IsNullOrEmpty(_produto.NomeImagem))
+            {
+                string caminhoImagem = Path.Combine(
+                    Application.StartupPath,
+                    "ImagensProdutos",
+                    _produto.NomeImagem);
+
+                if (File.Exists(caminhoImagem))
+                {
+                    pictureBoxProduto.Image = Image.FromFile(caminhoImagem);
+                    pictureBoxProduto.Tag = _produto.NomeImagem;
+                }
+            }
         }
 
         //Metodo generico que utiliza nas 3 textbox
         private void TextBoxPreco_TextChanged(object sender, EventArgs e)
         {
-            if (sender is TextBox tb)
+            if (sender is DesignTextBox dtb)
             {
-                if (string.IsNullOrWhiteSpace(tb.Text.Replace("R$", "").Trim()))
+                if (string.IsNullOrWhiteSpace(dtb.Text.Replace("R$", "").Trim()))
                 {
-                    tb.Text = "R$ ";
-                    tb.SelectionStart = tb.Text.Length;
+                    dtb.Text = "R$ ";
+                    dtb.SelectionStart = dtb.Text.Length;
                 }
             }
         }
         //Metodo generico que utiliza nas 3 textbox
         private void TextBoxPreco_Leave(object sender, EventArgs e)
         {
-            if (sender is TextBox tb)
+            if (sender is DesignTextBox dtb)
             {
-                string valorStr = tb.Text.Replace("R$", "").Trim();
+                string valorStr = dtb.Text.Replace("R$", "").Trim();
 
                 if (string.IsNullOrEmpty(valorStr))
                 {
-                    tb.Text = "R$ ";
-                    tb.SelectionStart = tb.Text.Length;
+                    dtb.Text = "R$ ";
+                    dtb.SelectionStart = dtb.Text.Length;
                     return;
                 }
 
                 if (decimal.TryParse(valorStr, out decimal valor))
                 {
-                    tb.Text = $"R$ {valor:N2}";
+                    dtb.Text = $"R$ {valor:N2}";
                 }
                 else
                 {
-                    tb.Text = "R$ ";
-                    tb.SelectionStart = tb.Text.Length;
+                    dtb.Text = "R$ ";
+                    dtb.SelectionStart = dtb.Text.Length;
                 }
             }
         }
 
-        private void BntAdicionar_Click(object sender, EventArgs e)
+        private void designButtonAdicionar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxNome.Text))
+            if (string.IsNullOrWhiteSpace(designTextBoxNome.Text))
             {
                 MessageBox.Show("O nome não pode estar vazio.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxNome.Focus(); // Redefine o foco para a TextBox
+                designTextBoxNome.Focus(); // Redefine o foco para a TextBox
                 return;
             }
 
@@ -104,15 +116,16 @@ namespace EstruturaFesta
             }
 
             // Atualiza os dados do produto
-            _produto.Nome = textBoxNome.Text;
+            _produto.Nome = designTextBoxNome.Text;
             _produto.Quantidade = (int)numericUpDownQuantidade.Value;
-            _produto.PrecoLocacao = Convert.ToDecimal(textBoxPrecoLocacao.Text.Replace("R$", "").Trim());
-            _produto.Especificacao = textBoxEspecificacao.Text;
-            _produto.Material = textBoxMaterial.Text;
-            _produto.Modelo = textBoxModelo.Text;
-            _produto.PrecoCompra = Convert.ToDecimal(textBoxCompra.Text.Replace("R$", "").Trim());
-            _produto.PrecoReposicao = Convert.ToDecimal(textBoxPrecoReposicao.Text.Replace("R$", "").Trim());
+            _produto.PrecoLocacao = Convert.ToDecimal(designTextBoxPrecoLocacao.Text.Replace("R$", "").Trim());
+            _produto.Especificacao = designTextBoxEspecificacao.Text;
+            _produto.Material = designTextBoxMaterial.Text;
+            _produto.Modelo = designTextBoxModelo.Text;
+            _produto.PrecoCompra = Convert.ToDecimal(designTextBoxPrecoCompra.Text.Replace("R$", "").Trim());
+            _produto.PrecoReposicao = Convert.ToDecimal(designTextBoxPrecoReposicao.Text.Replace("R$", "").Trim());
             _produto.DataCompra = dateTimePicker1.Value;
+            _produto.NomeImagem = pictureBoxProduto.Tag?.ToString();
 
             _db.SaveChanges();
 
@@ -123,5 +136,105 @@ namespace EstruturaFesta
 
         }
 
+        private void designButtonExcluir_Click(object sender, EventArgs e)
+        {
+            if (_produto == null)
+            {
+                MessageBox.Show("Nenhum produto selecionado para exclusão.",
+                                "Aviso",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                return;
+            }
+
+            var confirmacao = MessageBox.Show(
+                $"Tem certeza que deseja excluir o produto: \n\n" + $"{_produto.Nome} " +
+                $"{_produto.Modelo} " +
+                $"{_produto.Material} " +
+                $"{_produto.Especificacao}\n\n" +
+                $"Esta ação não poderá ser desfeita.",
+                "Confirmar Exclusão",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirmacao == DialogResult.Yes)
+            {
+                try
+                {
+                    _db.Produtos.Remove(_produto);
+                    if (!string.IsNullOrEmpty(_produto.NomeImagem))
+                    {
+                        string caminhoImagem = Path.Combine(
+                            Application.StartupPath,
+                            "ImagensProdutos",
+                            _produto.NomeImagem);
+
+                        if (File.Exists(caminhoImagem))
+                            File.Delete(caminhoImagem);
+                    }
+                    _db.SaveChanges();
+
+                    MessageBox.Show("Produto excluído com sucesso!",
+                                    "Sucesso",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro ao excluir o produto.\n" + ex.Message,
+                                    "Erro",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void iconPictureBox_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Imagens|*.jpg;*.jpeg;*.png;*.bmp";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    string pastaDestino = Path.Combine(
+                        Application.StartupPath,
+                        "ImagensProdutos");
+
+                    if (!Directory.Exists(pastaDestino))
+                        Directory.CreateDirectory(pastaDestino);
+                    if (pictureBoxProduto.Tag != null)
+                    {
+                        string imagemAntiga = Path.Combine(
+                            pastaDestino,
+                            pictureBoxProduto.Tag.ToString());
+
+                        if (pictureBoxProduto.Image != null)
+                        {
+                            pictureBoxProduto.Image.Dispose();
+                            pictureBoxProduto.Image = null;
+                        }
+                        if (File.Exists(imagemAntiga))
+                            File.Delete(imagemAntiga);
+                    }
+
+                    string nomeArquivo = Guid.NewGuid().ToString() +
+                                         Path.GetExtension(ofd.FileName);
+
+                    string caminhoFinal = Path.Combine(pastaDestino, nomeArquivo);
+
+                    File.Copy(ofd.FileName, caminhoFinal, true);
+
+                    using (var imgTemp = Image.FromFile(caminhoFinal))
+                    {
+                        pictureBoxProduto.Image = new Bitmap(imgTemp);
+                    }
+
+                    pictureBoxProduto.Tag = nomeArquivo;
+                }
+            }
+        }
     }
 }

@@ -142,7 +142,7 @@ namespace EstruturaFesta.Design
         }
 
         [Category("TextBoxPersonalizada")]
-        public string Texts
+        public string Text
         {
             get
             {
@@ -193,6 +193,25 @@ namespace EstruturaFesta.Design
                 textBox1.Text = "";
                 SetPlaceholder();
             }
+        }
+        [Browsable(false)]
+        public int SelectionStart
+        {
+            get { return textBox1.SelectionStart; }
+            set { textBox1.SelectionStart = value; }
+        }
+        [Browsable(false)]
+        public int SelectionLength
+        {
+            get { return textBox1.SelectionLength; }
+            set { textBox1.SelectionLength = value; }
+        }
+        [Browsable(false)]
+        [Category("TextBoxPersonalizada")]
+        public CharacterCasing CharacterCasing
+        {
+            get { return textBox1.CharacterCasing; }
+            set { textBox1.CharacterCasing = value; }
         }
         #endregion
 

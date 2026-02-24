@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EstruturaFesta.Design;
+using System;
 using System.Windows.Forms;
 
 namespace EstruturaFesta.Utils
@@ -17,6 +18,10 @@ namespace EstruturaFesta.Utils
                 if (ctrl is TextBox tb)
                 {
                     tb.CharacterCasing = CharacterCasing.Upper;
+                }
+                else if (ctrl is DesignTextBox dtb)
+                {
+                    dtb.CharacterCasing = CharacterCasing.Upper;
                 }
 
             }

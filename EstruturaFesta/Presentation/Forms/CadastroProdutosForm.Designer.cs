@@ -29,111 +29,79 @@ namespace EstruturaFesta
         /// </summary>
         private void InitializeComponent()
         {
-            textBoxNome = new TextBox();
-            labelNome = new Label();
             labelQuantidade = new Label();
             labelModelo = new Label();
-            textBoxModelo = new TextBox();
-            textBoxMaterial = new TextBox();
             labelMaterial = new Label();
             labelEspecificacao = new Label();
-            textBoxEspecificacao = new TextBox();
-            pictureBox1 = new PictureBox();
+            pictureBoxProduto = new PictureBox();
             labelImagemProduto = new Label();
-            textBoxPrecoLocacao = new TextBox();
             labelPrecoLocacao = new Label();
             labelPrecoCompra = new Label();
             labelPrecoReposicao = new Label();
             labelDataCompra = new Label();
-            textBoxPrecoReposicao = new TextBox();
-            textBoxCompra = new TextBox();
             dateTimePicker1 = new DateTimePicker();
             numericUpDownQuantidade = new NumericUpDown();
-            bntAdicionar = new Button();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            designTextBoxNome = new Design.DesignTextBox();
+            labelNome = new Label();
+            designTextBoxMaterial = new Design.DesignTextBox();
+            designTextBoxModelo = new Design.DesignTextBox();
+            designTextBoxEspecificacao = new Design.DesignTextBox();
+            designTextBoxPrecoLocacao = new Design.DesignTextBox();
+            designTextBoxPrecoReposicao = new Design.DesignTextBox();
+            designTextBoxPrecoCompra = new Design.DesignTextBox();
+            designButtonAdicionar = new Design.DesignButton();
+            designButtonExcluir = new Design.DesignButton();
+            iconPictureBox = new FontAwesome.Sharp.IconPictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxProduto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownQuantidade).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox).BeginInit();
             SuspendLayout();
-            // 
-            // textBoxNome
-            // 
-            textBoxNome.Location = new Point(193, 42);
-            textBoxNome.Name = "textBoxNome";
-            textBoxNome.Size = new Size(346, 23);
-            textBoxNome.TabIndex = 0;
-            // 
-            // labelNome
-            // 
-            labelNome.AutoSize = true;
-            labelNome.Location = new Point(132, 46);
-            labelNome.Name = "labelNome";
-            labelNome.Size = new Size(40, 15);
-            labelNome.TabIndex = 10;
-            labelNome.Text = "Nome";
             // 
             // labelQuantidade
             // 
             labelQuantidade.AutoSize = true;
-            labelQuantidade.Location = new Point(103, 88);
+            labelQuantidade.Location = new Point(103, 97);
             labelQuantidade.Name = "labelQuantidade";
             labelQuantidade.Size = new Size(69, 15);
-            labelQuantidade.TabIndex = 10;
+            labelQuantidade.TabIndex = 0;
             labelQuantidade.Text = "Quantidade";
             // 
             // labelModelo
             // 
             labelModelo.AutoSize = true;
-            labelModelo.Location = new Point(124, 177);
+            labelModelo.Location = new Point(123, 211);
             labelModelo.Name = "labelModelo";
             labelModelo.Size = new Size(48, 15);
-            labelModelo.TabIndex = 10;
+            labelModelo.TabIndex = 0;
             labelModelo.Text = "Modelo";
-            // 
-            // textBoxModelo
-            // 
-            textBoxModelo.Location = new Point(193, 177);
-            textBoxModelo.Name = "textBoxModelo";
-            textBoxModelo.Size = new Size(346, 23);
-            textBoxModelo.TabIndex = 3;
-            // 
-            // textBoxMaterial
-            // 
-            textBoxMaterial.Location = new Point(193, 131);
-            textBoxMaterial.Name = "textBoxMaterial";
-            textBoxMaterial.Size = new Size(346, 23);
-            textBoxMaterial.TabIndex = 2;
             // 
             // labelMaterial
             // 
             labelMaterial.AutoSize = true;
-            labelMaterial.Location = new Point(122, 134);
+            labelMaterial.Location = new Point(121, 148);
             labelMaterial.Name = "labelMaterial";
             labelMaterial.Size = new Size(50, 15);
-            labelMaterial.TabIndex = 10;
+            labelMaterial.TabIndex = 0;
             labelMaterial.Text = "Material";
             // 
             // labelEspecificacao
             // 
             labelEspecificacao.AutoSize = true;
-            labelEspecificacao.Location = new Point(94, 221);
+            labelEspecificacao.Location = new Point(95, 272);
             labelEspecificacao.Name = "labelEspecificacao";
             labelEspecificacao.Size = new Size(78, 15);
-            labelEspecificacao.TabIndex = 10;
+            labelEspecificacao.TabIndex = 0;
             labelEspecificacao.Text = "Especificação";
             // 
-            // textBoxEspecificacao
+            // pictureBoxProduto
             // 
-            textBoxEspecificacao.Location = new Point(193, 221);
-            textBoxEspecificacao.Name = "textBoxEspecificacao";
-            textBoxEspecificacao.Size = new Size(346, 23);
-            textBoxEspecificacao.TabIndex = 4;
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Location = new Point(624, 46);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(174, 151);
-            pictureBox1.TabIndex = 10;
-            pictureBox1.TabStop = false;
+            pictureBoxProduto.BorderStyle = BorderStyle.Fixed3D;
+            pictureBoxProduto.Location = new Point(624, 46);
+            pictureBoxProduto.Name = "pictureBoxProduto";
+            pictureBoxProduto.Size = new Size(174, 151);
+            pictureBoxProduto.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxProduto.TabIndex = 10;
+            pictureBoxProduto.TabStop = false;
             // 
             // labelImagemProduto
             // 
@@ -144,22 +112,13 @@ namespace EstruturaFesta
             labelImagemProduto.TabIndex = 11;
             labelImagemProduto.Text = "Imagem do Produto";
             // 
-            // textBoxPrecoLocacao
-            // 
-            textBoxPrecoLocacao.Location = new Point(193, 264);
-            textBoxPrecoLocacao.Name = "textBoxPrecoLocacao";
-            textBoxPrecoLocacao.Size = new Size(85, 23);
-            textBoxPrecoLocacao.TabIndex = 5;
-            textBoxPrecoLocacao.TextChanged += TextBoxPreco_TextChanged;
-            textBoxPrecoLocacao.Leave += TextBoxPreco_Leave;
-            // 
             // labelPrecoLocacao
             // 
             labelPrecoLocacao.AutoSize = true;
-            labelPrecoLocacao.Location = new Point(72, 267);
+            labelPrecoLocacao.Location = new Point(73, 334);
             labelPrecoLocacao.Name = "labelPrecoLocacao";
             labelPrecoLocacao.Size = new Size(100, 15);
-            labelPrecoLocacao.TabIndex = 10;
+            labelPrecoLocacao.TabIndex = 0;
             labelPrecoLocacao.Text = "Preço de Locação";
             // 
             // labelPrecoCompra
@@ -168,7 +127,7 @@ namespace EstruturaFesta
             labelPrecoCompra.Location = new Point(618, 267);
             labelPrecoCompra.Name = "labelPrecoCompra";
             labelPrecoCompra.Size = new Size(99, 15);
-            labelPrecoCompra.TabIndex = 10;
+            labelPrecoCompra.TabIndex = 0;
             labelPrecoCompra.Text = "Preço de Compra";
             // 
             // labelPrecoReposicao
@@ -177,7 +136,7 @@ namespace EstruturaFesta
             labelPrecoReposicao.Location = new Point(618, 224);
             labelPrecoReposicao.Name = "labelPrecoReposicao";
             labelPrecoReposicao.Size = new Size(110, 15);
-            labelPrecoReposicao.TabIndex = 10;
+            labelPrecoReposicao.TabIndex = 0;
             labelPrecoReposicao.Text = "Preço de Reposição";
             // 
             // labelDataCompra
@@ -186,110 +145,316 @@ namespace EstruturaFesta
             labelDataCompra.Location = new Point(618, 304);
             labelDataCompra.Name = "labelDataCompra";
             labelDataCompra.Size = new Size(93, 15);
-            labelDataCompra.TabIndex = 10;
+            labelDataCompra.TabIndex = 0;
             labelDataCompra.Text = "Data da Compra";
-            // 
-            // textBoxPrecoReposicao
-            // 
-            textBoxPrecoReposicao.Location = new Point(734, 221);
-            textBoxPrecoReposicao.Name = "textBoxPrecoReposicao";
-            textBoxPrecoReposicao.Size = new Size(125, 23);
-            textBoxPrecoReposicao.TabIndex = 6;
-            textBoxPrecoReposicao.TextChanged += TextBoxPreco_TextChanged;
-            textBoxPrecoReposicao.Leave += TextBoxPreco_Leave;
-            // 
-            // textBoxCompra
-            // 
-            textBoxCompra.Location = new Point(734, 264);
-            textBoxCompra.Name = "textBoxCompra";
-            textBoxCompra.Size = new Size(125, 23);
-            textBoxCompra.TabIndex = 7;
-            textBoxCompra.TextChanged += TextBoxPreco_TextChanged;
-            textBoxCompra.Leave += TextBoxPreco_Leave;
             // 
             // dateTimePicker1
             // 
             dateTimePicker1.Format = DateTimePickerFormat.Short;
-            dateTimePicker1.Location = new Point(734, 304);
+            dateTimePicker1.Location = new Point(735, 304);
             dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(125, 23);
-            dateTimePicker1.TabIndex = 8;
+            dateTimePicker1.Size = new Size(140, 23);
+            dateTimePicker1.TabIndex = 9;
             // 
             // numericUpDownQuantidade
             // 
-            numericUpDownQuantidade.Location = new Point(193, 86);
+            numericUpDownQuantidade.Location = new Point(193, 95);
             numericUpDownQuantidade.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericUpDownQuantidade.Name = "numericUpDownQuantidade";
             numericUpDownQuantidade.Size = new Size(85, 23);
-            numericUpDownQuantidade.TabIndex = 1;
+            numericUpDownQuantidade.TabIndex = 2;
             // 
-            // bntAdicionar
+            // designTextBoxNome
             // 
-            bntAdicionar.Location = new Point(624, 370);
-            bntAdicionar.Name = "bntAdicionar";
-            bntAdicionar.Size = new Size(110, 43);
-            bntAdicionar.TabIndex = 9;
-            bntAdicionar.Text = "Adicionar";
-            bntAdicionar.UseVisualStyleBackColor = true;
-            bntAdicionar.Click += BntAdicionar_Click;
+            designTextBoxNome.BackColor = SystemColors.Window;
+            designTextBoxNome.BorderColor = Color.MediumSlateBlue;
+            designTextBoxNome.BorderFocusColor = Color.HotPink;
+            designTextBoxNome.BorderRadius = 16;
+            designTextBoxNome.BorderSize = 1;
+            designTextBoxNome.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxNome.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNome.ForeColor = SystemColors.WindowText;
+            designTextBoxNome.Location = new Point(193, 41);
+            designTextBoxNome.Multiline = false;
+            designTextBoxNome.Name = "designTextBoxNome";
+            designTextBoxNome.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxNome.PasswordChar = false;
+            designTextBoxNome.PlaceholderColor = Color.DarkGray;
+            designTextBoxNome.PlaceholderText = "Nome do Produto";
+            designTextBoxNome.SelectionLength = 0;
+            designTextBoxNome.SelectionStart = 0;
+            designTextBoxNome.Size = new Size(346, 32);
+            designTextBoxNome.TabIndex = 1;
+            designTextBoxNome.UnderlinedStyle = false;
+            // 
+            // labelNome
+            // 
+            labelNome.AutoSize = true;
+            labelNome.Location = new Point(132, 51);
+            labelNome.Name = "labelNome";
+            labelNome.Size = new Size(40, 15);
+            labelNome.TabIndex = 0;
+            labelNome.Text = "Nome";
+            // 
+            // designTextBoxMaterial
+            // 
+            designTextBoxMaterial.BackColor = SystemColors.Window;
+            designTextBoxMaterial.BorderColor = Color.MediumSlateBlue;
+            designTextBoxMaterial.BorderFocusColor = Color.HotPink;
+            designTextBoxMaterial.BorderRadius = 16;
+            designTextBoxMaterial.BorderSize = 1;
+            designTextBoxMaterial.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxMaterial.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxMaterial.ForeColor = SystemColors.WindowText;
+            designTextBoxMaterial.Location = new Point(192, 141);
+            designTextBoxMaterial.Multiline = false;
+            designTextBoxMaterial.Name = "designTextBoxMaterial";
+            designTextBoxMaterial.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxMaterial.PasswordChar = false;
+            designTextBoxMaterial.PlaceholderColor = Color.DarkGray;
+            designTextBoxMaterial.PlaceholderText = "Tipo de Material";
+            designTextBoxMaterial.SelectionLength = 0;
+            designTextBoxMaterial.SelectionStart = 0;
+            designTextBoxMaterial.Size = new Size(347, 32);
+            designTextBoxMaterial.TabIndex = 3;
+            designTextBoxMaterial.UnderlinedStyle = false;
+            // 
+            // designTextBoxModelo
+            // 
+            designTextBoxModelo.BackColor = SystemColors.Window;
+            designTextBoxModelo.BorderColor = Color.MediumSlateBlue;
+            designTextBoxModelo.BorderFocusColor = Color.HotPink;
+            designTextBoxModelo.BorderRadius = 16;
+            designTextBoxModelo.BorderSize = 1;
+            designTextBoxModelo.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxModelo.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxModelo.ForeColor = SystemColors.WindowText;
+            designTextBoxModelo.Location = new Point(193, 207);
+            designTextBoxModelo.Multiline = false;
+            designTextBoxModelo.Name = "designTextBoxModelo";
+            designTextBoxModelo.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxModelo.PasswordChar = false;
+            designTextBoxModelo.PlaceholderColor = Color.DarkGray;
+            designTextBoxModelo.PlaceholderText = "Nome do Modelo";
+            designTextBoxModelo.SelectionLength = 0;
+            designTextBoxModelo.SelectionStart = 0;
+            designTextBoxModelo.Size = new Size(346, 32);
+            designTextBoxModelo.TabIndex = 4;
+            designTextBoxModelo.UnderlinedStyle = false;
+            // 
+            // designTextBoxEspecificacao
+            // 
+            designTextBoxEspecificacao.BackColor = SystemColors.Window;
+            designTextBoxEspecificacao.BorderColor = Color.MediumSlateBlue;
+            designTextBoxEspecificacao.BorderFocusColor = Color.HotPink;
+            designTextBoxEspecificacao.BorderRadius = 16;
+            designTextBoxEspecificacao.BorderSize = 1;
+            designTextBoxEspecificacao.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxEspecificacao.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxEspecificacao.ForeColor = SystemColors.WindowText;
+            designTextBoxEspecificacao.Location = new Point(193, 267);
+            designTextBoxEspecificacao.Multiline = false;
+            designTextBoxEspecificacao.Name = "designTextBoxEspecificacao";
+            designTextBoxEspecificacao.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxEspecificacao.PasswordChar = false;
+            designTextBoxEspecificacao.PlaceholderColor = Color.DarkGray;
+            designTextBoxEspecificacao.PlaceholderText = "Tipo de Especificação";
+            designTextBoxEspecificacao.SelectionLength = 0;
+            designTextBoxEspecificacao.SelectionStart = 0;
+            designTextBoxEspecificacao.Size = new Size(347, 32);
+            designTextBoxEspecificacao.TabIndex = 5;
+            designTextBoxEspecificacao.UnderlinedStyle = false;
+            // 
+            // designTextBoxPrecoLocacao
+            // 
+            designTextBoxPrecoLocacao.BackColor = SystemColors.Window;
+            designTextBoxPrecoLocacao.BorderColor = Color.MediumSlateBlue;
+            designTextBoxPrecoLocacao.BorderFocusColor = Color.HotPink;
+            designTextBoxPrecoLocacao.BorderRadius = 16;
+            designTextBoxPrecoLocacao.BorderSize = 1;
+            designTextBoxPrecoLocacao.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxPrecoLocacao.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxPrecoLocacao.ForeColor = SystemColors.WindowText;
+            designTextBoxPrecoLocacao.Location = new Point(193, 327);
+            designTextBoxPrecoLocacao.Multiline = false;
+            designTextBoxPrecoLocacao.Name = "designTextBoxPrecoLocacao";
+            designTextBoxPrecoLocacao.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxPrecoLocacao.PasswordChar = false;
+            designTextBoxPrecoLocacao.PlaceholderColor = SystemColors.WindowText;
+            designTextBoxPrecoLocacao.PlaceholderText = "R$";
+            designTextBoxPrecoLocacao.SelectionLength = 0;
+            designTextBoxPrecoLocacao.SelectionStart = 0;
+            designTextBoxPrecoLocacao.Size = new Size(123, 32);
+            designTextBoxPrecoLocacao.TabIndex = 6;
+            designTextBoxPrecoLocacao.UnderlinedStyle = false;
+            designTextBoxPrecoLocacao._TextChanged += TextBoxPreco_TextChanged;
+            designTextBoxPrecoLocacao.Leave += TextBoxPreco_Leave;
+            // 
+            // designTextBoxPrecoReposicao
+            // 
+            designTextBoxPrecoReposicao.BackColor = SystemColors.Window;
+            designTextBoxPrecoReposicao.BorderColor = Color.MediumSlateBlue;
+            designTextBoxPrecoReposicao.BorderFocusColor = Color.HotPink;
+            designTextBoxPrecoReposicao.BorderRadius = 16;
+            designTextBoxPrecoReposicao.BorderSize = 1;
+            designTextBoxPrecoReposicao.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxPrecoReposicao.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxPrecoReposicao.ForeColor = SystemColors.WindowText;
+            designTextBoxPrecoReposicao.Location = new Point(734, 216);
+            designTextBoxPrecoReposicao.Multiline = false;
+            designTextBoxPrecoReposicao.Name = "designTextBoxPrecoReposicao";
+            designTextBoxPrecoReposicao.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxPrecoReposicao.PasswordChar = false;
+            designTextBoxPrecoReposicao.PlaceholderColor = SystemColors.WindowText;
+            designTextBoxPrecoReposicao.PlaceholderText = "R$";
+            designTextBoxPrecoReposicao.SelectionLength = 0;
+            designTextBoxPrecoReposicao.SelectionStart = 0;
+            designTextBoxPrecoReposicao.Size = new Size(140, 32);
+            designTextBoxPrecoReposicao.TabIndex = 7;
+            designTextBoxPrecoReposicao.UnderlinedStyle = false;
+            designTextBoxPrecoReposicao._TextChanged += TextBoxPreco_TextChanged;
+            designTextBoxPrecoReposicao.Leave += TextBoxPreco_Leave;
+            // 
+            // designTextBoxPrecoCompra
+            // 
+            designTextBoxPrecoCompra.BackColor = SystemColors.Window;
+            designTextBoxPrecoCompra.BorderColor = Color.MediumSlateBlue;
+            designTextBoxPrecoCompra.BorderFocusColor = Color.HotPink;
+            designTextBoxPrecoCompra.BorderRadius = 16;
+            designTextBoxPrecoCompra.BorderSize = 1;
+            designTextBoxPrecoCompra.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxPrecoCompra.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxPrecoCompra.ForeColor = SystemColors.WindowText;
+            designTextBoxPrecoCompra.Location = new Point(734, 260);
+            designTextBoxPrecoCompra.Multiline = false;
+            designTextBoxPrecoCompra.Name = "designTextBoxPrecoCompra";
+            designTextBoxPrecoCompra.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxPrecoCompra.PasswordChar = false;
+            designTextBoxPrecoCompra.PlaceholderColor = SystemColors.WindowText;
+            designTextBoxPrecoCompra.PlaceholderText = "R$";
+            designTextBoxPrecoCompra.SelectionLength = 0;
+            designTextBoxPrecoCompra.SelectionStart = 0;
+            designTextBoxPrecoCompra.Size = new Size(140, 32);
+            designTextBoxPrecoCompra.TabIndex = 8;
+            designTextBoxPrecoCompra.UnderlinedStyle = false;
+            designTextBoxPrecoCompra._TextChanged += TextBoxPreco_TextChanged;
+            designTextBoxPrecoCompra.Leave += TextBoxPreco_Leave;
+            // 
+            // designButtonAdicionar
+            // 
+            designButtonAdicionar.BackColor = Color.LimeGreen;
+            designButtonAdicionar.BackgroundColor = Color.LimeGreen;
+            designButtonAdicionar.BorderColor = Color.LimeGreen;
+            designButtonAdicionar.BorderRadius = 22;
+            designButtonAdicionar.BorderSize = 0;
+            designButtonAdicionar.FlatAppearance.BorderSize = 0;
+            designButtonAdicionar.FlatStyle = FlatStyle.Flat;
+            designButtonAdicionar.ForeColor = Color.White;
+            designButtonAdicionar.Location = new Point(733, 374);
+            designButtonAdicionar.Name = "designButtonAdicionar";
+            designButtonAdicionar.Size = new Size(126, 40);
+            designButtonAdicionar.TabIndex = 0;
+            designButtonAdicionar.Text = "Adicionar";
+            designButtonAdicionar.TextColor = Color.White;
+            designButtonAdicionar.UseVisualStyleBackColor = false;
+            designButtonAdicionar.Click += designButtonAdicionar_Click;
+            // 
+            // designButtonExcluir
+            // 
+            designButtonExcluir.BackColor = Color.Red;
+            designButtonExcluir.BackgroundColor = Color.Red;
+            designButtonExcluir.BorderColor = Color.Red;
+            designButtonExcluir.BorderRadius = 22;
+            designButtonExcluir.BorderSize = 0;
+            designButtonExcluir.FlatAppearance.BorderSize = 0;
+            designButtonExcluir.FlatStyle = FlatStyle.Flat;
+            designButtonExcluir.ForeColor = Color.White;
+            designButtonExcluir.Location = new Point(591, 374);
+            designButtonExcluir.Name = "designButtonExcluir";
+            designButtonExcluir.Size = new Size(126, 40);
+            designButtonExcluir.TabIndex = 0;
+            designButtonExcluir.Text = "Excluir";
+            designButtonExcluir.TextColor = Color.White;
+            designButtonExcluir.UseVisualStyleBackColor = false;
+            designButtonExcluir.Click += designButtonExcluir_Click;
+            // 
+            // iconPictureBox
+            // 
+            iconPictureBox.BackColor = SystemColors.Control;
+            iconPictureBox.ForeColor = SystemColors.GrayText;
+            iconPictureBox.IconChar = FontAwesome.Sharp.IconChar.CameraAlt;
+            iconPictureBox.IconColor = SystemColors.GrayText;
+            iconPictureBox.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox.IconSize = 50;
+            iconPictureBox.Location = new Point(684, 96);
+            iconPictureBox.Name = "iconPictureBox";
+            iconPictureBox.Size = new Size(52, 50);
+            iconPictureBox.TabIndex = 12;
+            iconPictureBox.TabStop = false;
+            iconPictureBox.Click += iconPictureBox_Click;
             // 
             // CadastroProdutosForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.Control;
             ClientSize = new Size(917, 463);
-            Controls.Add(bntAdicionar);
+            Controls.Add(iconPictureBox);
+            Controls.Add(designButtonExcluir);
+            Controls.Add(designButtonAdicionar);
+            Controls.Add(labelNome);
+            Controls.Add(designTextBoxPrecoCompra);
+            Controls.Add(designTextBoxPrecoReposicao);
+            Controls.Add(designTextBoxPrecoLocacao);
+            Controls.Add(designTextBoxEspecificacao);
+            Controls.Add(designTextBoxModelo);
+            Controls.Add(designTextBoxMaterial);
+            Controls.Add(designTextBoxNome);
             Controls.Add(numericUpDownQuantidade);
             Controls.Add(dateTimePicker1);
-            Controls.Add(textBoxCompra);
-            Controls.Add(textBoxPrecoReposicao);
             Controls.Add(labelDataCompra);
             Controls.Add(labelPrecoReposicao);
             Controls.Add(labelPrecoCompra);
             Controls.Add(labelPrecoLocacao);
-            Controls.Add(textBoxPrecoLocacao);
             Controls.Add(labelImagemProduto);
-            Controls.Add(pictureBox1);
-            Controls.Add(textBoxEspecificacao);
+            Controls.Add(pictureBoxProduto);
             Controls.Add(labelEspecificacao);
             Controls.Add(labelMaterial);
-            Controls.Add(textBoxMaterial);
-            Controls.Add(textBoxModelo);
             Controls.Add(labelModelo);
             Controls.Add(labelQuantidade);
-            Controls.Add(labelNome);
-            Controls.Add(textBoxNome);
             Name = "CadastroProdutosForm";
             Text = "Cadastro de Produtos";
             Load += CadastroProdutosForm_Load;
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxProduto).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownQuantidade).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private TextBox textBoxNome;
-        private Label labelNome;
         private Label labelQuantidade;
         private Label labelModelo;
-        private TextBox textBoxModelo;
-        private TextBox textBoxMaterial;
         private Label labelMaterial;
         private Label labelEspecificacao;
-        private TextBox textBoxEspecificacao;
-        private PictureBox pictureBox1;
+        private PictureBox pictureBoxProduto;
         private Label labelImagemProduto;
-        private TextBox textBoxPrecoLocacao;
         private Label labelPrecoLocacao;
         private Label labelPrecoCompra;
         private Label labelPrecoReposicao;
         private Label labelDataCompra;
-        private TextBox textBoxPrecoReposicao;
-        private TextBox textBoxCompra;
         private DateTimePicker dateTimePicker1;
         private NumericUpDown numericUpDownQuantidade;
-        private Button bntAdicionar;
+        private Design.DesignTextBox designTextBoxNome;
+        private Label labelNome;
+        private Design.DesignTextBox designTextBoxMaterial;
+        private Design.DesignTextBox designTextBoxModelo;
+        private Design.DesignTextBox designTextBoxEspecificacao;
+        private Design.DesignTextBox designTextBoxPrecoLocacao;
+        private Design.DesignTextBox designTextBoxPrecoReposicao;
+        private Design.DesignTextBox designTextBoxPrecoCompra;
+        private Design.DesignButton designButtonAdicionar;
+        private Design.DesignButton designButtonExcluir;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox;
     }
 }

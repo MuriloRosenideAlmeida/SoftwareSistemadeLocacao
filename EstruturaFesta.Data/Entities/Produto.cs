@@ -30,6 +30,7 @@
             set => _precoReposicao = Math.Round(value, 2);
         }
         public DateTime DataCompra { get; set; }
+        public string? NomeImagem { get; set; }
 
         public Produto()
         {
