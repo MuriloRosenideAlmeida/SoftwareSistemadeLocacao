@@ -67,7 +67,7 @@ Tela para cadastro de produtos com informações uteis para controle financeiro 
 
 
   
-![Tela de Cadastro de Produtos](EstruturaFesta/Images/TelaCadastroProduto.PNG)
+![Tela de Cadastro de Produtos](EstruturaFesta/Images/TelaCadastroProdutos.PNG)
 
 ---
 ### Filtro de Produtos
