@@ -26,8 +26,9 @@ namespace EstruturaFesta.Presentation.Forms
         private void FiltroProdutoForm_Load(object sender, EventArgs e)
         {
             SistemaUpperCase.AplicarMaiusculo(this);
+
         }
-        private void buttonFiltrar_Click(object sender, EventArgs e)
+        private void designButtonFiltrar_Click(object sender, EventArgs e)
         {
             CarregarProdutos();
         }
@@ -37,27 +38,33 @@ namespace EstruturaFesta.Presentation.Forms
 
             var query = _db.Produtos.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(textBoxFiltroNomeProduto.Text))
+            if (!string.IsNullOrWhiteSpace(designTextBoxID.Text))
             {
-                string filtro = $"{textBoxFiltroNomeProduto.Text}%";
+                string filtro = $"{designTextBoxID.Text}%";
+                query = query.Where(p => EF.Functions.Like(p.ID, filtro));
+            }
+
+            if (!string.IsNullOrWhiteSpace(designTextBoxNome.Text))
+            {
+                string filtro = $"{designTextBoxNome.Text}%";
                 query = query.Where(p => EF.Functions.Like(p.Nome, filtro));
             }
 
-            if (!string.IsNullOrWhiteSpace(textBoxFiltroMaterial.Text))
+            if (!string.IsNullOrWhiteSpace(designTextBoxMaterial.Text))
             {
-                string filtro = $"{textBoxFiltroMaterial.Text}%";
+                string filtro = $"{designTextBoxMaterial.Text}%";
                 query = query.Where(p => EF.Functions.Like(p.Material, filtro));
             }
 
-            if (!string.IsNullOrWhiteSpace(textBoxFiltroModelo.Text))
+            if (!string.IsNullOrWhiteSpace(designTextBoxModelo.Text))
             {
-                string filtro = $"{textBoxFiltroModelo.Text}%";
+                string filtro = $"{designTextBoxModelo.Text}%";
                 query = query.Where(p => EF.Functions.Like(p.Modelo, filtro));
             }
 
-            if (!string.IsNullOrWhiteSpace(textBoxFiltroEspecificacao.Text))
+            if (!string.IsNullOrWhiteSpace(designTextBoxEspecificacao.Text))
             {
-                string filtro = $"{textBoxFiltroEspecificacao.Text}%";
+                string filtro = $"{designTextBoxEspecificacao.Text}%";
                 query = query.Where(p => EF.Functions.Like(p.Especificacao, filtro));
             }
 
@@ -92,7 +99,7 @@ namespace EstruturaFesta.Presentation.Forms
                 {
                     using (var form = new CadastroProdutosForm(_db, produto))
                     {
-                        if (form.ShowDialog() == DialogResult.OK);
+                        if (form.ShowDialog() == DialogResult.OK) ;
                         {
                             CarregarProdutos();
                         }
@@ -131,6 +138,6 @@ namespace EstruturaFesta.Presentation.Forms
                 ascending ? SortOrder.Ascending : SortOrder.Descending;
         }
 
-       
+        
     }
 }
