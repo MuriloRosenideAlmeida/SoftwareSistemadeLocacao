@@ -15,6 +15,12 @@ namespace EstruturaFesta
         private Cliente _cliente;
         private bool _isEditMode;
         private BindingList<Contato> _contatos;
+        private ClientePF DocumentoJaExiste(string cpfNumeros)
+        {
+            return _db.Clientes
+                .OfType<ClientePF>()
+                .FirstOrDefault(c => c.CPF == cpfNumeros);
+        }
 
         public CadastroClientesForm(EstruturaDataBase db, Cliente cliente = null)
         {
@@ -63,6 +69,89 @@ namespace EstruturaFesta
         }
         #endregion
         #region CEP e CPF
+        public bool ValidarCpf(string cpf)
+        {
+            cpf = new string(cpf.Where(char.IsDigit).ToArray());
+
+            if (cpf.Length != 11)
+                return false;
+
+            if (new string(cpf[0], 11) == cpf)
+                return false;
+
+            int[] multiplicador1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+
+            string tempCpf = cpf.Substring(0, 9);
+            int soma = 0;
+
+            for (int i = 0; i < 9; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
+
+            int resto = soma % 11;
+            resto = resto < 2 ? 0 : 11 - resto;
+
+            string digito = resto.ToString();
+            tempCpf += digito;
+
+            soma = 0;
+
+            for (int i = 0; i < 10; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
+
+            resto = soma % 11;
+            resto = resto < 2 ? 0 : 11 - resto;
+
+            digito += resto.ToString();
+
+            return cpf.EndsWith(digito);
+        }
+        private void designTextBoxCPF__TextChanged(object sender, EventArgs e)
+        {
+
+            string texto = new string(designTextBoxCPF.Text
+        .Where(char.IsDigit)
+        .ToArray());
+
+            if (texto.Length > 11)
+                texto = texto.Substring(0, 11);
+
+            if (texto.Length >= 4)
+                texto = texto.Insert(3, ".");
+            if (texto.Length >= 8)
+                texto = texto.Insert(7, ".");
+            if (texto.Length >= 12)
+                texto = texto.Insert(11, "-");
+
+            designTextBoxCPF.TextChanged -= designTextBoxCPF__TextChanged;
+            designTextBoxCPF.Text = texto;
+            designTextBoxCPF.SelectionStart = designTextBoxCPF.Text.Length;
+            designTextBoxCPF.TextChanged += designTextBoxCPF__TextChanged;
+        }
+        private void designTextBoxCPF_Leave(object sender, EventArgs e)
+        {
+            string cpf = designTextBoxCPF.Text;
+
+            if (!string.IsNullOrWhiteSpace(cpf) && !ValidarCpf(cpf))
+            {
+                MessageBox.Show("CPF inválido!");
+                designTextBoxCPF.Focus();
+            }
+            if (!_isEditMode)
+            {
+                var clienteExistente = DocumentoJaExiste(cpf);
+                if (clienteExistente != null)
+                {
+                    MessageBox.Show(
+                     $"Já existe um cliente cadastrado com esse CPF.\n\nNúmero do cadastro: {clienteExistente.ID}",
+                     "Documento duplicado",
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Warning);
+
+                }
+            }
+            
+        }
         private void textBoxCEP_Leave(object sender, EventArgs e) => LocalizarCEP();
         private void textBoxCEP_KeyDown(object sender, KeyEventArgs e)
         {
@@ -116,7 +205,7 @@ namespace EstruturaFesta
             }
         }
 
-        private void textBoxCPF_KeyPress(object sender, KeyPressEventArgs e)
+        private void designTextBoxCPF_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) e.Handled = true;
         }
@@ -136,7 +225,7 @@ namespace EstruturaFesta
             _cliente = _db.Clientes
                 .Include(c => c.Contatos)
                 .FirstOrDefault(c => c.ID == _cliente.ID);
-            
+
 
             if (_cliente == null) return;
 
@@ -153,10 +242,10 @@ namespace EstruturaFesta
             if (_cliente is ClientePF pf)
             {
                 radioButtonPF.Checked = true;
-                textBoxNomeCliente.Text = pf.Nome;
-                textBoxCPF.Text = pf.CPF;
-                textBoxRG.Text = pf.RG;
-                textBoxNomeMae.Text = pf.NomeMae;
+                designTextBoxNomeCliente.Text = pf.Nome;
+                designTextBoxCPF.Text = pf.CPF;
+                designTextBoxRG.Text = pf.RG;
+                designTextBoxNomeMae.Text = pf.NomeMae;
                 if (pf.DataNascimento.HasValue)
                     maskedTextBoxNascimento.Text = pf.DataNascimento.Value.ToString("dd/MM/yyyy");
                 else
@@ -192,8 +281,8 @@ namespace EstruturaFesta
         {
             if (radioButtonPF.Checked)
             {
-                if (string.IsNullOrWhiteSpace(textBoxNomeCliente.Text) ||
-                    string.IsNullOrWhiteSpace(textBoxCPF.Text))
+                if (string.IsNullOrWhiteSpace(designTextBoxNomeCliente.Text) ||
+                    string.IsNullOrWhiteSpace(designTextBoxCPF.Text))
                 {
                     MessageBox.Show("Nome e CPF são obrigatórios.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
@@ -234,10 +323,10 @@ namespace EstruturaFesta
             // Campos específicos
             if (cliente is ClientePF pf)
             {
-                pf.Nome = textBoxNomeCliente.Text?.Trim();
-                pf.CPF = textBoxCPF.Text?.Trim();
-                pf.RG = textBoxRG.Text?.Trim();
-                pf.NomeMae = textBoxNomeMae.Text?.Trim();
+                pf.Nome = designTextBoxNomeCliente.Text?.Trim();
+                pf.CPF = designTextBoxCPF.Text?.Trim();
+                pf.RG = designTextBoxRG.Text?.Trim();
+                pf.NomeMae = designTextBoxNomeMae.Text?.Trim();
                 if (DateTime.TryParse(maskedTextBoxNascimento.Text, out DateTime dt))
                     pf.DataNascimento = dt;
             }
@@ -305,7 +394,5 @@ namespace EstruturaFesta
             this.Close();
         }
         #endregion
-
-
     }
 }

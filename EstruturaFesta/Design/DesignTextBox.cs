@@ -30,7 +30,7 @@ namespace EstruturaFesta.Design
         private string placeholderText = "";
         private bool isPlaceholder = false;
         private bool isPasswordChar = false;
-
+        private bool isUpdating = false;
         //Events
         public event EventHandler _TextChanged;
 
@@ -289,24 +289,33 @@ namespace EstruturaFesta.Design
         #region -> Private methods
         private void SetPlaceholder()
         {
-            if (string.IsNullOrWhiteSpace(textBox1.Text) && placeholderText != "")
+            if (isUpdating) return;
+
+            if (!textBox1.Focused && string.IsNullOrWhiteSpace(textBox1.Text))
             {
+                isUpdating = true;
                 isPlaceholder = true;
                 textBox1.Text = placeholderText;
                 textBox1.ForeColor = placeholderColor;
                 if (isPasswordChar)
                     textBox1.UseSystemPasswordChar = false;
+
+                isUpdating = false;
             }
         }
         private void RemovePlaceholder()
         {
+            if (isUpdating) return;
             if (isPlaceholder && placeholderText != "")
             {
+                isUpdating = true;
                 isPlaceholder = false;
                 textBox1.Text = "";
                 textBox1.ForeColor = this.ForeColor;
                 if (isPasswordChar)
                     textBox1.UseSystemPasswordChar = true;
+
+                isUpdating = false;
             }
         }
         private GraphicsPath GetFigurePath(Rectangle rect, int radius)
@@ -354,6 +363,8 @@ namespace EstruturaFesta.Design
         #region -> TextBox events
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+            if (isUpdating) return;
+
             if (_TextChanged != null)
                 _TextChanged.Invoke(sender, e);
         }

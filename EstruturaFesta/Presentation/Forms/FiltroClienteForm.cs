@@ -29,8 +29,8 @@ namespace EstruturaFesta.Presentation.Forms
         }
         private void FiltrarClientes()
         {
-            string filtroNome = textBoxNome.Text.Trim();
-            string filtroDocumento = textBoxDocumentos.Text.Trim();
+            string filtroNome = designTextBoxNome.Text.Trim();
+            string filtroDocumento = designTextBoxDocumentos.Text.Trim();
 
 
 
@@ -47,17 +47,17 @@ namespace EstruturaFesta.Presentation.Forms
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(filtroNome))
-                query = query.Where(c => c.Nome.Contains(filtroNome));
+                query = query.Where(c => c.Nome.StartsWith(filtroNome));
 
             if (!string.IsNullOrEmpty(filtroDocumento))
-                query = query.Where(c => c.Documento.Contains(filtroDocumento));
+                query = query.Where(c => c.Documento.StartsWith(filtroDocumento));
 
             dataGridViewFiltroClientes.AutoGenerateColumns = false;
             dataGridViewFiltroClientes.DataSource = query.ToList();
 
         }
 
-        private void buttonFiltro_Click(object sender, EventArgs e)
+        private void designButton_Click(object sender, EventArgs e)
         {
             FiltrarClientes();
         }
@@ -127,5 +127,6 @@ namespace EstruturaFesta.Presentation.Forms
                 ordenacaoAscendente ? SortOrder.Ascending : SortOrder.Descending;
         }
 
+       
     }
 }

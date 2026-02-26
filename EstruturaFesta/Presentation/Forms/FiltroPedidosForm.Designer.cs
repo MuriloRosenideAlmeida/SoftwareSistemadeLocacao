@@ -32,15 +32,15 @@
             label2 = new Label();
             dateTimePickerInicial = new DateTimePicker();
             dateTimePickerFinal = new DateTimePicker();
-            bntBuscar = new Button();
             dataGridViewPedidos = new DataGridView();
             ID = new DataGridViewTextBoxColumn();
             Cliente = new DataGridViewTextBoxColumn();
             DataPedido = new DataGridViewTextBoxColumn();
             DataEntrega = new DataGridViewTextBoxColumn();
             DataRetirada = new DataGridViewTextBoxColumn();
-            textBoxID = new TextBox();
             labelID = new Label();
+            designTextBoxID = new Design.DesignTextBox();
+            designButtonBuscar = new Design.DesignButton();
             ((System.ComponentModel.ISupportInitialize)dataGridViewPedidos).BeginInit();
             SuspendLayout();
             // 
@@ -79,18 +79,9 @@
             dateTimePickerFinal.Size = new Size(97, 23);
             dateTimePickerFinal.TabIndex = 3;
             // 
-            // bntBuscar
-            // 
-            bntBuscar.Location = new Point(674, 82);
-            bntBuscar.Name = "bntBuscar";
-            bntBuscar.Size = new Size(75, 23);
-            bntBuscar.TabIndex = 4;
-            bntBuscar.Text = "Buscar";
-            bntBuscar.UseVisualStyleBackColor = true;
-            bntBuscar.Click += bntBuscar_Click;
-            // 
             // dataGridViewPedidos
             // 
+            dataGridViewPedidos.BackgroundColor = SystemColors.Control;
             dataGridViewPedidos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewPedidos.Columns.AddRange(new DataGridViewColumn[] { ID, Cliente, DataPedido, DataEntrega, DataRetirada });
             dataGridViewPedidos.Location = new Point(40, 145);
@@ -135,31 +126,66 @@
             DataRetirada.HeaderText = "Data Retirada";
             DataRetirada.Name = "DataRetirada";
             // 
-            // textBoxID
-            // 
-            textBoxID.Location = new Point(40, 83);
-            textBoxID.Name = "textBoxID";
-            textBoxID.Size = new Size(100, 23);
-            textBoxID.TabIndex = 6;
-            // 
             // labelID
             // 
             labelID.AutoSize = true;
-            labelID.Location = new Point(64, 65);
+            labelID.Location = new Point(64, 62);
             labelID.Name = "labelID";
             labelID.Size = new Size(46, 15);
             labelID.TabIndex = 7;
             labelID.Text = "Codigo";
             // 
+            // designTextBoxID
+            // 
+            designTextBoxID.BackColor = SystemColors.Window;
+            designTextBoxID.BorderColor = Color.MediumSlateBlue;
+            designTextBoxID.BorderFocusColor = Color.HotPink;
+            designTextBoxID.BorderRadius = 15;
+            designTextBoxID.BorderSize = 1;
+            designTextBoxID.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxID.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxID.ForeColor = SystemColors.WindowText;
+            designTextBoxID.Location = new Point(44, 78);
+            designTextBoxID.Multiline = false;
+            designTextBoxID.Name = "designTextBoxID";
+            designTextBoxID.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxID.PasswordChar = false;
+            designTextBoxID.PlaceholderColor = Color.DarkGray;
+            designTextBoxID.PlaceholderText = "Codigo";
+            designTextBoxID.SelectionLength = 0;
+            designTextBoxID.SelectionStart = 0;
+            designTextBoxID.Size = new Size(100, 32);
+            designTextBoxID.TabIndex = 8;
+            designTextBoxID.UnderlinedStyle = false;
+            // 
+            // designButtonBuscar
+            // 
+            designButtonBuscar.BackColor = Color.MediumSlateBlue;
+            designButtonBuscar.BackgroundColor = Color.MediumSlateBlue;
+            designButtonBuscar.BorderColor = Color.PaleVioletRed;
+            designButtonBuscar.BorderRadius = 20;
+            designButtonBuscar.BorderSize = 0;
+            designButtonBuscar.FlatAppearance.BorderSize = 0;
+            designButtonBuscar.FlatStyle = FlatStyle.Flat;
+            designButtonBuscar.ForeColor = Color.White;
+            designButtonBuscar.Location = new Point(632, 79);
+            designButtonBuscar.Name = "designButtonBuscar";
+            designButtonBuscar.Size = new Size(118, 38);
+            designButtonBuscar.TabIndex = 9;
+            designButtonBuscar.Text = "Buscar";
+            designButtonBuscar.TextColor = Color.White;
+            designButtonBuscar.UseVisualStyleBackColor = false;
+            designButtonBuscar.Click += designButtonBuscar_Click;
+            // 
             // FiltroPedidosForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(961, 492);
+            Controls.Add(designButtonBuscar);
+            Controls.Add(designTextBoxID);
             Controls.Add(labelID);
-            Controls.Add(textBoxID);
             Controls.Add(dataGridViewPedidos);
-            Controls.Add(bntBuscar);
             Controls.Add(dateTimePickerFinal);
             Controls.Add(dateTimePickerInicial);
             Controls.Add(label2);
@@ -178,14 +204,14 @@
         private Label label2;
         private DateTimePicker dateTimePickerInicial;
         private DateTimePicker dateTimePickerFinal;
-        private Button bntBuscar;
         private DataGridView dataGridViewPedidos;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Cliente;
         private DataGridViewTextBoxColumn DataPedido;
         private DataGridViewTextBoxColumn DataEntrega;
         private DataGridViewTextBoxColumn DataRetirada;
-        private TextBox textBoxID;
         private Label labelID;
+        private Design.DesignTextBox designTextBoxID;
+        private Design.DesignButton designButtonBuscar;
     }
 }

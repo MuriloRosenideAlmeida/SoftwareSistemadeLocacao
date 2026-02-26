@@ -33,21 +33,22 @@
             Nome = new DataGridViewTextBoxColumn();
             Documento = new DataGridViewTextBoxColumn();
             Tipo = new DataGridViewTextBoxColumn();
-            textBoxNome = new TextBox();
-            textBoxDocumentos = new TextBox();
             labelNome = new Label();
             labelDocumentos = new Label();
-            buttonFiltro = new Button();
+            designTextBoxNome = new Design.DesignTextBox();
+            designTextBoxDocumentos = new Design.DesignTextBox();
+            designButton = new Design.DesignButton();
             ((System.ComponentModel.ISupportInitialize)dataGridViewFiltroClientes).BeginInit();
             SuspendLayout();
             // 
             // dataGridViewFiltroClientes
             // 
+            dataGridViewFiltroClientes.BackgroundColor = SystemColors.Control;
             dataGridViewFiltroClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewFiltroClientes.Columns.AddRange(new DataGridViewColumn[] { ID, Nome, Documento, Tipo });
             dataGridViewFiltroClientes.Location = new Point(2, 63);
             dataGridViewFiltroClientes.Name = "dataGridViewFiltroClientes";
-            dataGridViewFiltroClientes.Size = new Size(795, 338);
+            dataGridViewFiltroClientes.Size = new Size(884, 378);
             dataGridViewFiltroClientes.TabIndex = 0;
             dataGridViewFiltroClientes.CellMouseDoubleClick += dataGridViewFiltroClientes_CellMouseDoubleClick;
             dataGridViewFiltroClientes.ColumnHeaderMouseClick += dataGridViewFiltroClientes_ColumnHeaderMouseClick;
@@ -84,20 +85,6 @@
             Tipo.HeaderText = "Tipo Cliente";
             Tipo.Name = "Tipo";
             // 
-            // textBoxNome
-            // 
-            textBoxNome.Location = new Point(159, 34);
-            textBoxNome.Name = "textBoxNome";
-            textBoxNome.Size = new Size(209, 23);
-            textBoxNome.TabIndex = 1;
-            // 
-            // textBoxDocumentos
-            // 
-            textBoxDocumentos.Location = new Point(449, 34);
-            textBoxDocumentos.Name = "textBoxDocumentos";
-            textBoxDocumentos.Size = new Size(211, 23);
-            textBoxDocumentos.TabIndex = 1;
-            // 
             // labelNome
             // 
             labelNome.AutoSize = true;
@@ -110,32 +97,87 @@
             // labelDocumentos
             // 
             labelDocumentos.AutoSize = true;
-            labelDocumentos.Location = new Point(383, 37);
+            labelDocumentos.Location = new Point(395, 36);
             labelDocumentos.Name = "labelDocumentos";
             labelDocumentos.Size = new Size(60, 15);
             labelDocumentos.TabIndex = 2;
             labelDocumentos.Text = "CPF/CNPJ";
             // 
-            // buttonFiltro
+            // designTextBoxNome
             // 
-            buttonFiltro.Location = new Point(698, 33);
-            buttonFiltro.Name = "buttonFiltro";
-            buttonFiltro.Size = new Size(75, 23);
-            buttonFiltro.TabIndex = 3;
-            buttonFiltro.Text = "Filtrar";
-            buttonFiltro.UseVisualStyleBackColor = true;
-            buttonFiltro.Click += buttonFiltro_Click;
+            designTextBoxNome.BackColor = SystemColors.Window;
+            designTextBoxNome.BorderColor = Color.MediumSlateBlue;
+            designTextBoxNome.BorderFocusColor = Color.HotPink;
+            designTextBoxNome.BorderRadius = 15;
+            designTextBoxNome.BorderSize = 1;
+            designTextBoxNome.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxNome.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNome.ForeColor = SystemColors.WindowText;
+            designTextBoxNome.Location = new Point(159, 26);
+            designTextBoxNome.Multiline = false;
+            designTextBoxNome.Name = "designTextBoxNome";
+            designTextBoxNome.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxNome.PasswordChar = false;
+            designTextBoxNome.PlaceholderColor = Color.DarkGray;
+            designTextBoxNome.PlaceholderText = "Nome do Cliente";
+            designTextBoxNome.SelectionLength = 0;
+            designTextBoxNome.SelectionStart = 0;
+            designTextBoxNome.Size = new Size(218, 32);
+            designTextBoxNome.TabIndex = 4;
+            designTextBoxNome.UnderlinedStyle = false;
+            // 
+            // designTextBoxDocumentos
+            // 
+            designTextBoxDocumentos.BackColor = SystemColors.Window;
+            designTextBoxDocumentos.BorderColor = Color.MediumSlateBlue;
+            designTextBoxDocumentos.BorderFocusColor = Color.HotPink;
+            designTextBoxDocumentos.BorderRadius = 15;
+            designTextBoxDocumentos.BorderSize = 1;
+            designTextBoxDocumentos.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxDocumentos.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxDocumentos.ForeColor = SystemColors.WindowText;
+            designTextBoxDocumentos.Location = new Point(460, 25);
+            designTextBoxDocumentos.Multiline = false;
+            designTextBoxDocumentos.Name = "designTextBoxDocumentos";
+            designTextBoxDocumentos.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxDocumentos.PasswordChar = false;
+            designTextBoxDocumentos.PlaceholderColor = Color.DarkGray;
+            designTextBoxDocumentos.PlaceholderText = "Documentos";
+            designTextBoxDocumentos.SelectionLength = 0;
+            designTextBoxDocumentos.SelectionStart = 0;
+            designTextBoxDocumentos.Size = new Size(218, 32);
+            designTextBoxDocumentos.TabIndex = 4;
+            designTextBoxDocumentos.UnderlinedStyle = false;
+            // 
+            // designButton
+            // 
+            designButton.BackColor = Color.MediumSlateBlue;
+            designButton.BackgroundColor = Color.MediumSlateBlue;
+            designButton.BorderColor = Color.MediumSlateBlue;
+            designButton.BorderRadius = 22;
+            designButton.BorderSize = 0;
+            designButton.FlatAppearance.BorderSize = 0;
+            designButton.FlatStyle = FlatStyle.Flat;
+            designButton.ForeColor = Color.White;
+            designButton.Location = new Point(736, 17);
+            designButton.Name = "designButton";
+            designButton.Size = new Size(150, 40);
+            designButton.TabIndex = 5;
+            designButton.Text = "Filtrar";
+            designButton.TextColor = Color.White;
+            designButton.UseVisualStyleBackColor = false;
+            designButton.Click += designButton_Click;
             // 
             // FiltroClienteForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(buttonFiltro);
+            ClientSize = new Size(946, 473);
+            Controls.Add(designButton);
+            Controls.Add(designTextBoxDocumentos);
+            Controls.Add(designTextBoxNome);
             Controls.Add(labelDocumentos);
             Controls.Add(labelNome);
-            Controls.Add(textBoxDocumentos);
-            Controls.Add(textBoxNome);
             Controls.Add(dataGridViewFiltroClientes);
             Name = "FiltroClienteForm";
             Text = "Filtro de Cliente";
@@ -148,14 +190,14 @@
         #endregion
 
         private DataGridView dataGridViewFiltroClientes;
-        private TextBox textBoxNome;
-        private TextBox textBoxDocumentos;
         private Label labelNome;
         private Label labelDocumentos;
-        private Button buttonFiltro;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Nome;
         private DataGridViewTextBoxColumn Documento;
         private DataGridViewTextBoxColumn Tipo;
+        private Design.DesignTextBox designTextBoxNome;
+        private Design.DesignTextBox designTextBoxDocumentos;
+        private Design.DesignButton designButton;
     }
 }

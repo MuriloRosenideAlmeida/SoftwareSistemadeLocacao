@@ -32,12 +32,11 @@ namespace EstruturaFesta
             dateTimePickerFinal.Value = DateTime.Today.AddDays(1);
             SistemaUpperCase.AplicarMaiusculo(this);
         }
-
-        private void bntBuscar_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(textBoxID.Text))
+         private void designButtonBuscar_Click(object sender, EventArgs e)
+         {
+            if (!string.IsNullOrWhiteSpace(designTextBoxID.Text))
             {
-                if (int.TryParse(textBoxID.Text, out int idProcurado))
+                if (int.TryParse(designTextBoxID.Text, out int idProcurado))
                 {
                     var pedido = _db.Pedidos
                         .Where(p => p.ID == idProcurado)
@@ -65,7 +64,7 @@ namespace EstruturaFesta
             DateTime dataFinal = dateTimePickerFinal.Value.Date;
             DateTime dataFinalInclusiva = dataFinal.AddDays(1);
 
-            
+
 
             var pedidos = _db.Pedidos
                 .Where(p => p.DataPedido >= dataInicial && p.DataPedido < dataFinalInclusiva)
@@ -82,7 +81,8 @@ namespace EstruturaFesta
             dataGridViewPedidos.AutoGenerateColumns = false;
             dataGridViewPedidos.DataSource = pedidos;
 
-        }
+         }
+  
 
         private void ConfigurarEstiloDataGrid()
         {
@@ -174,5 +174,7 @@ namespace EstruturaFesta
             dataGridViewPedidos.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection =
                 ascending ? SortOrder.Ascending : SortOrder.Descending;
         }
+
+       
     }
 }

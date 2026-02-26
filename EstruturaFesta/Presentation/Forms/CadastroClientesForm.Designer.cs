@@ -60,20 +60,20 @@
             textBoxRazaoSocial = new TextBox();
             RazaoSocial = new Label();
             panelCadastroPF = new Panel();
+            designTextBoxRG = new Design.DesignTextBox();
+            designTextBoxCPF = new Design.DesignTextBox();
+            designTextBoxNomeMae = new Design.DesignTextBox();
+            designTextBoxNomeCliente = new Design.DesignTextBox();
             labelNomeMae = new Label();
-            textBoxNomeMae = new TextBox();
             maskedTextBoxNascimento = new MaskedTextBox();
+            label1 = new Label();
+            rg = new Label();
+            cpf = new Label();
+            nomeCliente = new Label();
             dataGridViewContatos = new DataGridView();
             TelefoneContato = new DataGridViewTextBoxColumn();
             NomeContato = new DataGridViewTextBoxColumn();
-            textBoxCPF = new TextBox();
-            label1 = new Label();
             telefone = new Label();
-            textBoxRG = new TextBox();
-            rg = new Label();
-            cpf = new Label();
-            textBoxNomeCliente = new TextBox();
-            nomeCliente = new Label();
             groupBoxTipoCliente.SuspendLayout();
             groupBox2.SuspendLayout();
             panelCadastroPJ.SuspendLayout();
@@ -376,46 +376,169 @@
             // 
             // panelCadastroPF
             // 
+            panelCadastroPF.Controls.Add(designTextBoxRG);
+            panelCadastroPF.Controls.Add(designTextBoxCPF);
+            panelCadastroPF.Controls.Add(designTextBoxNomeMae);
+            panelCadastroPF.Controls.Add(designTextBoxNomeCliente);
             panelCadastroPF.Controls.Add(labelNomeMae);
-            panelCadastroPF.Controls.Add(textBoxNomeMae);
             panelCadastroPF.Controls.Add(maskedTextBoxNascimento);
-            panelCadastroPF.Controls.Add(textBoxCPF);
             panelCadastroPF.Controls.Add(label1);
-            panelCadastroPF.Controls.Add(textBoxRG);
             panelCadastroPF.Controls.Add(rg);
             panelCadastroPF.Controls.Add(cpf);
-            panelCadastroPF.Controls.Add(textBoxNomeCliente);
             panelCadastroPF.Controls.Add(nomeCliente);
             panelCadastroPF.Location = new Point(189, 12);
             panelCadastroPF.Name = "panelCadastroPF";
             panelCadastroPF.Size = new Size(849, 186);
             panelCadastroPF.TabIndex = 28;
             // 
+            // designTextBoxRG
+            // 
+            designTextBoxRG.BackColor = SystemColors.Window;
+            designTextBoxRG.BorderColor = Color.MediumSlateBlue;
+            designTextBoxRG.BorderFocusColor = Color.HotPink;
+            designTextBoxRG.BorderRadius = 15;
+            designTextBoxRG.BorderSize = 1;
+            designTextBoxRG.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxRG.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxRG.ForeColor = SystemColors.WindowText;
+            designTextBoxRG.Location = new Point(302, 76);
+            designTextBoxRG.Multiline = false;
+            designTextBoxRG.Name = "designTextBoxRG";
+            designTextBoxRG.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxRG.PasswordChar = false;
+            designTextBoxRG.PlaceholderColor = Color.DarkGray;
+            designTextBoxRG.PlaceholderText = "RG do Cliente";
+            designTextBoxRG.SelectionLength = 0;
+            designTextBoxRG.SelectionStart = 0;
+            designTextBoxRG.Size = new Size(168, 32);
+            designTextBoxRG.TabIndex = 3;
+            designTextBoxRG.UnderlinedStyle = false;
+            // 
+            // designTextBoxCPF
+            // 
+            designTextBoxCPF.BackColor = SystemColors.Window;
+            designTextBoxCPF.BorderColor = Color.MediumSlateBlue;
+            designTextBoxCPF.BorderFocusColor = Color.HotPink;
+            designTextBoxCPF.BorderRadius = 15;
+            designTextBoxCPF.BorderSize = 1;
+            designTextBoxCPF.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxCPF.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxCPF.ForeColor = SystemColors.WindowText;
+            designTextBoxCPF.Location = new Point(75, 76);
+            designTextBoxCPF.Multiline = false;
+            designTextBoxCPF.Name = "designTextBoxCPF";
+            designTextBoxCPF.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxCPF.PasswordChar = false;
+            designTextBoxCPF.PlaceholderColor = Color.DarkGray;
+            designTextBoxCPF.PlaceholderText = "CPF do Cliente";
+            designTextBoxCPF.SelectionLength = 0;
+            designTextBoxCPF.SelectionStart = 0;
+            designTextBoxCPF.Size = new Size(175, 32);
+            designTextBoxCPF.TabIndex = 2;
+            designTextBoxCPF.UnderlinedStyle = false;
+            designTextBoxCPF._TextChanged += designTextBoxCPF__TextChanged;
+            designTextBoxCPF.Leave += designTextBoxCPF_Leave;
+            // 
+            // designTextBoxNomeMae
+            // 
+            designTextBoxNomeMae.BackColor = SystemColors.Window;
+            designTextBoxNomeMae.BorderColor = Color.MediumSlateBlue;
+            designTextBoxNomeMae.BorderFocusColor = Color.HotPink;
+            designTextBoxNomeMae.BorderRadius = 15;
+            designTextBoxNomeMae.BorderSize = 1;
+            designTextBoxNomeMae.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxNomeMae.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNomeMae.ForeColor = SystemColors.WindowText;
+            designTextBoxNomeMae.Location = new Point(75, 137);
+            designTextBoxNomeMae.Multiline = false;
+            designTextBoxNomeMae.Name = "designTextBoxNomeMae";
+            designTextBoxNomeMae.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxNomeMae.PasswordChar = false;
+            designTextBoxNomeMae.PlaceholderColor = Color.DarkGray;
+            designTextBoxNomeMae.PlaceholderText = "Nome da mae do cliente";
+            designTextBoxNomeMae.SelectionLength = 0;
+            designTextBoxNomeMae.SelectionStart = 0;
+            designTextBoxNomeMae.Size = new Size(395, 32);
+            designTextBoxNomeMae.TabIndex = 4;
+            designTextBoxNomeMae.UnderlinedStyle = false;
+            // 
+            // designTextBoxNomeCliente
+            // 
+            designTextBoxNomeCliente.BackColor = SystemColors.Window;
+            designTextBoxNomeCliente.BorderColor = Color.MediumSlateBlue;
+            designTextBoxNomeCliente.BorderFocusColor = Color.HotPink;
+            designTextBoxNomeCliente.BorderRadius = 15;
+            designTextBoxNomeCliente.BorderSize = 1;
+            designTextBoxNomeCliente.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxNomeCliente.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNomeCliente.ForeColor = SystemColors.WindowText;
+            designTextBoxNomeCliente.Location = new Point(75, 32);
+            designTextBoxNomeCliente.Multiline = false;
+            designTextBoxNomeCliente.Name = "designTextBoxNomeCliente";
+            designTextBoxNomeCliente.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxNomeCliente.PasswordChar = false;
+            designTextBoxNomeCliente.PlaceholderColor = Color.DarkGray;
+            designTextBoxNomeCliente.PlaceholderText = "Nome do Cliente";
+            designTextBoxNomeCliente.SelectionLength = 0;
+            designTextBoxNomeCliente.SelectionStart = 0;
+            designTextBoxNomeCliente.Size = new Size(395, 32);
+            designTextBoxNomeCliente.TabIndex = 1;
+            designTextBoxNomeCliente.UnderlinedStyle = false;
+            // 
             // labelNomeMae
             // 
             labelNomeMae.AutoSize = true;
-            labelNomeMae.Location = new Point(75, 108);
+            labelNomeMae.Location = new Point(80, 119);
             labelNomeMae.Name = "labelNomeMae";
             labelNomeMae.Size = new Size(82, 15);
             labelNomeMae.TabIndex = 50;
             labelNomeMae.Text = "Nome da Mãe";
             // 
-            // textBoxNomeMae
-            // 
-            textBoxNomeMae.Location = new Point(75, 125);
-            textBoxNomeMae.Name = "textBoxNomeMae";
-            textBoxNomeMae.Size = new Size(395, 23);
-            textBoxNomeMae.TabIndex = 49;
-            // 
             // maskedTextBoxNascimento
             // 
-            maskedTextBoxNascimento.Location = new Point(606, 35);
+            maskedTextBoxNascimento.Location = new Point(606, 36);
             maskedTextBoxNascimento.Mask = "00/00/0000";
             maskedTextBoxNascimento.Name = "maskedTextBoxNascimento";
             maskedTextBoxNascimento.Size = new Size(69, 23);
-            maskedTextBoxNascimento.TabIndex = 48;
+            maskedTextBoxNascimento.TabIndex = 5;
             maskedTextBoxNascimento.ValidatingType = typeof(DateTime);
             maskedTextBoxNascimento.MaskInputRejected += maskedTextBoxNascimento_MaskInputRejected;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(31, 86);
+            label1.Name = "label1";
+            label1.Size = new Size(28, 15);
+            label1.TabIndex = 0;
+            label1.Text = "CPF";
+            // 
+            // rg
+            // 
+            rg.AutoSize = true;
+            rg.Location = new Point(274, 82);
+            rg.Name = "rg";
+            rg.Size = new Size(22, 15);
+            rg.TabIndex = 42;
+            rg.Text = "RG";
+            // 
+            // cpf
+            // 
+            cpf.AutoSize = true;
+            cpf.Location = new Point(486, 38);
+            cpf.Name = "cpf";
+            cpf.Size = new Size(114, 15);
+            cpf.TabIndex = 0;
+            cpf.Text = "Data de Nascimento";
+            // 
+            // nomeCliente
+            // 
+            nomeCliente.AutoSize = true;
+            nomeCliente.Location = new Point(19, 38);
+            nomeCliente.Name = "nomeCliente";
+            nomeCliente.Size = new Size(40, 15);
+            nomeCliente.TabIndex = 0;
+            nomeCliente.Text = "Nome";
             // 
             // dataGridViewContatos
             // 
@@ -425,7 +548,7 @@
             dataGridViewContatos.Name = "dataGridViewContatos";
             dataGridViewContatos.ScrollBars = ScrollBars.Vertical;
             dataGridViewContatos.Size = new Size(250, 50);
-            dataGridViewContatos.TabIndex = 47;
+            dataGridViewContatos.TabIndex = 6;
             // 
             // TelefoneContato
             // 
@@ -441,72 +564,14 @@
             NomeContato.HeaderText = "Nome";
             NomeContato.Name = "NomeContato";
             // 
-            // textBoxCPF
-            // 
-            textBoxCPF.Location = new Point(75, 82);
-            textBoxCPF.Name = "textBoxCPF";
-            textBoxCPF.Size = new Size(100, 23);
-            textBoxCPF.TabIndex = 46;
-            textBoxCPF.KeyPress += textBoxCPF_KeyPress;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(31, 86);
-            label1.Name = "label1";
-            label1.Size = new Size(28, 15);
-            label1.TabIndex = 45;
-            label1.Text = "CPF";
-            // 
             // telefone
             // 
             telefone.AutoSize = true;
             telefone.Location = new Point(132, 214);
             telefone.Name = "telefone";
             telefone.Size = new Size(51, 15);
-            telefone.TabIndex = 44;
+            telefone.TabIndex = 0;
             telefone.Text = "Telefone";
-            // 
-            // textBoxRG
-            // 
-            textBoxRG.Location = new Point(216, 83);
-            textBoxRG.Name = "textBoxRG";
-            textBoxRG.Size = new Size(143, 23);
-            textBoxRG.TabIndex = 43;
-            // 
-            // rg
-            // 
-            rg.AutoSize = true;
-            rg.Location = new Point(188, 86);
-            rg.Name = "rg";
-            rg.Size = new Size(22, 15);
-            rg.TabIndex = 42;
-            rg.Text = "RG";
-            // 
-            // cpf
-            // 
-            cpf.AutoSize = true;
-            cpf.Location = new Point(486, 38);
-            cpf.Name = "cpf";
-            cpf.Size = new Size(114, 15);
-            cpf.TabIndex = 40;
-            cpf.Text = "Data de Nascimento";
-            // 
-            // textBoxNomeCliente
-            // 
-            textBoxNomeCliente.Location = new Point(75, 35);
-            textBoxNomeCliente.Name = "textBoxNomeCliente";
-            textBoxNomeCliente.Size = new Size(395, 23);
-            textBoxNomeCliente.TabIndex = 39;
-            // 
-            // nomeCliente
-            // 
-            nomeCliente.AutoSize = true;
-            nomeCliente.Location = new Point(19, 38);
-            nomeCliente.Name = "nomeCliente";
-            nomeCliente.Size = new Size(40, 15);
-            nomeCliente.TabIndex = 38;
-            nomeCliente.Text = "Nome";
             // 
             // CadastroClientesForm
             // 
@@ -556,13 +621,10 @@
         private GroupBox groupBox2;
         private Panel panelCadastroPF;
         private DataGridView dataGridViewContatos;
-        private TextBox textBoxCPF;
         private Label label1;
         private Label telefone;
-        private TextBox textBoxRG;
         private Label rg;
         private Label cpf;
-        private TextBox textBoxNomeCliente;
         private Label nomeCliente;
         private Panel panelCadastroPJ;
         private Label RazaoSocial;
@@ -579,8 +641,11 @@
         private Label AdicionarCliente;
         private MaskedTextBox maskedTextBoxNascimento;
         private Label labelNomeMae;
-        private TextBox textBoxNomeMae;
         private DataGridViewTextBoxColumn TelefoneContato;
         private DataGridViewTextBoxColumn NomeContato;
+        private Design.DesignTextBox designTextBoxNomeCliente;
+        private Design.DesignTextBox designTextBoxCPF;
+        private Design.DesignTextBox designTextBoxRG;
+        private Design.DesignTextBox designTextBoxNomeMae;
     }
 }
