@@ -150,10 +150,12 @@ namespace EstruturaFesta
 
                 }
             }
-            
+
         }
-        private void textBoxCEP_Leave(object sender, EventArgs e) => LocalizarCEP();
-        private void textBoxCEP_KeyDown(object sender, KeyEventArgs e)
+
+        private void designTextBoxCEP_Leave(object sender, EventArgs e) => LocalizarCEP();
+
+        private void designTextBoxCEP_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -164,7 +166,7 @@ namespace EstruturaFesta
 
         private async void LocalizarCEP()
         {
-            if (string.IsNullOrWhiteSpace(textBoxCEP.Text))
+            if (string.IsNullOrWhiteSpace(designTextBoxCEP.Text))
             {
                 MessageBox.Show("Informe um CEP válido");
                 return;
@@ -172,13 +174,13 @@ namespace EstruturaFesta
 
             try
             {
-                var endereco = await _viaCepClient.SearchAsync(textBoxCEP.Text, CancellationToken.None);
+                var endereco = await _viaCepClient.SearchAsync(designTextBoxCEP.Text, CancellationToken.None);
                 if (endereco != null)
                 {
-                    if (string.IsNullOrWhiteSpace(textBoxRua.Text)) textBoxRua.Text = endereco.Street;
-                    if (string.IsNullOrWhiteSpace(textBoxBairro.Text)) textBoxBairro.Text = endereco.Neighborhood;
-                    if (string.IsNullOrWhiteSpace(textBoxCidade.Text)) textBoxCidade.Text = endereco.City;
-                    if (string.IsNullOrWhiteSpace(textBoxEstado.Text)) textBoxEstado.Text = endereco.StateInitials;
+                    if (string.IsNullOrWhiteSpace(designTextBoxRua.Text)) designTextBoxRua.Text = endereco.Street;
+                    if (string.IsNullOrWhiteSpace(designTextBoxBairro.Text)) designTextBoxBairro.Text = endereco.Neighborhood;
+                    if (string.IsNullOrWhiteSpace(designTextBoxCidade.Text)) designTextBoxCidade.Text = endereco.City;
+                    if (string.IsNullOrWhiteSpace(designTextBoxEstado.Text)) designTextBoxEstado.Text = endereco.StateInitials;
                 }
                 else
                     MessageBox.Show("CEP não localizado...");
@@ -188,12 +190,20 @@ namespace EstruturaFesta
                 MessageBox.Show($"Erro ao consultar CEP: {ex.Message}");
             }
         }
-        private void textBoxNumero_TextChanged(object sender, EventArgs e)
+        private void designTextBoxNumero_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxNumero.Text))
+            if (string.IsNullOrWhiteSpace(designTextBoxNumero.Text))
             {
                 MessageBox.Show("O número não pode estar vazio.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxNumero.Focus();
+                designTextBoxNumero.Focus();
+            }
+        }
+        private void designTextBoxNumero__TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(designTextBoxNumero.Text))
+            {
+                MessageBox.Show("O número não pode estar vazio.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                designTextBoxNumero.Focus();
             }
         }
         private void maskedTextBoxNascimento_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
@@ -215,7 +225,8 @@ namespace EstruturaFesta
         private void AtualizarTituloForm()
         {
             this.Text = _isEditMode ? "Editar Cliente" : "Cadastrar Cliente";
-            buttonAdicionarCliente.Text = _isEditMode ? "Salvar Alterações" : "Adicionar Cliente";
+            designButtonAdicionarCliente.Text = _isEditMode ? "Salvar Alterações" : "Adicionar Cliente";
+            designButtonExcluirCliente.Visible = _isEditMode;
         }
 
         private void CarregarCliente()
@@ -230,13 +241,13 @@ namespace EstruturaFesta
             if (_cliente == null) return;
 
             // Preenche dados comuns
-            textBoxRua.Text = _cliente.Rua ?? string.Empty;
-            textBoxBairro.Text = _cliente.Bairro ?? string.Empty;
-            textBoxNumero.Text = _cliente.Numero.ToString();
-            textBoxCEP.Text = _cliente.CEP ?? string.Empty;
-            textBoxCidade.Text = _cliente.Cidade ?? string.Empty;
-            textBoxEstado.Text = _cliente.Estado ?? string.Empty;
-            textBoxComplemento.Text = _cliente.Complemento ?? string.Empty;
+            designTextBoxRua.Text = _cliente.Rua ?? string.Empty;
+            designTextBoxBairro.Text = _cliente.Bairro ?? string.Empty;
+            designTextBoxNumero.Text = _cliente.Numero.ToString();
+            designTextBoxCEP.Text = _cliente.CEP ?? string.Empty;
+            designTextBoxCidade.Text = _cliente.Cidade ?? string.Empty;
+            designTextBoxEstado.Text = _cliente.Estado ?? string.Empty;
+            designTextBoxComplemento.Text = _cliente.Complemento ?? string.Empty;
 
             // Tipo específico
             if (_cliente is ClientePF pf)
@@ -254,11 +265,11 @@ namespace EstruturaFesta
             else if (_cliente is ClientePJ pj)
             {
                 radioButtonPJ.Checked = true;
-                textBoxNomeFantasia.Text = pj.NomeFantasia;
-                textBoxCNPJ.Text = pj.CNPJ;
-                textBoxRazaoSocial.Text = pj.RazaoSocial;
-                textBoxInscricaoEstadual.Text = pj.InscricaoEstadual;
-                textBoxInscricaoMunicipal.Text = pj.InscricaoMunicipal;
+                designTextBoxNomeFantasia.Text = pj.NomeFantasia;
+                designTextBoxCNPJ.Text = pj.CNPJ;
+                designTextBoxRazaoSocial.Text = pj.RazaoSocial;
+                designTextBoxInscricaoEstadual.Text = pj.InscricaoEstadual;
+                designTextBoxInscricaoMunicipal.Text = pj.InscricaoMunicipal;
             }
 
             // Preenche contatos
@@ -290,15 +301,15 @@ namespace EstruturaFesta
             }
             else if (radioButtonPJ.Checked)
             {
-                if (string.IsNullOrWhiteSpace(textBoxNomeFantasia.Text) ||
-                    string.IsNullOrWhiteSpace(textBoxCNPJ.Text))
+                if (string.IsNullOrWhiteSpace(designTextBoxRazaoSocial.Text) ||
+                    string.IsNullOrWhiteSpace(designTextBoxCNPJ.Text))
                 {
                     MessageBox.Show("Nome Fantasia e CNPJ são obrigatórios.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
             }
 
-            if (!int.TryParse(textBoxNumero.Text, out _))
+            if (!int.TryParse(designTextBoxNumero.Text, out _))
             {
                 MessageBox.Show("Número inválido.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
@@ -312,13 +323,13 @@ namespace EstruturaFesta
         private void PreencherCliente(Cliente cliente)
         {
             // Dados comuns
-            cliente.Rua = textBoxRua.Text?.Trim();
-            cliente.Bairro = textBoxBairro.Text?.Trim();
-            cliente.Numero = textBoxNumero.Text;
-            cliente.CEP = textBoxCEP.Text?.Trim();
-            cliente.Cidade = textBoxCidade.Text?.Trim();
-            cliente.Estado = textBoxEstado.Text?.Trim();
-            cliente.Complemento = textBoxComplemento.Text?.Trim();
+            cliente.Rua = designTextBoxRua.Text?.Trim();
+            cliente.Bairro = designTextBoxBairro.Text?.Trim();
+            cliente.Numero = designTextBoxNumero.Text;
+            cliente.CEP = designTextBoxCEP.Text?.Trim();
+            cliente.Cidade = designTextBoxCidade.Text?.Trim();
+            cliente.Estado = designTextBoxEstado.Text?.Trim();
+            cliente.Complemento = designTextBoxComplemento.Text?.Trim();
 
             // Campos específicos
             if (cliente is ClientePF pf)
@@ -332,17 +343,17 @@ namespace EstruturaFesta
             }
             else if (cliente is ClientePJ pj)
             {
-                pj.NomeFantasia = textBoxNomeFantasia.Text?.Trim();
-                pj.CNPJ = textBoxCNPJ.Text?.Trim();
-                pj.RazaoSocial = textBoxRazaoSocial.Text?.Trim();
-                pj.InscricaoEstadual = textBoxInscricaoEstadual.Text?.Trim();
-                pj.InscricaoMunicipal = textBoxInscricaoMunicipal.Text?.Trim();
+                pj.NomeFantasia = designTextBoxNomeFantasia.Text?.Trim();
+                pj.CNPJ = designTextBoxCNPJ.Text?.Trim();
+                pj.RazaoSocial = designTextBoxRazaoSocial.Text?.Trim();
+                pj.InscricaoEstadual = designTextBoxInscricaoEstadual.Text?.Trim();
+                pj.InscricaoMunicipal = designTextBoxInscricaoMunicipal.Text?.Trim();
             }
         }
         #endregion
 
         #region Salvamento
-        private void buttonAdicionarCliente_Click(object sender, EventArgs e)
+        private void designButtonAdicionarCliente_Click(object sender, EventArgs e)
         {
             if (!ValidarCampos()) return;
 
@@ -393,6 +404,54 @@ namespace EstruturaFesta
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+        private void designButtonExcluirCliente_Click(object sender, EventArgs e)
+        {
+            if (_cliente == null) return;
+
+            var confirmacao = MessageBox.Show(
+                "Tem certeza que deseja excluir este cliente?\n\nEssa ação não poderá ser desfeita.",
+                "Confirmar exclusão",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirmacao != DialogResult.Yes)
+                return;
+
+            try
+            {
+                // Carrega cliente com contatos
+                var cliente = _db.Clientes
+                    .Include(c => c.Contatos)
+                    .FirstOrDefault(c => c.ID == _cliente.ID);
+
+                if (cliente == null)
+                {
+                    MessageBox.Show("Cliente não encontrado.");
+                    return;
+                }
+
+                _db.Contatos.RemoveRange(cliente.Contatos);
+
+                _db.Clientes.Remove(cliente);
+
+                _db.SaveChanges();
+
+                MessageBox.Show("Cliente excluído com sucesso!",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao excluir cliente: {ex.Message}");
+            }
+
+        }
         #endregion
+
+
     }
 }
