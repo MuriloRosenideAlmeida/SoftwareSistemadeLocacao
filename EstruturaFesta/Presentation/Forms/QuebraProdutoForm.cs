@@ -16,7 +16,7 @@ namespace EstruturaFesta.Presentation.Forms
         {
             get
             {
-                if (decimal.TryParse(textBoxValorTotalQuebra.Text,
+                if (decimal.TryParse(designTextBoxValorTotalQuebra.Text,
                                      System.Globalization.NumberStyles.Currency,
                                      null,
                                      out decimal total))
@@ -57,7 +57,7 @@ namespace EstruturaFesta.Presentation.Forms
         private void AtualizarValorTotalQuebra()
         {
             decimal total = ProdutosQuebra.Sum(p => p.ValorTotal);
-            textBoxValorTotalQuebra.Text = total.ToString("C2");
+            designTextBoxValorTotalQuebra.Text = total.ToString("C2");
         }
         private void dataGridViewQuebra_KeyDown(object sender, KeyEventArgs e)
         {
@@ -109,7 +109,7 @@ namespace EstruturaFesta.Presentation.Forms
             }
         }
 
-        private void buttonSalvar_Click(object sender, EventArgs e)
+        private void designButtonSalvar_Click(object sender, EventArgs e)
         {
             foreach (var item in ProdutosQuebra)
             {
@@ -170,6 +170,7 @@ namespace EstruturaFesta.Presentation.Forms
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
     }
 }
     

@@ -14,7 +14,7 @@ namespace EstruturaFesta
             _db = db;
             dataGridView1.AutoGenerateColumns = false;
         }
-       
+
         private void FormDataGridView_Load(object sender, EventArgs e)
         {
             SistemaUpperCase.AplicarMaiusculo(this);
@@ -29,9 +29,9 @@ namespace EstruturaFesta
        })
        .ToList();
 
-                // Vincula a lista ao DataGridView
-                dataGridView1.DataSource = clientes;
-            
+            // Vincula a lista ao DataGridView
+            dataGridView1.DataSource = clientes;
+
         }
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -61,60 +61,67 @@ namespace EstruturaFesta
             }
         }
 
-        private void buttonFiltro_Click(object sender, EventArgs e)
+        private void designButtonFiltro_Click(object sender, EventArgs e)
         {
-            
-            
-                // Lê o texto digitado nas TextBox
-                string filtroID = textBoxID.Text.Trim();
-                string filtroNome = textBoxNome.Text.Trim();
-                string filtroDocumento = textBoxDocumento.Text.Trim();
-                string filtroFantasia = textBoxNomeFantasia.Text.Trim();
 
-                var query = _db.Clientes
-                    .Select(c => new
-                    {
-                        c.ID,
-                        Nome = c is ClientePF ? ((ClientePF)c).Nome :
-                               c is ClientePJ ? ((ClientePJ)c).RazaoSocial : null,
 
-                        Documento = c is ClientePF ? ((ClientePF)c).CPF :
-                                    c is ClientePJ ? ((ClientePJ)c).CNPJ : null,
+            // Lê o texto digitado nas TextBox
+            string filtroID = designTextBoxID.Text.Trim();
+            string filtroNome = designTextBoxNome.Text.Trim();
+            string filtroDocumento = designTextBoxDocumento.Text.Trim();
+            string filtroFantasia = designTextBoxNomeFantasia.Text.Trim();
 
-                        NomeFantasia = c is ClientePJ ? ((ClientePJ)c).NomeFantasia : null
-                    })
-                    .AsQueryable();
-
-                // FILTRAR POR ID — EXATO
-                if (!string.IsNullOrWhiteSpace(filtroID) && int.TryParse(filtroID, out int id))
+            var query = _db.Clientes
+                .Select(c => new
                 {
-                    query = query.Where(c => c.ID == id);
-                }
+                    c.ID,
+                    Nome = c is ClientePF ? ((ClientePF)c).Nome :
+                           c is ClientePJ ? ((ClientePJ)c).RazaoSocial : null,
 
-                // FILTRAR POR NOME — SOMENTE COMEÇA COM
-                if (!string.IsNullOrWhiteSpace(filtroNome))
-                {
-                    string fn = filtroNome.ToUpper();
-                    query = query.Where(c => c.Nome.ToUpper().StartsWith(fn));
-                }
+                    Documento = c is ClientePF ? ((ClientePF)c).CPF :
+                                c is ClientePJ ? ((ClientePJ)c).CNPJ : null,
 
-                // FILTRAR POR DOCUMENTO — SOMENTE COMEÇA COM (CPF, RG, CNPJ)
-                if (!string.IsNullOrWhiteSpace(filtroDocumento))
-                {
-                    string fd = filtroDocumento.ToUpper();
-                    query = query.Where(c => c.Documento.ToUpper().StartsWith(fd));
-                }
+                    NomeFantasia = c is ClientePJ ? ((ClientePJ)c).NomeFantasia : null
+                })
+                .AsQueryable();
 
-                // FILTRAR POR NOME FANTASIA — COMEÇA COM
-                if (!string.IsNullOrWhiteSpace(filtroFantasia))
-                {
-                    string ff = filtroFantasia.ToUpper();
-                    query = query.Where(c => c.NomeFantasia != null && c.NomeFantasia.ToUpper().StartsWith(ff));
-                }
+            // FILTRAR POR ID — EXATO
+            if (!string.IsNullOrWhiteSpace(filtroID) && int.TryParse(filtroID, out int id))
+            {
+                query = query.Where(c => c.ID == id);
+            }
 
-                // Preenche o DataGrid
-                dataGridView1.DataSource = query.ToList();
-            
+            // FILTRAR POR NOME — SOMENTE COMEÇA COM
+            if (!string.IsNullOrWhiteSpace(filtroNome))
+            {
+                string fn = filtroNome.ToUpper();
+                query = query.Where(c => c.Nome.ToUpper().StartsWith(fn));
+            }
+
+            // FILTRAR POR DOCUMENTO — SOMENTE COMEÇA COM (CPF, RG, CNPJ)
+            if (!string.IsNullOrWhiteSpace(filtroDocumento))
+            {
+                string fd = new string(filtroDocumento.Where(char.IsDigit).ToArray());
+
+                query = query.Where(c =>
+                    c.Documento
+                     .Replace(".", "")
+                     .Replace("-", "")
+                     .Replace("/", "")
+                     .StartsWith(fd));
+            }
+
+            // FILTRAR POR NOME FANTASIA — COMEÇA COM
+            if (!string.IsNullOrWhiteSpace(filtroFantasia))
+            {
+                string ff = filtroFantasia.ToUpper();
+                query = query.Where(c => c.NomeFantasia != null && c.NomeFantasia.ToUpper().StartsWith(ff));
+            }
+
+            // Preenche o DataGrid
+            dataGridView1.DataSource = query.ToList();
+
         }
+
     }
 }

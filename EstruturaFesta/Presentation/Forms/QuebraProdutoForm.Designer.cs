@@ -35,13 +35,14 @@
             QuantidadeQuebrada = new DataGridViewTextBoxColumn();
             ValorReposicao = new DataGridViewTextBoxColumn();
             ValorTotalQuebra = new DataGridViewTextBoxColumn();
-            textBoxValorTotalQuebra = new TextBox();
-            buttonSalvar = new Button();
+            designTextBoxValorTotalQuebra = new Design.DesignTextBox();
+            designButtonSalvar = new Design.DesignButton();
             ((System.ComponentModel.ISupportInitialize)dataGridViewQuebra).BeginInit();
             SuspendLayout();
             // 
             // dataGridViewQuebra
             // 
+            dataGridViewQuebra.BackgroundColor = SystemColors.Control;
             dataGridViewQuebra.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewQuebra.Columns.AddRange(new DataGridViewColumn[] { ProdutoId, Produto, Quantidade, QuantidadeQuebrada, ValorReposicao, ValorTotalQuebra });
             dataGridViewQuebra.Location = new Point(85, 114);
@@ -94,48 +95,72 @@
             ValorTotalQuebra.Name = "ValorTotalQuebra";
             ValorTotalQuebra.ReadOnly = true;
             // 
-            // textBoxValorTotalQuebra
+            // designTextBoxValorTotalQuebra
             // 
-            textBoxValorTotalQuebra.Location = new Point(520, 342);
-            textBoxValorTotalQuebra.Name = "textBoxValorTotalQuebra";
-            textBoxValorTotalQuebra.Size = new Size(100, 23);
-            textBoxValorTotalQuebra.TabIndex = 1;
+            designTextBoxValorTotalQuebra.BackColor = SystemColors.Window;
+            designTextBoxValorTotalQuebra.BorderColor = Color.MediumSlateBlue;
+            designTextBoxValorTotalQuebra.BorderFocusColor = Color.HotPink;
+            designTextBoxValorTotalQuebra.BorderRadius = 15;
+            designTextBoxValorTotalQuebra.BorderSize = 1;
+            designTextBoxValorTotalQuebra.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxValorTotalQuebra.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxValorTotalQuebra.ForeColor = SystemColors.WindowText;
+            designTextBoxValorTotalQuebra.Location = new Point(436, 365);
+            designTextBoxValorTotalQuebra.Multiline = false;
+            designTextBoxValorTotalQuebra.Name = "designTextBoxValorTotalQuebra";
+            designTextBoxValorTotalQuebra.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxValorTotalQuebra.PasswordChar = false;
+            designTextBoxValorTotalQuebra.PlaceholderColor = Color.DarkGray;
+            designTextBoxValorTotalQuebra.PlaceholderText = "Valor da Quebra";
+            designTextBoxValorTotalQuebra.SelectionLength = 0;
+            designTextBoxValorTotalQuebra.SelectionStart = 0;
+            designTextBoxValorTotalQuebra.Size = new Size(168, 32);
+            designTextBoxValorTotalQuebra.TabIndex = 3;
+            designTextBoxValorTotalQuebra.UnderlinedStyle = false;
             // 
-            // buttonSalvar
+            // designButtonSalvar
             // 
-            buttonSalvar.Location = new Point(670, 333);
-            buttonSalvar.Name = "buttonSalvar";
-            buttonSalvar.Size = new Size(75, 23);
-            buttonSalvar.TabIndex = 2;
-            buttonSalvar.Text = "Salvar";
-            buttonSalvar.UseVisualStyleBackColor = true;
-            buttonSalvar.Click += buttonSalvar_Click;
+            designButtonSalvar.BackColor = Color.LimeGreen;
+            designButtonSalvar.BackgroundColor = Color.LimeGreen;
+            designButtonSalvar.BorderColor = Color.LimeGreen;
+            designButtonSalvar.BorderRadius = 21;
+            designButtonSalvar.BorderSize = 0;
+            designButtonSalvar.FlatAppearance.BorderSize = 0;
+            designButtonSalvar.FlatStyle = FlatStyle.Flat;
+            designButtonSalvar.ForeColor = Color.White;
+            designButtonSalvar.Location = new Point(651, 362);
+            designButtonSalvar.Name = "designButtonSalvar";
+            designButtonSalvar.Size = new Size(107, 40);
+            designButtonSalvar.TabIndex = 4;
+            designButtonSalvar.Text = "Salvar";
+            designButtonSalvar.TextColor = Color.White;
+            designButtonSalvar.UseVisualStyleBackColor = false;
+            designButtonSalvar.Click += designButtonSalvar_Click;
             // 
             // QuebraProdutoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(buttonSalvar);
-            Controls.Add(textBoxValorTotalQuebra);
+            Controls.Add(designButtonSalvar);
+            Controls.Add(designTextBoxValorTotalQuebra);
             Controls.Add(dataGridViewQuebra);
             Name = "QuebraProdutoForm";
             Text = "Quebra de Produtos";
             ((System.ComponentModel.ISupportInitialize)dataGridViewQuebra).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private DataGridView dataGridViewQuebra;
-        private TextBox textBoxValorTotalQuebra;
-        private Button buttonSalvar;
         private DataGridViewTextBoxColumn ProdutoId;
         private DataGridViewTextBoxColumn Produto;
         private DataGridViewTextBoxColumn Quantidade;
         private DataGridViewTextBoxColumn QuantidadeQuebrada;
         private DataGridViewTextBoxColumn ValorReposicao;
         private DataGridViewTextBoxColumn ValorTotalQuebra;
+        private Design.DesignTextBox designTextBoxValorTotalQuebra;
+        private Design.DesignButton designButtonSalvar;
     }
 }

@@ -37,7 +37,7 @@ namespace EstruturaFesta
             this.Shown += TelaPedido_Shown;
             dataGridViewProdutosLocacao.EditMode = DataGridViewEditMode.EditOnEnter;
             dataGridViewProdutosLocacao.StandardTab = false;
-            
+
         }
 
         public TelaPedidoForm(EstruturaDataBase db, int pedidoId) : this(db)
@@ -49,7 +49,7 @@ namespace EstruturaFesta
 
         private void CarregarPedido(int pedidoId)
         {
-            
+
 
             var pedido = _db.Pedidos
                 .Include(p => p.Produtos)
@@ -82,16 +82,16 @@ namespace EstruturaFesta
             try
             {
                 // Preenche dados básicos
-                textBoxIDPedido.Text = pedido.ID.ToString();
+                designTextBoxIDPedido.Text = pedido.ID.ToString();
                 textBoxIDCliente.Text = pedido.ClienteId.ToString();
-                textBoxNomeCliente.Text = pedido.Cliente.Nome;
-                textBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
-                textBoxDescricao.Text = pedido.Observacoes;
-                textBoxContato.Text = pedido.ContatoNome;
-                maskedTextBoxNumeroContato.Text = pedido.ContatoNumero;
+                designTextBoxNomeCliente.Text = pedido.Cliente.Nome;
+                designTextBoxDocumentoCliente.Text = pedido.Cliente.ObterDocumento();
+                designTextBoxDescricao.Text = pedido.Observacoes;
+                designTextBoxContato.Text = pedido.ContatoNome;
+                designTextBoxNumeroContato.Text = pedido.ContatoNumero;
                 AtualizarTotalGastoCliente(pedido.ClienteId);
-                textBoxAcrescimo.Text = pedido.Acrescimo.ToString("N2");
-                textBoxDesconto.Text = pedido.Desconto.ToString("N2");
+                designTextBoxAcrescimo.Text = pedido.Acrescimo.ToString("N2");
+                designTextBoxDesconto.Text = pedido.Desconto.ToString("N2");
                 dataGridViewTelefones.Rows.Clear();
                 if (pedido.Cliente.Contatos != null)
                 {
@@ -104,18 +104,18 @@ namespace EstruturaFesta
                 dateTimePickerEntrega.Value = pedido.DataEntrega;
                 dateTimePickerRetirada.Value = pedido.DataRetirada;
 
-                
-                
-                    var perdas = _db.PerdaProdutos
-                        .Include(p => p.Produto)
-                        .Where(p => p.PedidoId == pedido.ID)
-                        .ToList();
 
-                    decimal totalQuebra = perdas.Sum(p => p.Quantidade * p.Produto.PrecoReposicao);
 
-                    textBoxTotalValorQuebra.Text = totalQuebra.ToString("N2");
-                    CarregarTooltipQuebra(perdas);
-                
+                var perdas = _db.PerdaProdutos
+                    .Include(p => p.Produto)
+                    .Where(p => p.PedidoId == pedido.ID)
+                    .ToList();
+
+                decimal totalQuebra = perdas.Sum(p => p.Quantidade * p.Produto.PrecoReposicao);
+
+                designTextBoxTotalValorQuebra.Text = totalQuebra.ToString("N2");
+                CarregarTooltipQuebra(perdas);
+
                 // Limpa e preenche o grid COMPLETO de uma vez
                 dataGridViewProdutosLocacao.Rows.Clear();
 
@@ -162,7 +162,6 @@ namespace EstruturaFesta
             if (!_pedidoId.HasValue)
             {
                 dateTimePickerDataPedido.Value = DateTime.Today;
-                textBoxIDPedido.Text = "Novo Pedido";
             }
         }
 
@@ -173,8 +172,8 @@ namespace EstruturaFesta
         }
         public void CarregarPedidoPorId(int pedidoId)
         {
-            _pedidoId = pedidoId; 
-            CarregarPedido(pedidoId);      
+            _pedidoId = pedidoId;
+            CarregarPedido(pedidoId);
         }
         #endregion
 
@@ -189,13 +188,13 @@ namespace EstruturaFesta
         public void PreencherCamposCliente(int id, string nome, string documento)
         {
             textBoxIDCliente.Text = id.ToString();
-            textBoxNomeCliente.Text = nome;
-            textBoxDocumentoCliente.Text = documento;
+            designTextBoxNomeCliente.Text = nome;
+            designTextBoxDocumentoCliente.Text = documento;
             // Limpar grid de contatos
             dataGridViewTelefones.Rows.Clear();
 
             // Buscar contatos do cliente
-            
+
             var contatos = _db.Contatos
                              .Where(c => c.ClienteID == id)
                              .OrderBy(c => c.ID)
@@ -209,7 +208,7 @@ namespace EstruturaFesta
             CarregarSaldoDoCliente();
             AtualizarTotalGastoCliente(id);
         }
-        private void buttonEditarCliente_Click(object sender, EventArgs e)
+        private void designButtonEditarCliente_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBoxIDCliente.Text))
             {
@@ -241,9 +240,9 @@ namespace EstruturaFesta
             }
         }
 
-        private void GerarLink_Click(object sender, EventArgs e)
+        private void designButtonGerarLink_Click(object sender, EventArgs e)
         {
-            string numero = maskedTextBoxNumeroContato.Text.Trim();
+            string numero = designTextBoxNumeroContato.Text.Trim();
 
             // Remove espaços e caracteres não numéricos
             numero = new string(numero.Where(char.IsDigit).ToArray());
@@ -331,13 +330,13 @@ namespace EstruturaFesta
             decimal totalSaldo = saldos.Sum(s => s.Saldo);
 
             // Exibe saldo total
-            textBoxSaldoCliente.Text = totalSaldo.ToString("N2");
+            designTextBoxSaldoCliente.Text = totalSaldo.ToString("N2");
 
             // Lista IDs dos pedidos que possuem saldo
             if (saldos.Count == 0)
-                textBoxIDSaldo.Text = "";
+                designTextBoxIDSaldo.Text = "";
             else
-                textBoxIDSaldo.Text = string.Join(", ", saldos.Select(s => s.PedidoId));
+                designTextBoxIDSaldo.Text = string.Join(", ", saldos.Select(s => s.PedidoId));
         }
         private void AtualizarTotalGastoCliente(int clienteId)
         {
@@ -351,7 +350,7 @@ namespace EstruturaFesta
 
             if (pedidosCliente.Count == 0)
             {
-                textBoxTotalGasto.Text = "0,00";
+                designTextBoxTotalGasto.Text = "0,00";
                 return;
             }
 
@@ -360,7 +359,7 @@ namespace EstruturaFesta
                 .Where(pg => pedidosCliente.Contains(pg.PedidoId) && pg.Pago == true)
                 .Sum(pg => (decimal?)pg.Valor) ?? 0;
 
-            textBoxTotalGasto.Text = totalGasto.ToString("N2");
+            designTextBoxTotalGasto.Text = totalGasto.ToString("N2");
         }
         #endregion
 
@@ -585,55 +584,55 @@ namespace EstruturaFesta
         //Metodo que centraliza a logica de preencher o produto e converte tudo para DTO
         private void PreencherProdutoNoDataGridView(int produtoId, int rowIndex)
         {
-            
-            
-                // Busca e converte para DTO 
-                var produtoDTO = _db.Produtos
-                    .Where(p => p.ID == produtoId)
-                    .Select(p => new ProdutoDTO
-                    {
-                        ProdutoId = p.ID,
-                        Nome = p.Nome,
-                        Material = p.Material,
-                        Modelo = p.Modelo,
-                        Especificacao = p.Especificacao,
-                        QuantidadeEstoque = p.Quantidade,
-                        ValorUnitario = p.PrecoLocacao,
-                        ValorReposicao = p.PrecoReposicao
-                    })
-                    .FirstOrDefault();
 
-                if (produtoDTO == null)
+
+            // Busca e converte para DTO 
+            var produtoDTO = _db.Produtos
+                .Where(p => p.ID == produtoId)
+                .Select(p => new ProdutoDTO
                 {
-                    MessageBox.Show("Produto não encontrado!");
-                    dataGridViewProdutosLocacao.Rows[rowIndex].Cells["ProdutoID"].Value = "";
-                    return;
-                }
+                    ProdutoId = p.ID,
+                    Nome = p.Nome,
+                    Material = p.Material,
+                    Modelo = p.Modelo,
+                    Especificacao = p.Especificacao,
+                    QuantidadeEstoque = p.Quantidade,
+                    ValorUnitario = p.PrecoLocacao,
+                    ValorReposicao = p.PrecoReposicao
+                })
+                .FirstOrDefault();
 
-                // Monta a descrição
-                string descricaoCompleta = $"{produtoDTO.Nome} {produtoDTO.Material} {produtoDTO.Modelo} {produtoDTO.Especificacao}".Trim();
+            if (produtoDTO == null)
+            {
+                MessageBox.Show("Produto não encontrado!");
+                dataGridViewProdutosLocacao.Rows[rowIndex].Cells["ProdutoID"].Value = "";
+                return;
+            }
 
-                // Calcula o estoque disponível para a data selecionada
-                var dataPedido = dateTimePickerDataPedido.Value.Date;
-                int estoqueDisponivel = CalcularEstoqueDisponivel(produtoDTO.ProdutoId, dataPedido);
+            // Monta a descrição
+            string descricaoCompleta = $"{produtoDTO.Nome} {produtoDTO.Material} {produtoDTO.Modelo} {produtoDTO.Especificacao}".Trim();
 
-                // Preenche no DataGridView
-                var row = dataGridViewProdutosLocacao.Rows[rowIndex];
-                row.Cells["ProdutoID"].Value = produtoDTO.ProdutoId;
-                row.Cells["Produto"].Value = descricaoCompleta;
-                row.Cells["Estoque"].Value = estoqueDisponivel;
-                row.Cells["ValorUnitario"].Value = produtoDTO.ValorUnitario;
-                row.Cells["ValorReposicao"].Value = produtoDTO.ValorReposicao;
+            // Calcula o estoque disponível para a data selecionada
+            var dataPedido = dateTimePickerDataPedido.Value.Date;
+            int estoqueDisponivel = CalcularEstoqueDisponivel(produtoDTO.ProdutoId, dataPedido);
 
-                //Verificação de duplicação de Produtos pelo ID
-                if (VerificarProdutoDuplicado(produtoDTO.ProdutoId, rowIndex))
-                {
-                    // Se quiser, limpa a célula duplicada para evitar repetição
-                    row.Cells["ProdutoID"].Value = null;
-                    row.Cells["Produto"].Value = null;
-                    return;
-                }
-            
+            // Preenche no DataGridView
+            var row = dataGridViewProdutosLocacao.Rows[rowIndex];
+            row.Cells["ProdutoID"].Value = produtoDTO.ProdutoId;
+            row.Cells["Produto"].Value = descricaoCompleta;
+            row.Cells["Estoque"].Value = estoqueDisponivel;
+            row.Cells["ValorUnitario"].Value = produtoDTO.ValorUnitario;
+            row.Cells["ValorReposicao"].Value = produtoDTO.ValorReposicao;
+
+            //Verificação de duplicação de Produtos pelo ID
+            if (VerificarProdutoDuplicado(produtoDTO.ProdutoId, rowIndex))
+            {
+                // Se quiser, limpa a célula duplicada para evitar repetição
+                row.Cells["ProdutoID"].Value = null;
+                row.Cells["Produto"].Value = null;
+                return;
+            }
+
         }
 
         // Método para calcular o estoque disponível considerando as reservas da data
@@ -924,37 +923,37 @@ namespace EstruturaFesta
             decimal desconto = 0;
             decimal quebra = 0;
 
-            decimal.TryParse(textBoxSubTotal.Text, out subtotal);
-            decimal.TryParse(textBoxAcrescimo.Text, out acrescimo);
-            decimal.TryParse(textBoxDesconto.Text, out desconto);
-            decimal.TryParse(textBoxTotalValorQuebra.Text, out quebra);
+            decimal.TryParse(designTextBoxSubTotal.Text, out subtotal);
+            decimal.TryParse(designTextBoxAcrescimo.Text, out acrescimo);
+            decimal.TryParse(designTextBoxDesconto.Text, out desconto);
+            decimal.TryParse(designTextBoxTotalValorQuebra.Text, out quebra);
 
             decimal total = subtotal + acrescimo + quebra - desconto;
 
-            textBoxValorTotal.Text = total.ToString("N2");
+            designTextBoxValorTotal.Text = total.ToString("N2");
             return total;
         }
 
         private void AtualizarSaldoDoPedido()
         {
-            
-            
-                decimal total = CalcularTotalPedido();
 
-                decimal totalPago = _db.Pagamentos
-                    .Where(p => p.PedidoId == _pedidoId.Value)
-                    .Sum(p => (decimal?)p.Valor) ?? 0;
 
-                decimal saldo = total - totalPago;
+            decimal total = CalcularTotalPedido();
 
-                textBoxSaldoPedido.Text = saldo.ToString("N2");
-            
+            decimal totalPago = _db.Pagamentos
+                .Where(p => p.PedidoId == _pedidoId.Value)
+                .Sum(p => (decimal?)p.Valor) ?? 0;
+
+            decimal saldo = total - totalPago;
+
+            designTextBoxSaldoPedido.Text = saldo.ToString("N2");
+
         }
 
         private void AtualizarSaldo()
         {
             // Pega o total do pedido
-            if (!decimal.TryParse(textBoxValorTotal.Text, out decimal totalPedido))
+            if (!decimal.TryParse(designTextBoxValorTotal.Text, out decimal totalPedido))
                 totalPedido = 0;
 
             decimal totalPago = 0;
@@ -983,7 +982,7 @@ namespace EstruturaFesta
             decimal saldo = totalPedido - totalPago;
 
             // Atualiza a TextBox de saldo
-            textBoxSaldoPedido.Text = saldo.ToString("N2");
+            designTextBoxSaldoPedido.Text = saldo.ToString("N2");
         }
         private void AtualizarTotais()
         {
@@ -1008,9 +1007,9 @@ namespace EstruturaFesta
             }
 
             // Lê acrescimo, desconto e quebra
-            decimal.TryParse(textBoxAcrescimo.Text, out acrescimo);
-            decimal.TryParse(textBoxDesconto.Text, out desconto);
-            decimal.TryParse(textBoxTotalValorQuebra.Text, out valorQuebra);
+            decimal.TryParse(designTextBoxAcrescimo.Text, out acrescimo);
+            decimal.TryParse(designTextBoxDesconto.Text, out desconto);
+            decimal.TryParse(designTextBoxTotalValorQuebra.Text, out valorQuebra);
 
             // Calcula valor total
             total = subTotal + acrescimo - desconto;
@@ -1035,22 +1034,22 @@ namespace EstruturaFesta
             saldo = total - totalPago + valorQuebra;
 
             // Atualiza as TextBox
-            textBoxSubTotal.Text = subTotal.ToString("N2");
-            textBoxValorTotal.Text = total.ToString("N2");
-            textBoxSaldoPedido.Text = saldo.ToString("N2");
+            designTextBoxSubTotal.Text = subTotal.ToString("N2");
+            designTextBoxValorTotal.Text = total.ToString("N2");
+            designTextBoxSaldoPedido.Text = saldo.ToString("N2");
         }
-        private void textBoxAcrescimo_TextChanged(object sender, EventArgs e)
+        private void designTextBoxAcrescimo_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
 
         }
 
-        private void textBoxDesconto_TextChanged(object sender, EventArgs e)
+        private void designTextBoxDesconto_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
 
         }
-        private void textBoxTotalValorQuebra_TextChanged(object sender, EventArgs e)
+        private void designTextBoxTotalValorQuebra_TextChanged(object sender, EventArgs e)
         {
             AtualizarTotais();
         }
@@ -1058,7 +1057,7 @@ namespace EstruturaFesta
         {
             if (perdas == null || perdas.Count == 0)
             {
-                toolTipQuebra.SetToolTip(textBoxTotalValorQuebra, "Nenhuma quebra registrada.");
+                toolTipQuebra.SetToolTip(designTextBoxTotalValorQuebra, "Nenhuma quebra registrada.");
                 return;
             }
 
@@ -1069,7 +1068,7 @@ namespace EstruturaFesta
                 texto += $"{p.Produto.Nome} – {p.Quantidade} unidade(s)\n";
             }
 
-            toolTipQuebra.SetToolTip(textBoxTotalValorQuebra, texto.Trim());
+            toolTipQuebra.SetToolTip(designTextBoxTotalValorQuebra, texto.Trim());
         }
         private void dataGridViewPagamentos_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
@@ -1277,7 +1276,7 @@ namespace EstruturaFesta
 
                 // Preenche valores padrão apenas quando a linha é nova
                 row.Cells["DataPagamento"].Value ??= DateTime.Today;
-                row.Cells["Valor"].Value ??= decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldoAtual) ? saldoAtual : 0m;
+                row.Cells["Valor"].Value ??= decimal.TryParse(designTextBoxSaldoPedido.Text, out decimal saldoAtual) ? saldoAtual : 0m;
                 row.Cells["Pago"].Value ??= false;
             }
         }
@@ -1325,27 +1324,27 @@ namespace EstruturaFesta
                 DataPedido = dateTimePickerDataPedido.Value,
                 DataEntrega = dateTimePickerEntrega.Value,
                 DataRetirada = dateTimePickerRetirada.Value,
-                Observacoes = textBoxDescricao.Text,
+                Observacoes = designTextBoxDescricao.Text,
 
                 // ===== DADOS DO CLIENTE =====
                 ClienteId = int.TryParse(textBoxIDCliente.Text, out int cliId) ? cliId : 0,
-                NomeCliente = textBoxNomeCliente.Text,
-                DocumentoCliente = textBoxDocumentoCliente.Text,
-                ContatoNome = textBoxContato.Text,
-                ContatoNumero = maskedTextBoxNumeroContato.Text,
+                NomeCliente = designTextBoxNomeCliente.Text,
+                DocumentoCliente = designTextBoxDocumentoCliente.Text,
+                ContatoNome = designTextBoxContato.Text,
+                ContatoNumero = designTextBoxNumeroContato.Text,
 
                 // ===== VALORES ===== (ESSES DEVEM ESTAR AQUI DENTRO)
-                SubTotal = decimal.TryParse(textBoxSubTotal.Text, out decimal sub) ? sub : 0,
-                Acrescimo = decimal.TryParse(textBoxAcrescimo.Text, out decimal acr) ? acr : 0,
-                Desconto = decimal.TryParse(textBoxDesconto.Text, out decimal desc) ? desc : 0,
-                ValorQuebra = decimal.TryParse(textBoxTotalValorQuebra.Text, out decimal quebra) ? quebra : 0,
-                ValorTotal = decimal.TryParse(textBoxValorTotal.Text, out decimal total) ? total : 0,
-                SaldoPedido = decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldo) ? saldo : 0,
+                SubTotal = decimal.TryParse(designTextBoxSubTotal.Text, out decimal sub) ? sub : 0,
+                Acrescimo = decimal.TryParse(designTextBoxAcrescimo.Text, out decimal acr) ? acr : 0,
+                Desconto = decimal.TryParse(designTextBoxDesconto.Text, out decimal desc) ? desc : 0,
+                ValorQuebra = decimal.TryParse(designTextBoxTotalValorQuebra.Text, out decimal quebra) ? quebra : 0,
+                ValorTotal = decimal.TryParse(designTextBoxValorTotal.Text, out decimal total) ? total : 0,
+                SaldoPedido = decimal.TryParse(designTextBoxSaldoPedido.Text, out decimal saldo) ? saldo : 0,
 
                 // ===== INFORMAÇÕES EXTRAS =====
-                TotalGastoCliente = decimal.TryParse(textBoxTotalGasto.Text, out decimal gasto) ? gasto : 0,
-                SaldoCliente = decimal.TryParse(textBoxSaldoCliente.Text, out decimal saldoCli) ? saldoCli : 0,
-                IDsSaldoCliente = textBoxIDSaldo.Text
+                TotalGastoCliente = decimal.TryParse(designTextBoxTotalGasto.Text, out decimal gasto) ? gasto : 0,
+                SaldoCliente = decimal.TryParse(designTextBoxSaldoCliente.Text, out decimal saldoCli) ? saldoCli : 0,
+                IDsSaldoCliente = designTextBoxIDSaldo.Text
             }; // ← A CHAVE FECHA AQUI, DEPOIS DE TODOS OS CAMPOS!
 
             // ===== BUSCA ENDEREÇO DO BANCO (FORA DA INICIALIZAÇÃO) =====
@@ -1432,7 +1431,7 @@ namespace EstruturaFesta
             try
             {
                 // Validações básicas
-                if (string.IsNullOrWhiteSpace(textBoxNomeCliente.Text))
+                if (string.IsNullOrWhiteSpace(designTextBoxNomeCliente.Text))
                 {
                     MessageBox.Show("Selecione um cliente antes de gerar o PDF.",
                         "Cliente obrigatório", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1471,7 +1470,7 @@ namespace EstruturaFesta
             try
             {
                 // Validações básicas
-                if (string.IsNullOrWhiteSpace(textBoxNomeCliente.Text))
+                if (string.IsNullOrWhiteSpace(designTextBoxNomeCliente.Text))
                 {
                     MessageBox.Show("Selecione um cliente antes de salvar o PDF.",
                         "Cliente obrigatório", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1520,12 +1519,12 @@ namespace EstruturaFesta
         // EVENTOS DOS BOTÕES (você vai adicionar esses botões no Designer)
         // ===================================================================
 
-        private void buttonVisualizarPDF_Click(object sender, EventArgs e)
+        private void designButtonVisualizarPDF_Click(object sender, EventArgs e)
         {
             VisualizarPDF();
         }
 
-        private void buttonSalvarPDF_Click(object sender, EventArgs e)
+        private void designButtonSalvarPDF_Click(object sender, EventArgs e)
         {
             SalvarPDF();
         }
@@ -1533,8 +1532,8 @@ namespace EstruturaFesta
         #endregion
 
         #region Botoes Finais
-    //Logica do botão para finalizar um pedido
-    private void buttonFinalizarPedido_Click(object sender, EventArgs e)
+        //Logica do botão para finalizar um pedido
+        private void designButtonFinalizarPedido_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBoxIDCliente.Text))
             {
@@ -1548,8 +1547,8 @@ namespace EstruturaFesta
                 return;
             }
 
-            decimal.TryParse(textBoxValorTotal.Text, out decimal totalPedido);
-            decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldoPedido);
+            decimal.TryParse(designTextBoxValorTotal.Text, out decimal totalPedido);
+            decimal.TryParse(designTextBoxSaldoPedido.Text, out decimal saldoPedido);
 
             var dataPedido = dateTimePickerDataPedido.Value.Date;
             var dataEntrega = dateTimePickerEntrega.Value.Date;
@@ -1559,7 +1558,7 @@ namespace EstruturaFesta
             Pedido pedido;
 
             //========== EDITAR PEDIDO EXISTENTE ==========
-            if (_pedidoId.HasValue) 
+            if (_pedidoId.HasValue)
             {
                 pedido = db.Pedidos.Include(p => p.Produtos).FirstOrDefault(p => p.ID == _pedidoId.Value);
                 if (pedido == null) { MessageBox.Show("Pedido não encontrado."); return; }
@@ -1568,11 +1567,11 @@ namespace EstruturaFesta
                 pedido.DataPedido = dataPedido;
                 pedido.DataEntrega = dataEntrega;
                 pedido.DataRetirada = dataRetirada;
-                pedido.Observacoes = textBoxDescricao.Text;
-                pedido.ContatoNome = textBoxContato.Text;
-                pedido.ContatoNumero = maskedTextBoxNumeroContato.Text;
-                decimal.TryParse(textBoxAcrescimo.Text, out decimal acrescimo);
-                decimal.TryParse(textBoxDesconto.Text, out decimal desconto);
+                pedido.Observacoes = designTextBoxDescricao.Text;
+                pedido.ContatoNome = designTextBoxContato.Text;
+                pedido.ContatoNumero = designTextBoxNumeroContato.Text;
+                decimal.TryParse(designTextBoxAcrescimo.Text, out decimal acrescimo);
+                decimal.TryParse(designTextBoxDesconto.Text, out decimal desconto);
 
                 pedido.Acrescimo = acrescimo;
                 pedido.Desconto = desconto;
@@ -1728,7 +1727,7 @@ namespace EstruturaFesta
                 }
             }
             //========== NOVO PEDIDO ==========
-            else 
+            else
             {
                 var listaProdutos = new List<ProdutoPedido>();
 
@@ -1762,8 +1761,8 @@ namespace EstruturaFesta
                         QuantidadeReservada = quantidade
                     });
                 }
-                decimal.TryParse(textBoxAcrescimo.Text, out decimal acrescimo);
-                decimal.TryParse(textBoxDesconto.Text, out decimal desconto);
+                decimal.TryParse(designTextBoxAcrescimo.Text, out decimal acrescimo);
+                decimal.TryParse(designTextBoxDesconto.Text, out decimal desconto);
 
                 pedido = new Pedido
                 {
@@ -1771,9 +1770,9 @@ namespace EstruturaFesta
                     DataPedido = dataPedido,
                     DataEntrega = dataEntrega,
                     DataRetirada = dataRetirada,
-                    Observacoes = textBoxDescricao.Text,
-                    ContatoNome = textBoxContato.Text,
-                    ContatoNumero = maskedTextBoxNumeroContato.Text,
+                    Observacoes = designTextBoxDescricao.Text,
+                    ContatoNome = designTextBoxContato.Text,
+                    ContatoNumero = designTextBoxNumeroContato.Text,
                     Acrescimo = acrescimo,
                     Desconto = desconto,
                     Produtos = listaProdutos
@@ -1832,10 +1831,10 @@ namespace EstruturaFesta
 
             db.SaveChanges();
             _pedidoId = pedido.ID;
-            textBoxIDPedido.Text = pedido.ID.ToString();
+            designTextBoxIDPedido.Text = pedido.ID.ToString();
             this.Text = "pedido.ID";
 
-            if (decimal.TryParse(textBoxSaldoPedido.Text, out decimal saldo))
+            if (decimal.TryParse(designTextBoxSaldoPedido.Text, out decimal saldo))
             {
                 var saldoExistente = db.SaldoPedidos
                     .FirstOrDefault(s => s.PedidoId == pedido.ID);
@@ -1870,11 +1869,11 @@ namespace EstruturaFesta
                 db.SaveChanges();
             }
             MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            
+
 
         }
 
-        private void buttonQuebra_Click(object sender, EventArgs e)
+        private void designButtonQuebra_Click(object sender, EventArgs e)
         {
             if (_pedidoId == null)
             {
@@ -1916,11 +1915,17 @@ namespace EstruturaFesta
             // Se o usuário clicou OK no form, marca que houve baixa
             if (formQuebra.DialogResult == DialogResult.OK)
             {
-                textBoxTotalValorQuebra.Text = formQuebra.TotalValorQuebra.ToString("C2");
+                designTextBoxTotalValorQuebra.Text = formQuebra.TotalValorQuebra.ToString("C2");
                 baixaRealizada = true;
             }
 
         }
         #endregion
+
+
+        private void InformacoesCliente_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
