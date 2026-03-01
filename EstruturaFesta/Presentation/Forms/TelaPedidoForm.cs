@@ -63,6 +63,8 @@ namespace EstruturaFesta
                 MessageBox.Show("Pedido não encontrado.");
                 return;
             }
+            if (pedido.Status == "CANCELADO")
+                AtualizarVisualCancelado();
 
             // Carregar cache de quantidades originais
             _quantidadesOriginais = pedido.Produtos
@@ -1920,12 +1922,194 @@ namespace EstruturaFesta
             }
 
         }
+        private void designButtonCancelarPedido_Click(object sender, EventArgs e)
+        {
+            if (!_pedidoId.HasValue)
+            {
+                MessageBox.Show("Este pedido ainda não foi salvo. Feche o formulário para descartar.",
+                    "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var confirmacao = MessageBox.Show(
+                $"Tem certeza que deseja CANCELAR o pedido Nº {_pedidoId.Value}?\n\n" +
+                "Isso irá:\n" +
+                "• Liberar todos os produtos reservados na data\n" +
+                "• Marcar o pedido como CANCELADO\n\n" +
+                "O histórico do pedido será mantido.",
+                "Cancelar Pedido",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirmacao == DialogResult.No)
+                return;
+
+            try
+            {
+                var db = _db;
+
+                var pedido = db.Pedidos
+                    .Include(p => p.Produtos)
+                    .FirstOrDefault(p => p.ID == _pedidoId.Value);
+
+                if (pedido == null)
+                {
+                    MessageBox.Show("Pedido não encontrado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Verifica se já está cancelado
+                if (pedido.Status == "CANCELADO")
+                {
+                    MessageBox.Show("Este pedido já está cancelado.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var dataPedido = pedido.DataPedido.Date;
+
+                // 1. Libera os produtos reservados na data
+                foreach (var item in pedido.Produtos)
+                {
+                    var saldo = db.SaldosPorData
+                        .FirstOrDefault(s => s.ProdutoId == item.ProdutoId && s.Data.Date == dataPedido);
+
+                    if (saldo != null)
+                    {
+                        saldo.QuantidadeReservada -= item.Quantidade;
+
+                        if (saldo.QuantidadeReservada <= 0)
+                            db.SaldosPorData.Remove(saldo);
+                    }
+                }
+
+                // 2. Remove o saldo de crédito do cliente gerado por este pedido
+                var saldoPedido = db.SaldoPedidos
+                    .FirstOrDefault(s => s.PedidoId == _pedidoId.Value);
+                if (saldoPedido != null)
+                    db.SaldoPedidos.Remove(saldoPedido);
+
+                // 3. Marca o pedido como cancelado
+                pedido.Status = "CANCELADO";
+
+                db.SaveChanges();
+
+                // Atualiza visual do formulário
+                AtualizarVisualCancelado();
+
+                MessageBox.Show($"Pedido #{_pedidoId.Value} cancelado com sucesso!\nOs produtos foram liberados.",
+                    "Pedido Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao cancelar pedido:\n{ex.Message}",
+                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void AtualizarVisualCancelado()
+        {
+            designButtonCancelarPedido.Enabled = false;
+            designButtonFinalizarPedido.Enabled = false;
+            designButtonQuebra.Enabled = false;
+            this.BackColor = Color.MistyRose;
+        }
+
         #endregion
 
 
-        private void InformacoesCliente_Paint(object sender, PaintEventArgs e)
+        private void designButtonEmitirNota_Click(object sender, EventArgs e)
         {
+            if (!_pedidoId.HasValue)
+            {
+                MessageBox.Show("Salve o pedido antes de emitir a nota fiscal.",
+                    "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            if (string.IsNullOrWhiteSpace(designTextBoxNomeCliente.Text))
+            {
+                MessageBox.Show("Selecione um cliente antes de emitir a nota.",
+                    "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                // Busca ou incrementa o número sequencial da nota
+                int numeroNota = ObterProximoNumeroNota();
+
+                // Monta descrição genérica com período
+                string descricao =
+                    $"Prestação de serviços de locação de estrutura para eventos, " +
+                    $"compreendendo o fornecimento e logística dos itens locados. " +
+                    $"Período: {dateTimePickerEntrega.Value:dd/MM/yyyy} a {dateTimePickerRetirada.Value:dd/MM/yyyy}.";
+
+                // Coleta dados do pedido (reutiliza o método que já existe)
+                var dadosPedido = ObterDadosParaImpressao();
+
+                // Monta dados da nota
+                var dadosNota = NotaFiscalServicoService.MontarDados(dadosPedido, numeroNota, descricao);
+
+                // Pergunta se quer visualizar ou salvar
+                var opcao = MessageBox.Show(
+                    "Deseja visualizar a nota antes de salvar?\n\n" +
+                    "Sim = Visualizar\nNão = Salvar direto",
+                    "Emitir Nota Fiscal",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+
+                if (opcao == DialogResult.Cancel)
+                    return;
+
+                if (opcao == DialogResult.Yes)
+                {
+                    // Salva o número só depois que o usuário confirmou
+                    SalvarNumeroNota(numeroNota);
+                    NotaFiscalServicoService.VisualizarPDF(dadosNota);
+                }
+                else
+                {
+                    if (NotaFiscalServicoService.SalvarComDialogo(dadosNota, out string caminho))
+                    {
+                        SalvarNumeroNota(numeroNota);
+                        MessageBox.Show($"Nota fiscal salva em:\n{caminho}",
+                            "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao emitir nota fiscal:\n{ex.Message}",
+                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private int ObterProximoNumeroNota()
+        {
+            var config = _db.Configuracoes
+                .FirstOrDefault(c => c.Chave == "UltimoNumeroNota");
+
+            int atual = config != null ? int.Parse(config.Valor) : 0;
+            return atual + 1;
+        }
+
+        private void SalvarNumeroNota(int numero)
+        {
+            var config = _db.Configuracoes
+                .FirstOrDefault(c => c.Chave == "UltimoNumeroNota");
+
+            if (config == null)
+            {
+                _db.Configuracoes.Add(new ConfiguracaoSistema
+                {
+                    Chave = "UltimoNumeroNota",
+                    Valor = numero.ToString()
+                });
+            }
+            else
+            {
+                config.Valor = numero.ToString();
+            }
+
+            _db.SaveChanges();
         }
     }
 }

@@ -22,6 +22,7 @@ public class EstruturaDataBase : DbContext
     public DbSet<PerdaProduto> PerdaProdutos { get; set; }
     public DbSet<Pagamento> Pagamentos { get; set; }
     public DbSet<SaldoPedido> SaldoPedidos { get; set; }
+    public DbSet<ConfiguracaoSistema> Configuracoes { get; set; }
 
 
 

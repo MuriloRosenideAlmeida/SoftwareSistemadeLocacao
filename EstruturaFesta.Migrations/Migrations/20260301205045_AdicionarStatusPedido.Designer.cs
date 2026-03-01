@@ -4,6 +4,7 @@ using EstruturaFesta.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstruturaFesta.Migrations
 {
     [DbContext(typeof(EstruturaDataBase))]
-    partial class EstruturaDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260301205045_AdicionarStatusPedido")]
+    partial class AdicionarStatusPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,27 +69,6 @@ namespace EstruturaFesta.Migrations
                     b.HasDiscriminator<string>("Discriminador").HasValue("Cliente");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("EstruturaFesta.Data.Entities.ConfiguracaoSistema", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Chave")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Valor")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Configuracoes");
                 });
 
             modelBuilder.Entity("EstruturaFesta.Data.Entities.Contato", b =>

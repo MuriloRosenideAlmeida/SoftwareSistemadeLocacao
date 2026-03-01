@@ -28,6 +28,7 @@ namespace EstruturaFesta.Data.Entities
         public string Observacoes { get; set; }
         public string ContatoNome { get; set; }
         public string ContatoNumero { get; set; }
+        public string Status { get; set; } = "ATIVO";
 
 
     }

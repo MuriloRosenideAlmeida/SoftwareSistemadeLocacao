@@ -31,6 +31,7 @@ namespace EstruturaFesta.Design
         private bool isPlaceholder = false;
         private bool isPasswordChar = false;
         private bool isUpdating = false;
+        private bool forceUpperCase = false;
         //Events
         public event EventHandler _TextChanged;
 
@@ -213,6 +214,28 @@ namespace EstruturaFesta.Design
             get { return textBox1.CharacterCasing; }
             set { textBox1.CharacterCasing = value; }
         }
+        [Category("TextBoxPersonalizada")]
+        public bool ReadOnly
+        {
+            get { return textBox1.ReadOnly; }
+            set
+            {
+                textBox1.ReadOnly = value;
+
+                // Opcional: impedir foco visual quando for somente leitura
+                if (value)
+                {
+                    isFocused = false;
+                    this.Invalidate();
+                }
+            }
+        }
+        [Category("TextBoxPersonalizada")]
+        public bool ForceUpperCase
+        {
+            get { return forceUpperCase; }
+            set { forceUpperCase = value; }
+        }
         #endregion
 
         #region -> Overridden methods
@@ -291,7 +314,7 @@ namespace EstruturaFesta.Design
         {
             if (isUpdating) return;
 
-            if (!textBox1.Focused && string.IsNullOrWhiteSpace(textBox1.Text))
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
                 isUpdating = true;
                 isPlaceholder = true;
@@ -365,8 +388,18 @@ namespace EstruturaFesta.Design
         {
             if (isUpdating) return;
 
-            if (_TextChanged != null)
-                _TextChanged.Invoke(sender, e);
+            if (!isPlaceholder && forceUpperCase)
+            {
+                isUpdating = true;
+
+                int pos = textBox1.SelectionStart;
+                textBox1.Text = textBox1.Text.ToUpper();
+                textBox1.SelectionStart = pos;
+
+                isUpdating = false;
+            }
+
+            _TextChanged?.Invoke(sender, e);
         }
         private void textBox1_Click(object sender, EventArgs e)
         {

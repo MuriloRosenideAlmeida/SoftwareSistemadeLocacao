@@ -43,12 +43,12 @@
             labelCNPJ = new Label();
             RazaoSocial = new Label();
             panelCadastroPF = new Panel();
+            designTextBoxNascimento = new Design.DesignTextBox();
             designTextBoxRG = new Design.DesignTextBox();
             designTextBoxCPF = new Design.DesignTextBox();
             designTextBoxNomeMae = new Design.DesignTextBox();
             designTextBoxNomeCliente = new Design.DesignTextBox();
             labelNomeMae = new Label();
-            maskedTextBoxNascimento = new MaskedTextBox();
             label1 = new Label();
             rg = new Label();
             cpf = new Label();
@@ -86,7 +86,7 @@
             radioButtonPF.Location = new Point(6, 22);
             radioButtonPF.Name = "radioButtonPF";
             radioButtonPF.Size = new Size(93, 19);
-            radioButtonPF.TabIndex = 8;
+            radioButtonPF.TabIndex = 0;
             radioButtonPF.TabStop = true;
             radioButtonPF.Text = "Pessoa Física";
             radioButtonPF.UseVisualStyleBackColor = true;
@@ -99,7 +99,7 @@
             groupBoxTipoCliente.Location = new Point(24, 50);
             groupBoxTipoCliente.Name = "groupBoxTipoCliente";
             groupBoxTipoCliente.Size = new Size(112, 90);
-            groupBoxTipoCliente.TabIndex = 9;
+            groupBoxTipoCliente.TabIndex = 0;
             groupBoxTipoCliente.TabStop = false;
             groupBoxTipoCliente.Text = "Tipo do Cliente";
             // 
@@ -109,7 +109,7 @@
             radioButtonPJ.Location = new Point(6, 51);
             radioButtonPJ.Name = "radioButtonPJ";
             radioButtonPJ.Size = new Size(104, 19);
-            radioButtonPJ.TabIndex = 10;
+            radioButtonPJ.TabIndex = 0;
             radioButtonPJ.Text = "Pessoa Jurídica";
             radioButtonPJ.UseVisualStyleBackColor = true;
             radioButtonPJ.CheckedChanged += radioButtonPJ_CheckedChanged;
@@ -150,6 +150,7 @@
             designTextBoxInscricaoMunicipal.BorderSize = 1;
             designTextBoxInscricaoMunicipal.CharacterCasing = CharacterCasing.Normal;
             designTextBoxInscricaoMunicipal.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxInscricaoMunicipal.ForceUpperCase = false;
             designTextBoxInscricaoMunicipal.ForeColor = SystemColors.WindowText;
             designTextBoxInscricaoMunicipal.Location = new Point(532, 59);
             designTextBoxInscricaoMunicipal.Multiline = false;
@@ -158,6 +159,7 @@
             designTextBoxInscricaoMunicipal.PasswordChar = false;
             designTextBoxInscricaoMunicipal.PlaceholderColor = Color.DarkGray;
             designTextBoxInscricaoMunicipal.PlaceholderText = "Nome do Cliente";
+            designTextBoxInscricaoMunicipal.ReadOnly = false;
             designTextBoxInscricaoMunicipal.SelectionLength = 0;
             designTextBoxInscricaoMunicipal.SelectionStart = 0;
             designTextBoxInscricaoMunicipal.Size = new Size(170, 32);
@@ -173,6 +175,7 @@
             designTextBoxInscricaoEstadual.BorderSize = 1;
             designTextBoxInscricaoEstadual.CharacterCasing = CharacterCasing.Normal;
             designTextBoxInscricaoEstadual.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxInscricaoEstadual.ForceUpperCase = false;
             designTextBoxInscricaoEstadual.ForeColor = SystemColors.WindowText;
             designTextBoxInscricaoEstadual.Location = new Point(532, 21);
             designTextBoxInscricaoEstadual.Multiline = false;
@@ -181,11 +184,13 @@
             designTextBoxInscricaoEstadual.PasswordChar = false;
             designTextBoxInscricaoEstadual.PlaceholderColor = Color.DarkGray;
             designTextBoxInscricaoEstadual.PlaceholderText = "Nome do Cliente";
+            designTextBoxInscricaoEstadual.ReadOnly = false;
             designTextBoxInscricaoEstadual.SelectionLength = 0;
             designTextBoxInscricaoEstadual.SelectionStart = 0;
             designTextBoxInscricaoEstadual.Size = new Size(170, 32);
             designTextBoxInscricaoEstadual.TabIndex = 1;
             designTextBoxInscricaoEstadual.UnderlinedStyle = false;
+            designTextBoxInscricaoEstadual._TextChanged += designTextBoxInscricaoEstadual__TextChanged;
             // 
             // designTextBoxNomeFantasia
             // 
@@ -196,6 +201,7 @@
             designTextBoxNomeFantasia.BorderSize = 1;
             designTextBoxNomeFantasia.CharacterCasing = CharacterCasing.Normal;
             designTextBoxNomeFantasia.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNomeFantasia.ForceUpperCase = true;
             designTextBoxNomeFantasia.ForeColor = SystemColors.WindowText;
             designTextBoxNomeFantasia.Location = new Point(108, 102);
             designTextBoxNomeFantasia.Multiline = false;
@@ -204,6 +210,7 @@
             designTextBoxNomeFantasia.PasswordChar = false;
             designTextBoxNomeFantasia.PlaceholderColor = Color.DarkGray;
             designTextBoxNomeFantasia.PlaceholderText = "Nome Fantasia da Empresa";
+            designTextBoxNomeFantasia.ReadOnly = false;
             designTextBoxNomeFantasia.SelectionLength = 0;
             designTextBoxNomeFantasia.SelectionStart = 0;
             designTextBoxNomeFantasia.Size = new Size(265, 32);
@@ -219,6 +226,7 @@
             designTextBoxRazaoSocial.BorderSize = 1;
             designTextBoxRazaoSocial.CharacterCasing = CharacterCasing.Normal;
             designTextBoxRazaoSocial.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxRazaoSocial.ForceUpperCase = true;
             designTextBoxRazaoSocial.ForeColor = SystemColors.WindowText;
             designTextBoxRazaoSocial.Location = new Point(108, 59);
             designTextBoxRazaoSocial.Multiline = false;
@@ -227,6 +235,7 @@
             designTextBoxRazaoSocial.PasswordChar = false;
             designTextBoxRazaoSocial.PlaceholderColor = Color.DarkGray;
             designTextBoxRazaoSocial.PlaceholderText = "Razão Social";
+            designTextBoxRazaoSocial.ReadOnly = false;
             designTextBoxRazaoSocial.SelectionLength = 0;
             designTextBoxRazaoSocial.SelectionStart = 0;
             designTextBoxRazaoSocial.Size = new Size(265, 32);
@@ -242,6 +251,7 @@
             designTextBoxCNPJ.BorderSize = 1;
             designTextBoxCNPJ.CharacterCasing = CharacterCasing.Normal;
             designTextBoxCNPJ.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxCNPJ.ForceUpperCase = false;
             designTextBoxCNPJ.ForeColor = SystemColors.WindowText;
             designTextBoxCNPJ.Location = new Point(108, 21);
             designTextBoxCNPJ.Multiline = false;
@@ -250,11 +260,13 @@
             designTextBoxCNPJ.PasswordChar = false;
             designTextBoxCNPJ.PlaceholderColor = Color.DarkGray;
             designTextBoxCNPJ.PlaceholderText = "CNPJ da empresa";
+            designTextBoxCNPJ.ReadOnly = false;
             designTextBoxCNPJ.SelectionLength = 0;
             designTextBoxCNPJ.SelectionStart = 0;
             designTextBoxCNPJ.Size = new Size(158, 32);
             designTextBoxCNPJ.TabIndex = 1;
             designTextBoxCNPJ.UnderlinedStyle = false;
+            designTextBoxCNPJ._TextChanged += designTextBoxCNPJ__TextChanged;
             // 
             // labelInscricaoEstadual
             // 
@@ -294,12 +306,12 @@
             // 
             // panelCadastroPF
             // 
+            panelCadastroPF.Controls.Add(designTextBoxNascimento);
             panelCadastroPF.Controls.Add(designTextBoxRG);
             panelCadastroPF.Controls.Add(designTextBoxCPF);
             panelCadastroPF.Controls.Add(designTextBoxNomeMae);
             panelCadastroPF.Controls.Add(designTextBoxNomeCliente);
             panelCadastroPF.Controls.Add(labelNomeMae);
-            panelCadastroPF.Controls.Add(maskedTextBoxNascimento);
             panelCadastroPF.Controls.Add(label1);
             panelCadastroPF.Controls.Add(rg);
             panelCadastroPF.Controls.Add(cpf);
@@ -308,6 +320,32 @@
             panelCadastroPF.Name = "panelCadastroPF";
             panelCadastroPF.Size = new Size(849, 186);
             panelCadastroPF.TabIndex = 28;
+            // 
+            // designTextBoxNascimento
+            // 
+            designTextBoxNascimento.BackColor = SystemColors.Window;
+            designTextBoxNascimento.BorderColor = Color.MediumSlateBlue;
+            designTextBoxNascimento.BorderFocusColor = Color.HotPink;
+            designTextBoxNascimento.BorderRadius = 15;
+            designTextBoxNascimento.BorderSize = 1;
+            designTextBoxNascimento.CharacterCasing = CharacterCasing.Normal;
+            designTextBoxNascimento.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNascimento.ForceUpperCase = false;
+            designTextBoxNascimento.ForeColor = SystemColors.WindowText;
+            designTextBoxNascimento.Location = new Point(604, 32);
+            designTextBoxNascimento.Multiline = false;
+            designTextBoxNascimento.Name = "designTextBoxNascimento";
+            designTextBoxNascimento.Padding = new Padding(10, 7, 10, 7);
+            designTextBoxNascimento.PasswordChar = false;
+            designTextBoxNascimento.PlaceholderColor = Color.DarkGray;
+            designTextBoxNascimento.PlaceholderText = "Data";
+            designTextBoxNascimento.ReadOnly = false;
+            designTextBoxNascimento.SelectionLength = 0;
+            designTextBoxNascimento.SelectionStart = 0;
+            designTextBoxNascimento.Size = new Size(98, 32);
+            designTextBoxNascimento.TabIndex = 51;
+            designTextBoxNascimento.UnderlinedStyle = false;
+            designTextBoxNascimento._TextChanged += designTextBoxNascimento__TextChanged;
             // 
             // designTextBoxRG
             // 
@@ -318,6 +356,7 @@
             designTextBoxRG.BorderSize = 1;
             designTextBoxRG.CharacterCasing = CharacterCasing.Normal;
             designTextBoxRG.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxRG.ForceUpperCase = false;
             designTextBoxRG.ForeColor = SystemColors.WindowText;
             designTextBoxRG.Location = new Point(302, 76);
             designTextBoxRG.Multiline = false;
@@ -326,11 +365,13 @@
             designTextBoxRG.PasswordChar = false;
             designTextBoxRG.PlaceholderColor = Color.DarkGray;
             designTextBoxRG.PlaceholderText = "RG do Cliente";
+            designTextBoxRG.ReadOnly = false;
             designTextBoxRG.SelectionLength = 0;
             designTextBoxRG.SelectionStart = 0;
             designTextBoxRG.Size = new Size(168, 32);
             designTextBoxRG.TabIndex = 3;
             designTextBoxRG.UnderlinedStyle = false;
+            designTextBoxRG._TextChanged += designTextBoxRG__TextChanged;
             // 
             // designTextBoxCPF
             // 
@@ -341,6 +382,7 @@
             designTextBoxCPF.BorderSize = 1;
             designTextBoxCPF.CharacterCasing = CharacterCasing.Normal;
             designTextBoxCPF.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxCPF.ForceUpperCase = false;
             designTextBoxCPF.ForeColor = SystemColors.WindowText;
             designTextBoxCPF.Location = new Point(75, 76);
             designTextBoxCPF.Multiline = false;
@@ -349,6 +391,7 @@
             designTextBoxCPF.PasswordChar = false;
             designTextBoxCPF.PlaceholderColor = Color.DarkGray;
             designTextBoxCPF.PlaceholderText = "CPF do Cliente";
+            designTextBoxCPF.ReadOnly = false;
             designTextBoxCPF.SelectionLength = 0;
             designTextBoxCPF.SelectionStart = 0;
             designTextBoxCPF.Size = new Size(175, 32);
@@ -366,6 +409,7 @@
             designTextBoxNomeMae.BorderSize = 1;
             designTextBoxNomeMae.CharacterCasing = CharacterCasing.Normal;
             designTextBoxNomeMae.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNomeMae.ForceUpperCase = true;
             designTextBoxNomeMae.ForeColor = SystemColors.WindowText;
             designTextBoxNomeMae.Location = new Point(75, 137);
             designTextBoxNomeMae.Multiline = false;
@@ -373,7 +417,8 @@
             designTextBoxNomeMae.Padding = new Padding(10, 7, 10, 7);
             designTextBoxNomeMae.PasswordChar = false;
             designTextBoxNomeMae.PlaceholderColor = Color.DarkGray;
-            designTextBoxNomeMae.PlaceholderText = "Nome da mae do cliente";
+            designTextBoxNomeMae.PlaceholderText = "Nome da Mãe do Cliente";
+            designTextBoxNomeMae.ReadOnly = false;
             designTextBoxNomeMae.SelectionLength = 0;
             designTextBoxNomeMae.SelectionStart = 0;
             designTextBoxNomeMae.Size = new Size(395, 32);
@@ -389,6 +434,7 @@
             designTextBoxNomeCliente.BorderSize = 1;
             designTextBoxNomeCliente.CharacterCasing = CharacterCasing.Normal;
             designTextBoxNomeCliente.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNomeCliente.ForceUpperCase = true;
             designTextBoxNomeCliente.ForeColor = SystemColors.WindowText;
             designTextBoxNomeCliente.Location = new Point(75, 32);
             designTextBoxNomeCliente.Multiline = false;
@@ -397,6 +443,7 @@
             designTextBoxNomeCliente.PasswordChar = false;
             designTextBoxNomeCliente.PlaceholderColor = Color.DarkGray;
             designTextBoxNomeCliente.PlaceholderText = "Nome do Cliente";
+            designTextBoxNomeCliente.ReadOnly = false;
             designTextBoxNomeCliente.SelectionLength = 0;
             designTextBoxNomeCliente.SelectionStart = 0;
             designTextBoxNomeCliente.Size = new Size(395, 32);
@@ -411,16 +458,6 @@
             labelNomeMae.Size = new Size(82, 15);
             labelNomeMae.TabIndex = 50;
             labelNomeMae.Text = "Nome da Mãe";
-            // 
-            // maskedTextBoxNascimento
-            // 
-            maskedTextBoxNascimento.Location = new Point(606, 36);
-            maskedTextBoxNascimento.Mask = "00/00/0000";
-            maskedTextBoxNascimento.Name = "maskedTextBoxNascimento";
-            maskedTextBoxNascimento.Size = new Size(69, 23);
-            maskedTextBoxNascimento.TabIndex = 5;
-            maskedTextBoxNascimento.ValidatingType = typeof(DateTime);
-            maskedTextBoxNascimento.MaskInputRejected += maskedTextBoxNascimento_MaskInputRejected;
             // 
             // label1
             // 
@@ -502,6 +539,7 @@
             designTextBoxEstado.BorderSize = 1;
             designTextBoxEstado.CharacterCasing = CharacterCasing.Normal;
             designTextBoxEstado.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxEstado.ForceUpperCase = false;
             designTextBoxEstado.ForeColor = SystemColors.WindowText;
             designTextBoxEstado.Location = new Point(260, 407);
             designTextBoxEstado.Multiline = false;
@@ -510,6 +548,7 @@
             designTextBoxEstado.PasswordChar = false;
             designTextBoxEstado.PlaceholderColor = Color.DarkGray;
             designTextBoxEstado.PlaceholderText = "Estado";
+            designTextBoxEstado.ReadOnly = false;
             designTextBoxEstado.SelectionLength = 0;
             designTextBoxEstado.SelectionStart = 0;
             designTextBoxEstado.Size = new Size(106, 32);
@@ -525,6 +564,7 @@
             designTextBoxComplemento.BorderSize = 1;
             designTextBoxComplemento.CharacterCasing = CharacterCasing.Normal;
             designTextBoxComplemento.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxComplemento.ForceUpperCase = false;
             designTextBoxComplemento.ForeColor = SystemColors.WindowText;
             designTextBoxComplemento.Location = new Point(461, 407);
             designTextBoxComplemento.Multiline = false;
@@ -533,6 +573,7 @@
             designTextBoxComplemento.PasswordChar = false;
             designTextBoxComplemento.PlaceholderColor = Color.DarkGray;
             designTextBoxComplemento.PlaceholderText = "Complemento";
+            designTextBoxComplemento.ReadOnly = false;
             designTextBoxComplemento.SelectionLength = 0;
             designTextBoxComplemento.SelectionStart = 0;
             designTextBoxComplemento.Size = new Size(242, 32);
@@ -548,6 +589,7 @@
             designTextBoxCidade.BorderSize = 1;
             designTextBoxCidade.CharacterCasing = CharacterCasing.Normal;
             designTextBoxCidade.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxCidade.ForceUpperCase = false;
             designTextBoxCidade.ForeColor = SystemColors.WindowText;
             designTextBoxCidade.Location = new Point(577, 364);
             designTextBoxCidade.Multiline = false;
@@ -556,6 +598,7 @@
             designTextBoxCidade.PasswordChar = false;
             designTextBoxCidade.PlaceholderColor = Color.DarkGray;
             designTextBoxCidade.PlaceholderText = "Cidade";
+            designTextBoxCidade.ReadOnly = false;
             designTextBoxCidade.SelectionLength = 0;
             designTextBoxCidade.SelectionStart = 0;
             designTextBoxCidade.Size = new Size(126, 32);
@@ -571,6 +614,7 @@
             designTextBoxNumero.BorderSize = 1;
             designTextBoxNumero.CharacterCasing = CharacterCasing.Normal;
             designTextBoxNumero.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNumero.ForceUpperCase = false;
             designTextBoxNumero.ForeColor = SystemColors.WindowText;
             designTextBoxNumero.Location = new Point(616, 326);
             designTextBoxNumero.Multiline = false;
@@ -579,6 +623,7 @@
             designTextBoxNumero.PasswordChar = false;
             designTextBoxNumero.PlaceholderColor = Color.DarkGray;
             designTextBoxNumero.PlaceholderText = "Numero";
+            designTextBoxNumero.ReadOnly = false;
             designTextBoxNumero.SelectionLength = 0;
             designTextBoxNumero.SelectionStart = 0;
             designTextBoxNumero.Size = new Size(87, 32);
@@ -595,6 +640,7 @@
             designTextBoxBairro.BorderSize = 1;
             designTextBoxBairro.CharacterCasing = CharacterCasing.Normal;
             designTextBoxBairro.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxBairro.ForceUpperCase = false;
             designTextBoxBairro.ForeColor = SystemColors.WindowText;
             designTextBoxBairro.Location = new Point(261, 364);
             designTextBoxBairro.Multiline = false;
@@ -603,6 +649,7 @@
             designTextBoxBairro.PasswordChar = false;
             designTextBoxBairro.PlaceholderColor = Color.DarkGray;
             designTextBoxBairro.PlaceholderText = "Nome do Bairro";
+            designTextBoxBairro.ReadOnly = false;
             designTextBoxBairro.SelectionLength = 0;
             designTextBoxBairro.SelectionStart = 0;
             designTextBoxBairro.Size = new Size(226, 32);
@@ -618,6 +665,7 @@
             designTextBoxCEP.BorderSize = 1;
             designTextBoxCEP.CharacterCasing = CharacterCasing.Normal;
             designTextBoxCEP.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxCEP.ForceUpperCase = false;
             designTextBoxCEP.ForeColor = SystemColors.WindowText;
             designTextBoxCEP.Location = new Point(83, 324);
             designTextBoxCEP.Multiline = false;
@@ -626,6 +674,7 @@
             designTextBoxCEP.PasswordChar = false;
             designTextBoxCEP.PlaceholderColor = Color.DarkGray;
             designTextBoxCEP.PlaceholderText = "CEP";
+            designTextBoxCEP.ReadOnly = false;
             designTextBoxCEP.SelectionLength = 0;
             designTextBoxCEP.SelectionStart = 0;
             designTextBoxCEP.Size = new Size(109, 32);
@@ -643,6 +692,7 @@
             designTextBoxRua.BorderSize = 1;
             designTextBoxRua.CharacterCasing = CharacterCasing.Normal;
             designTextBoxRua.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxRua.ForceUpperCase = false;
             designTextBoxRua.ForeColor = SystemColors.WindowText;
             designTextBoxRua.Location = new Point(264, 324);
             designTextBoxRua.Multiline = false;
@@ -651,6 +701,7 @@
             designTextBoxRua.PasswordChar = false;
             designTextBoxRua.PlaceholderColor = Color.DarkGray;
             designTextBoxRua.PlaceholderText = "Nome da Rua";
+            designTextBoxRua.ReadOnly = false;
             designTextBoxRua.SelectionLength = 0;
             designTextBoxRua.SelectionStart = 0;
             designTextBoxRua.Size = new Size(272, 32);
@@ -782,8 +833,8 @@
             Controls.Add(designTextBoxCEP);
             Controls.Add(designTextBoxNumero);
             Controls.Add(designTextBoxBairro);
-            Controls.Add(panelCadastroPF);
             Controls.Add(panelCadastroPJ);
+            Controls.Add(panelCadastroPF);
             Name = "CadastroClientesForm";
             Text = "Cadastro de Clientes";
             Load += CadastroClientesForm_Load;
@@ -816,7 +867,6 @@
         private Label InscricaoMunicipal;
         private Label labelInscricaoEstadual;
         private Label AdicionarCliente;
-        private MaskedTextBox maskedTextBoxNascimento;
         private Label labelNomeMae;
         private DataGridViewTextBoxColumn TelefoneContato;
         private DataGridViewTextBoxColumn NomeContato;
@@ -845,5 +895,6 @@
         private Design.DesignTextBox designTextBoxNomeFantasia;
         private Design.DesignTextBox designTextBoxRazaoSocial;
         private Design.DesignTextBox designTextBoxCNPJ;
+        private Design.DesignTextBox designTextBoxNascimento;
     }
 }

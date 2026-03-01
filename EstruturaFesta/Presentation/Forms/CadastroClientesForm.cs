@@ -4,6 +4,7 @@ using EstruturaFesta.Data.Entities;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using EstruturaFesta.Utils;
+using EstruturaFesta.Design;
 
 namespace EstruturaFesta
 {
@@ -15,6 +16,7 @@ namespace EstruturaFesta
         private Cliente _cliente;
         private bool _isEditMode;
         private BindingList<Contato> _contatos;
+
         private ClientePF DocumentoJaExiste(string cpfNumeros)
         {
             return _db.Clientes
@@ -128,6 +130,84 @@ namespace EstruturaFesta
             designTextBoxCPF.SelectionStart = designTextBoxCPF.Text.Length;
             designTextBoxCPF.TextChanged += designTextBoxCPF__TextChanged;
         }
+        private void designTextBoxRG__TextChanged(object sender, EventArgs e)
+        {
+            string textoOriginal = designTextBoxRG.Text.ToUpper();
+            string textoLimpo = new string(textoOriginal
+                .Where(c => char.IsDigit(c) || c == 'X')
+                .ToArray());
+
+
+            if (textoLimpo.Contains("X"))
+            {
+                textoLimpo = textoLimpo.Replace("X", "");
+
+                if (textoLimpo.Length < 8) { }
+                else
+                {
+                    textoLimpo += "X";
+                }
+            }
+            if (textoLimpo.Length > 9)
+                textoLimpo = textoLimpo.Substring(0, 9);
+
+            if (textoLimpo.Length >= 3)
+                textoLimpo = textoLimpo.Insert(2, ".");
+            if (textoLimpo.Length >= 6)
+                textoLimpo = textoLimpo.Insert(6, ".");
+            if (textoLimpo.Length >= 10)
+                textoLimpo = textoLimpo.Insert(10, "-");
+
+            designTextBoxRG.TextChanged -= designTextBoxRG__TextChanged;
+            designTextBoxRG.Text = textoLimpo;
+            designTextBoxRG.SelectionStart = designTextBoxRG.Text.Length;
+            designTextBoxRG.TextChanged += designTextBoxRG__TextChanged;
+        }
+        private void designTextBoxCNPJ__TextChanged(object sender, EventArgs e)
+        {
+            string texto = new string(designTextBoxCNPJ.Text
+        .Where(char.IsDigit)
+        .ToArray());
+
+            if (texto.Length > 14)
+                texto = texto.Substring(0, 14);
+
+            if (texto.Length >= 3)
+                texto = texto.Insert(2, ".");
+            if (texto.Length >= 7)
+                texto = texto.Insert(6, ".");
+            if (texto.Length >= 11)
+                texto = texto.Insert(10, "/");
+            if (texto.Length >= 16)
+                texto = texto.Insert(15, "-");
+
+            designTextBoxCNPJ.TextChanged -= designTextBoxCNPJ__TextChanged;
+            designTextBoxCNPJ.Text = texto;
+            designTextBoxCNPJ.SelectionStart = designTextBoxCNPJ.Text.Length;
+            designTextBoxCNPJ.TextChanged += designTextBoxCNPJ__TextChanged;
+        }
+
+        private void designTextBoxInscricaoEstadual__TextChanged(object sender, EventArgs e)
+        {
+            string texto = new string(designTextBoxInscricaoEstadual.Text
+        .Where(char.IsDigit)
+        .ToArray());
+
+            if (texto.Length > 12)
+                texto = texto.Substring(0, 12);
+
+            if (texto.Length >= 4)
+                texto = texto.Insert(3, ".");
+            if (texto.Length >= 8)
+                texto = texto.Insert(7, ".");
+            if (texto.Length >= 12)
+                texto = texto.Insert(11, ".");
+
+            designTextBoxInscricaoEstadual.TextChanged -= designTextBoxInscricaoEstadual__TextChanged;
+            designTextBoxInscricaoEstadual.Text = texto;
+            designTextBoxInscricaoEstadual.SelectionStart = designTextBoxInscricaoEstadual.Text.Length;
+            designTextBoxInscricaoEstadual.TextChanged += designTextBoxInscricaoEstadual__TextChanged;
+        }
         private void designTextBoxCPF_Leave(object sender, EventArgs e)
         {
             string cpf = designTextBoxCPF.Text;
@@ -152,6 +232,7 @@ namespace EstruturaFesta
             }
 
         }
+
 
         private void designTextBoxCEP_Leave(object sender, EventArgs e) => LocalizarCEP();
 
@@ -206,13 +287,24 @@ namespace EstruturaFesta
                 designTextBoxNumero.Focus();
             }
         }
-        private void maskedTextBoxNascimento_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        private void designTextBoxNascimento__TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(maskedTextBoxNascimento.Text))
-            {
-                MessageBox.Show("Digite apenas números para a data de nascimento.",
-                    "Entrada inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            string texto = new string(designTextBoxNascimento.Text
+        .Where(char.IsDigit)
+        .ToArray());
+
+            if (texto.Length > 8)
+                texto = texto.Substring(0, 8);
+
+            if (texto.Length >= 3)
+                texto = texto.Insert(2, "/");
+            if (texto.Length >= 6)
+                texto = texto.Insert(5, "/");
+
+            designTextBoxNascimento.TextChanged -= designTextBoxNascimento__TextChanged;
+            designTextBoxNascimento.Text = texto;
+            designTextBoxNascimento.SelectionStart = designTextBoxNascimento.Text.Length;
+            designTextBoxNascimento.TextChanged += designTextBoxNascimento__TextChanged;
         }
 
         private void designTextBoxCPF_KeyPress(object sender, KeyPressEventArgs e)
@@ -258,9 +350,9 @@ namespace EstruturaFesta
                 designTextBoxRG.Text = pf.RG;
                 designTextBoxNomeMae.Text = pf.NomeMae;
                 if (pf.DataNascimento.HasValue)
-                    maskedTextBoxNascimento.Text = pf.DataNascimento.Value.ToString("dd/MM/yyyy");
+                    designTextBoxNascimento.Text = pf.DataNascimento.Value.ToString("dd/MM/yyyy");
                 else
-                    maskedTextBoxNascimento.Text = "";
+                    designTextBoxNascimento.Text = "";
             }
             else if (_cliente is ClientePJ pj)
             {
@@ -338,7 +430,7 @@ namespace EstruturaFesta
                 pf.CPF = designTextBoxCPF.Text?.Trim();
                 pf.RG = designTextBoxRG.Text?.Trim();
                 pf.NomeMae = designTextBoxNomeMae.Text?.Trim();
-                if (DateTime.TryParse(maskedTextBoxNascimento.Text, out DateTime dt))
+                if (DateTime.TryParse(designTextBoxNascimento.Text, out DateTime dt))
                     pf.DataNascimento = dt;
             }
             else if (cliente is ClientePJ pj)
@@ -452,6 +544,9 @@ namespace EstruturaFesta
         }
         #endregion
 
-
+        private void designTextBoxNomeCliente__TextChanged(object sender, EventArgs e)
+        {
+            designTextBoxNomeCliente.CharacterCasing = CharacterCasing.Upper;
+        }
     }
 }

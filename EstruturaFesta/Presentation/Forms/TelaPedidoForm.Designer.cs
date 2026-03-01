@@ -103,6 +103,8 @@
             designButtonQuebra = new Design.DesignButton();
             designButtonVisualizarPDF = new Design.DesignButton();
             designButtonSalvarPDF = new Design.DesignButton();
+            designButtonCancelarPedido = new Design.DesignButton();
+            designButtonEmitirNota = new Design.DesignButton();
             InformacoesCliente.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTelefones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewProdutosLocacao).BeginInit();
@@ -138,7 +140,6 @@
             InformacoesCliente.Name = "InformacoesCliente";
             InformacoesCliente.Size = new Size(1009, 189);
             InformacoesCliente.TabIndex = 0;
-            InformacoesCliente.Paint += InformacoesCliente_Paint;
             // 
             // designButtonGerarLink
             // 
@@ -168,6 +169,7 @@
             designTextBoxNumeroContato.BorderSize = 1;
             designTextBoxNumeroContato.CharacterCasing = CharacterCasing.Normal;
             designTextBoxNumeroContato.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNumeroContato.ForceUpperCase = false;
             designTextBoxNumeroContato.ForeColor = SystemColors.WindowText;
             designTextBoxNumeroContato.Location = new Point(510, 98);
             designTextBoxNumeroContato.Multiline = false;
@@ -176,6 +178,7 @@
             designTextBoxNumeroContato.PasswordChar = false;
             designTextBoxNumeroContato.PlaceholderColor = Color.DarkGray;
             designTextBoxNumeroContato.PlaceholderText = "Numero ";
+            designTextBoxNumeroContato.ReadOnly = false;
             designTextBoxNumeroContato.SelectionLength = 0;
             designTextBoxNumeroContato.SelectionStart = 0;
             designTextBoxNumeroContato.Size = new Size(114, 32);
@@ -191,6 +194,7 @@
             designTextBoxContato.BorderSize = 1;
             designTextBoxContato.CharacterCasing = CharacterCasing.Normal;
             designTextBoxContato.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxContato.ForceUpperCase = false;
             designTextBoxContato.ForeColor = SystemColors.WindowText;
             designTextBoxContato.Location = new Point(351, 98);
             designTextBoxContato.Multiline = false;
@@ -199,6 +203,7 @@
             designTextBoxContato.PasswordChar = false;
             designTextBoxContato.PlaceholderColor = Color.DarkGray;
             designTextBoxContato.PlaceholderText = "Nome do Contato";
+            designTextBoxContato.ReadOnly = false;
             designTextBoxContato.SelectionLength = 0;
             designTextBoxContato.SelectionStart = 0;
             designTextBoxContato.Size = new Size(153, 32);
@@ -233,6 +238,7 @@
             designTextBoxDescricao.BorderSize = 1;
             designTextBoxDescricao.CharacterCasing = CharacterCasing.Normal;
             designTextBoxDescricao.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxDescricao.ForceUpperCase = false;
             designTextBoxDescricao.ForeColor = SystemColors.WindowText;
             designTextBoxDescricao.Location = new Point(648, 97);
             designTextBoxDescricao.Multiline = true;
@@ -241,6 +247,7 @@
             designTextBoxDescricao.PasswordChar = false;
             designTextBoxDescricao.PlaceholderColor = Color.DarkGray;
             designTextBoxDescricao.PlaceholderText = "Observações do Pedido";
+            designTextBoxDescricao.ReadOnly = false;
             designTextBoxDescricao.SelectionLength = 0;
             designTextBoxDescricao.SelectionStart = 0;
             designTextBoxDescricao.Size = new Size(358, 64);
@@ -256,6 +263,7 @@
             designTextBox1.BorderSize = 2;
             designTextBox1.CharacterCasing = CharacterCasing.Normal;
             designTextBox1.Font = new Font("Segoe UI", 9.5F);
+            designTextBox1.ForceUpperCase = false;
             designTextBox1.ForeColor = Color.DimGray;
             designTextBox1.Location = new Point(1015, 45);
             designTextBox1.Multiline = false;
@@ -264,6 +272,7 @@
             designTextBox1.PasswordChar = false;
             designTextBox1.PlaceholderColor = Color.DarkGray;
             designTextBox1.PlaceholderText = "";
+            designTextBox1.ReadOnly = false;
             designTextBox1.SelectionLength = 0;
             designTextBox1.SelectionStart = 0;
             designTextBox1.Size = new Size(115, 32);
@@ -279,6 +288,7 @@
             designTextBoxDocumentoCliente.BorderSize = 1;
             designTextBoxDocumentoCliente.CharacterCasing = CharacterCasing.Normal;
             designTextBoxDocumentoCliente.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxDocumentoCliente.ForceUpperCase = false;
             designTextBoxDocumentoCliente.ForeColor = SystemColors.WindowText;
             designTextBoxDocumentoCliente.Location = new Point(823, 33);
             designTextBoxDocumentoCliente.Multiline = false;
@@ -287,6 +297,7 @@
             designTextBoxDocumentoCliente.PasswordChar = false;
             designTextBoxDocumentoCliente.PlaceholderColor = Color.DarkGray;
             designTextBoxDocumentoCliente.PlaceholderText = "Documentos do Cliente";
+            designTextBoxDocumentoCliente.ReadOnly = true;
             designTextBoxDocumentoCliente.SelectionLength = 0;
             designTextBoxDocumentoCliente.SelectionStart = 0;
             designTextBoxDocumentoCliente.Size = new Size(174, 32);
@@ -302,6 +313,7 @@
             designTextBoxNomeCliente.BorderSize = 1;
             designTextBoxNomeCliente.CharacterCasing = CharacterCasing.Normal;
             designTextBoxNomeCliente.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNomeCliente.ForceUpperCase = false;
             designTextBoxNomeCliente.ForeColor = SystemColors.WindowText;
             designTextBoxNomeCliente.Location = new Point(329, 33);
             designTextBoxNomeCliente.Multiline = false;
@@ -310,6 +322,7 @@
             designTextBoxNomeCliente.PasswordChar = false;
             designTextBoxNomeCliente.PlaceholderColor = Color.DarkGray;
             designTextBoxNomeCliente.PlaceholderText = "Nome do Cliente";
+            designTextBoxNomeCliente.ReadOnly = true;
             designTextBoxNomeCliente.SelectionLength = 0;
             designTextBoxNomeCliente.SelectionStart = 0;
             designTextBoxNomeCliente.Size = new Size(475, 32);
@@ -325,6 +338,7 @@
             designTextBoxIDPedido.BorderSize = 1;
             designTextBoxIDPedido.CharacterCasing = CharacterCasing.Normal;
             designTextBoxIDPedido.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxIDPedido.ForceUpperCase = false;
             designTextBoxIDPedido.ForeColor = SystemColors.WindowText;
             designTextBoxIDPedido.Location = new Point(7, 33);
             designTextBoxIDPedido.Multiline = false;
@@ -333,6 +347,7 @@
             designTextBoxIDPedido.PasswordChar = false;
             designTextBoxIDPedido.PlaceholderColor = Color.DarkGray;
             designTextBoxIDPedido.PlaceholderText = "Código";
+            designTextBoxIDPedido.ReadOnly = true;
             designTextBoxIDPedido.SelectionLength = 0;
             designTextBoxIDPedido.SelectionStart = 0;
             designTextBoxIDPedido.Size = new Size(100, 32);
@@ -634,6 +649,7 @@
             designTextBoxIDSaldo.BorderSize = 1;
             designTextBoxIDSaldo.CharacterCasing = CharacterCasing.Normal;
             designTextBoxIDSaldo.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxIDSaldo.ForceUpperCase = false;
             designTextBoxIDSaldo.ForeColor = SystemColors.WindowText;
             designTextBoxIDSaldo.Location = new Point(2, 150);
             designTextBoxIDSaldo.Multiline = false;
@@ -642,6 +658,7 @@
             designTextBoxIDSaldo.PasswordChar = false;
             designTextBoxIDSaldo.PlaceholderColor = Color.DarkGray;
             designTextBoxIDSaldo.PlaceholderText = "Saldo Aberto";
+            designTextBoxIDSaldo.ReadOnly = true;
             designTextBoxIDSaldo.SelectionLength = 0;
             designTextBoxIDSaldo.SelectionStart = 0;
             designTextBoxIDSaldo.Size = new Size(113, 32);
@@ -657,6 +674,7 @@
             designTextBoxSaldoCliente.BorderSize = 1;
             designTextBoxSaldoCliente.CharacterCasing = CharacterCasing.Normal;
             designTextBoxSaldoCliente.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxSaldoCliente.ForceUpperCase = false;
             designTextBoxSaldoCliente.ForeColor = SystemColors.WindowText;
             designTextBoxSaldoCliente.Location = new Point(2, 97);
             designTextBoxSaldoCliente.Multiline = false;
@@ -665,6 +683,7 @@
             designTextBoxSaldoCliente.PasswordChar = false;
             designTextBoxSaldoCliente.PlaceholderColor = Color.DarkGray;
             designTextBoxSaldoCliente.PlaceholderText = "Saldo Pendente";
+            designTextBoxSaldoCliente.ReadOnly = true;
             designTextBoxSaldoCliente.SelectionLength = 0;
             designTextBoxSaldoCliente.SelectionStart = 0;
             designTextBoxSaldoCliente.Size = new Size(113, 32);
@@ -680,6 +699,7 @@
             designTextBoxTotalGasto.BorderSize = 1;
             designTextBoxTotalGasto.CharacterCasing = CharacterCasing.Normal;
             designTextBoxTotalGasto.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxTotalGasto.ForceUpperCase = false;
             designTextBoxTotalGasto.ForeColor = SystemColors.WindowText;
             designTextBoxTotalGasto.Location = new Point(0, 45);
             designTextBoxTotalGasto.Multiline = false;
@@ -688,6 +708,7 @@
             designTextBoxTotalGasto.PasswordChar = false;
             designTextBoxTotalGasto.PlaceholderColor = Color.DarkGray;
             designTextBoxTotalGasto.PlaceholderText = "Total Gasto";
+            designTextBoxTotalGasto.ReadOnly = true;
             designTextBoxTotalGasto.SelectionLength = 0;
             designTextBoxTotalGasto.SelectionStart = 0;
             designTextBoxTotalGasto.Size = new Size(113, 32);
@@ -854,6 +875,7 @@
             designTextBoxAcrescimo.BorderSize = 1;
             designTextBoxAcrescimo.CharacterCasing = CharacterCasing.Normal;
             designTextBoxAcrescimo.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxAcrescimo.ForceUpperCase = false;
             designTextBoxAcrescimo.ForeColor = SystemColors.WindowText;
             designTextBoxAcrescimo.Location = new Point(101, 34);
             designTextBoxAcrescimo.Multiline = false;
@@ -862,6 +884,7 @@
             designTextBoxAcrescimo.PasswordChar = false;
             designTextBoxAcrescimo.PlaceholderColor = Color.DarkGray;
             designTextBoxAcrescimo.PlaceholderText = "Acréscimo";
+            designTextBoxAcrescimo.ReadOnly = false;
             designTextBoxAcrescimo.SelectionLength = 0;
             designTextBoxAcrescimo.SelectionStart = 0;
             designTextBoxAcrescimo.Size = new Size(118, 32);
@@ -878,6 +901,7 @@
             designTextBoxDesconto.BorderSize = 1;
             designTextBoxDesconto.CharacterCasing = CharacterCasing.Normal;
             designTextBoxDesconto.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxDesconto.ForceUpperCase = false;
             designTextBoxDesconto.ForeColor = SystemColors.WindowText;
             designTextBoxDesconto.Location = new Point(101, 68);
             designTextBoxDesconto.Multiline = false;
@@ -886,6 +910,7 @@
             designTextBoxDesconto.PasswordChar = false;
             designTextBoxDesconto.PlaceholderColor = Color.DarkGray;
             designTextBoxDesconto.PlaceholderText = "Desconto";
+            designTextBoxDesconto.ReadOnly = false;
             designTextBoxDesconto.SelectionLength = 0;
             designTextBoxDesconto.SelectionStart = 0;
             designTextBoxDesconto.Size = new Size(118, 32);
@@ -902,6 +927,7 @@
             designTextBoxSaldoPedido.BorderSize = 1;
             designTextBoxSaldoPedido.CharacterCasing = CharacterCasing.Normal;
             designTextBoxSaldoPedido.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxSaldoPedido.ForceUpperCase = false;
             designTextBoxSaldoPedido.ForeColor = SystemColors.WindowText;
             designTextBoxSaldoPedido.Location = new Point(101, 102);
             designTextBoxSaldoPedido.Multiline = false;
@@ -910,6 +936,7 @@
             designTextBoxSaldoPedido.PasswordChar = false;
             designTextBoxSaldoPedido.PlaceholderColor = Color.DarkGray;
             designTextBoxSaldoPedido.PlaceholderText = "Saldo Pedido";
+            designTextBoxSaldoPedido.ReadOnly = false;
             designTextBoxSaldoPedido.SelectionLength = 0;
             designTextBoxSaldoPedido.SelectionStart = 0;
             designTextBoxSaldoPedido.Size = new Size(118, 32);
@@ -925,6 +952,7 @@
             designTextBoxTotalValorQuebra.BorderSize = 1;
             designTextBoxTotalValorQuebra.CharacterCasing = CharacterCasing.Normal;
             designTextBoxTotalValorQuebra.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxTotalValorQuebra.ForceUpperCase = false;
             designTextBoxTotalValorQuebra.ForeColor = SystemColors.WindowText;
             designTextBoxTotalValorQuebra.Location = new Point(101, 136);
             designTextBoxTotalValorQuebra.Multiline = false;
@@ -933,6 +961,7 @@
             designTextBoxTotalValorQuebra.PasswordChar = false;
             designTextBoxTotalValorQuebra.PlaceholderColor = Color.DarkGray;
             designTextBoxTotalValorQuebra.PlaceholderText = "Valor Reposição";
+            designTextBoxTotalValorQuebra.ReadOnly = false;
             designTextBoxTotalValorQuebra.SelectionLength = 0;
             designTextBoxTotalValorQuebra.SelectionStart = 0;
             designTextBoxTotalValorQuebra.Size = new Size(118, 32);
@@ -949,6 +978,7 @@
             designTextBoxValorTotal.BorderSize = 1;
             designTextBoxValorTotal.CharacterCasing = CharacterCasing.Normal;
             designTextBoxValorTotal.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxValorTotal.ForceUpperCase = false;
             designTextBoxValorTotal.ForeColor = SystemColors.WindowText;
             designTextBoxValorTotal.Location = new Point(101, 170);
             designTextBoxValorTotal.Multiline = false;
@@ -957,6 +987,7 @@
             designTextBoxValorTotal.PasswordChar = false;
             designTextBoxValorTotal.PlaceholderColor = Color.DarkGray;
             designTextBoxValorTotal.PlaceholderText = "Valor Total";
+            designTextBoxValorTotal.ReadOnly = true;
             designTextBoxValorTotal.SelectionLength = 0;
             designTextBoxValorTotal.SelectionStart = 0;
             designTextBoxValorTotal.Size = new Size(118, 32);
@@ -972,6 +1003,7 @@
             designTextBoxSubTotal.BorderSize = 1;
             designTextBoxSubTotal.CharacterCasing = CharacterCasing.Normal;
             designTextBoxSubTotal.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxSubTotal.ForceUpperCase = false;
             designTextBoxSubTotal.ForeColor = SystemColors.WindowText;
             designTextBoxSubTotal.Location = new Point(101, 0);
             designTextBoxSubTotal.Multiline = false;
@@ -980,6 +1012,7 @@
             designTextBoxSubTotal.PasswordChar = false;
             designTextBoxSubTotal.PlaceholderColor = Color.DarkGray;
             designTextBoxSubTotal.PlaceholderText = "SubTotal";
+            designTextBoxSubTotal.ReadOnly = true;
             designTextBoxSubTotal.SelectionLength = 0;
             designTextBoxSubTotal.SelectionStart = 0;
             designTextBoxSubTotal.Size = new Size(118, 32);
@@ -1081,11 +1114,51 @@
             designButtonSalvarPDF.UseVisualStyleBackColor = false;
             designButtonSalvarPDF.Click += designButtonSalvarPDF_Click;
             // 
+            // designButtonCancelarPedido
+            // 
+            designButtonCancelarPedido.BackColor = Color.DarkRed;
+            designButtonCancelarPedido.BackgroundColor = Color.DarkRed;
+            designButtonCancelarPedido.BorderColor = Color.OrangeRed;
+            designButtonCancelarPedido.BorderRadius = 15;
+            designButtonCancelarPedido.BorderSize = 1;
+            designButtonCancelarPedido.FlatAppearance.BorderSize = 0;
+            designButtonCancelarPedido.FlatStyle = FlatStyle.Flat;
+            designButtonCancelarPedido.ForeColor = Color.White;
+            designButtonCancelarPedido.Location = new Point(636, 531);
+            designButtonCancelarPedido.Name = "designButtonCancelarPedido";
+            designButtonCancelarPedido.Size = new Size(109, 32);
+            designButtonCancelarPedido.TabIndex = 23;
+            designButtonCancelarPedido.Text = "Cancelar Pedido";
+            designButtonCancelarPedido.TextColor = Color.White;
+            designButtonCancelarPedido.UseVisualStyleBackColor = false;
+            designButtonCancelarPedido.Click += designButtonCancelarPedido_Click;
+            // 
+            // designButtonEmitirNota
+            // 
+            designButtonEmitirNota.BackColor = Color.MediumSlateBlue;
+            designButtonEmitirNota.BackgroundColor = Color.MediumSlateBlue;
+            designButtonEmitirNota.BorderColor = Color.PaleVioletRed;
+            designButtonEmitirNota.BorderRadius = 15;
+            designButtonEmitirNota.BorderSize = 0;
+            designButtonEmitirNota.FlatAppearance.BorderSize = 0;
+            designButtonEmitirNota.FlatStyle = FlatStyle.Flat;
+            designButtonEmitirNota.ForeColor = Color.White;
+            designButtonEmitirNota.Location = new Point(500, 490);
+            designButtonEmitirNota.Name = "designButtonEmitirNota";
+            designButtonEmitirNota.Size = new Size(130, 35);
+            designButtonEmitirNota.TabIndex = 24;
+            designButtonEmitirNota.Text = "Emitir Nota Fiscal";
+            designButtonEmitirNota.TextColor = Color.White;
+            designButtonEmitirNota.UseVisualStyleBackColor = false;
+            designButtonEmitirNota.Click += designButtonEmitirNota_Click;
+            // 
             // TelaPedidoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1130, 616);
+            Controls.Add(designButtonEmitirNota);
+            Controls.Add(designButtonCancelarPedido);
             Controls.Add(designButtonSalvarPDF);
             Controls.Add(designButtonVisualizarPDF);
             Controls.Add(designButtonQuebra);
@@ -1190,5 +1263,7 @@
         private Design.DesignButton designButtonQuebra;
         private Design.DesignButton designButtonVisualizarPDF;
         private Design.DesignButton designButtonSalvarPDF;
+        private Design.DesignButton designButtonCancelarPedido;
+        private Design.DesignButton designButtonEmitirNota;
     }
 }
