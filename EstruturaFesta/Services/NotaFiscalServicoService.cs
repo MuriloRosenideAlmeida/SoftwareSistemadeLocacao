@@ -11,16 +11,16 @@ namespace EstruturaFesta.Services
         // DADOS FIXOS DA EMPRESA — edite aqui
         // ============================================================
         private const string EmpresaNome = "ESTRUTURA FESTA LTDA";
-        private const string EmpresaCNPJ = "00.000.000/0001-00";
-        private const string EmpresaRua = "Rua das Festas";
-        private const string EmpresaNumero = "100";
-        private const string EmpresaBairro = "Centro";
-        private const string EmpresaCidade = "Sua Cidade";
+        private const string EmpresaCNPJ = "10.427.554/0001-23";
+        private const string EmpresaRua = "Rua Jucelino Kubitschek de Oliveira";
+        private const string EmpresaNumero = "22";
+        private const string EmpresaBairro = "Jd. Europa";
+        private const string EmpresaCidade = "Nova Odessa";
         private const string EmpresaUF = "SP";
-        private const string EmpresaCEP = "00000-000";
-        private const string EmpresaTelefone = "(00) 00000-0000";
-        private const string EmpresaEmail = "contato@estruturafesta.com.br";
-        private const string LogoPath = @"Assets\logo.png"; // coloque sua logo aqui
+        private const string EmpresaCEP = "13460-000";
+        private const string EmpresaTelefone = "(19) 3476-5005";
+        private const string EmpresaEmail = "estruturafesta@hotmail.com.br";
+        private const string LogoPath = @"Resources\logo_estrutura.png"; // coloque sua logo aqui
         // ============================================================
 
         public static DadosNotaFiscalServico MontarDados(
@@ -59,7 +59,9 @@ namespace EstruturaFesta.Services
                 ClienteCidade = pedido.Cidade,
                 ClienteUF = pedido.UF,
                 ClienteCEP = pedido.CEP,
-                ClienteTelefone = pedido.ContatoNumero,
+                ClienteTelefone = pedido.OutrosContatos.FirstOrDefault()?.Telefone
+                  ?? pedido.ContatoNumero
+                  ?? string.Empty,
 
                 // Serviço
                 DescricaoServico = descricaoServico,
@@ -124,9 +126,7 @@ namespace EstruturaFesta.Services
                             row.RelativeItem().Column(c =>
                             {
                                 c.Item().LineHorizontal(1).LineColor("#999999");
-                                c.Item().PaddingTop(2).Text("✂ ─────────────────────────────────────────────────────────────────────")
-                                    .FontSize(7).FontColor(Colors.Grey.Medium).AlignCenter();
-                                c.Item().LineHorizontal(1).LineColor("#999999");
+
                             });
                         });
 
@@ -147,9 +147,20 @@ namespace EstruturaFesta.Services
                 .Bold().FontSize(9).FontColor(Colors.White).AlignCenter();
 
             col.Item().Height(4);
+            // BOX RECIBO FISCAL
+            col.Item()
+                .Border(1)
+                .BorderColor("#1a1a2e")
+                .Background("#e8ecf5")
+                .PaddingVertical(4)
+                .PaddingHorizontal(10)
+                .Text("RECIBO FISCAL")
+                .Bold().FontSize(12).FontColor("#1a1a2e").AlignCenter();
+
+            col.Item().Height(4);
 
             // ── CABEÇALHO ──────────────────────────────────────────────────
-            col.Item().Border(1).BorderColor("#1a1a2e").Padding(8).Row(header =>
+            col.Item().Border(1).BorderColor("#1a1a2e").Padding(7).Row(header =>
             {
                 // Logo
                 if (File.Exists(d.LogoPath))
@@ -163,9 +174,9 @@ namespace EstruturaFesta.Services
                 {
                     emp.Item().Text(d.EmpresaNome).Bold().FontSize(10).FontColor("#1a1a2e");
                     emp.Item().Text($"CNPJ: {d.EmpresaCNPJ}").FontSize(7.5f);
-                    emp.Item().Text($"{d.EmpresaRua}, {d.EmpresaNumero} – {d.EmpresaBairro}").FontSize(7.5f);
-                    emp.Item().Text($"{d.EmpresaCidade}/{d.EmpresaUF} – CEP: {d.EmpresaCEP}").FontSize(7.5f);
-                    emp.Item().Text($"Tel: {d.EmpresaTelefone}  |  {d.EmpresaEmail}").FontSize(7.5f);
+                    emp.Item().Text($"{d.EmpresaRua}, {d.EmpresaNumero} – {d.EmpresaBairro}").FontSize(8);
+                    emp.Item().Text($"{d.EmpresaCidade}/{d.EmpresaUF} – CEP: {d.EmpresaCEP}").FontSize(8);
+                    emp.Item().Text($"Tel: {d.EmpresaTelefone}  |  {d.EmpresaEmail}").FontSize(8);
                 });
 
                 // Número e data
@@ -175,8 +186,8 @@ namespace EstruturaFesta.Services
                         .Text("NOTA FISCAL DE SERVIÇO")
                         .Bold().FontSize(8).FontColor(Colors.White).AlignCenter();
                     num.Item().PaddingTop(3).Text($"Nº {d.NumeroNota:D6}").Bold().FontSize(12).AlignCenter();
-                    num.Item().Text($"Emissão: {d.DataEmissao:dd/MM/yyyy HH:mm}").FontSize(7.5f).AlignCenter();
-                    num.Item().PaddingTop(2).Text($"Pedido Ref.: #{d.NumeroPedido}").FontSize(7.5f).AlignCenter();
+                    num.Item().Text($"Emissão: {d.DataEmissao:dd/MM/yyyy HH:mm}").FontSize(8).AlignCenter();
+                    num.Item().PaddingTop(2).Text($"Pedido Ref.: #{d.NumeroPedido}").FontSize(8).AlignCenter();
                 });
             });
 
@@ -234,20 +245,37 @@ namespace EstruturaFesta.Services
             col.Item().Height(8);
 
             // ── ASSINATURA (apenas uma por via) ────────────────────────────
-            col.Item().AlignCenter().Width(200).Column(c =>
+            col.Item().Row(row =>
             {
-                c.Item().PaddingTop(20).LineHorizontal(1).LineColor("#333333");
-                c.Item().PaddingTop(3).Text(assinaturaLabel).FontSize(8).AlignCenter();
-                c.Item().Text(assinaturaNome).FontSize(7).FontColor(Colors.Grey.Medium).AlignCenter();
+                row.RelativeItem();
+
+                row.ConstantItem(380).Row(inner =>
+                {
+                    // Data alinhada com a linha de assinatura
+                    inner.ConstantItem(170).PaddingTop(13)
+                        .Text("Data de Recebimento: ____/____/________").FontSize(8);
+
+                    inner.ConstantItem(10);
+
+                    // Assinatura
+                    inner.RelativeItem().Column(c =>
+                    {
+                        c.Item().PaddingTop(20).LineHorizontal(1).LineColor("#333333");
+                        c.Item().PaddingTop(3).Text(assinaturaLabel).FontSize(8).AlignCenter();
+                        c.Item().Text(assinaturaNome).FontSize(7).FontColor(Colors.Grey.Medium).AlignCenter();
+                    });
+                });
+
+                row.RelativeItem();
             });
 
             col.Item().Height(5);
 
             // ── RODAPÉ ─────────────────────────────────────────────────────
-            col.Item().LineHorizontal(1).LineColor("#cccccc");
+            col.Item().LineHorizontal(1).LineColor("#333333");
             col.Item().PaddingTop(3).Text(
-                "Este documento é um recibo de serviço e não substitui a Nota Fiscal Eletrônica de Serviços (NFS-e) oficial.")
-                .FontSize(6.5f).FontColor(Colors.Grey.Medium).AlignCenter();
+                "Desobrigado de emitir Nota Fiscal por não haver incidência de ISS sobre Locação de Acordo com a LEI COMPLEMENTAR Nº 116/2003")
+                .Bold().FontSize(8).FontColor(Colors.Black).AlignCenter();
         }
         private static void CelulaHeader(TableDescriptor table, string texto)
         {

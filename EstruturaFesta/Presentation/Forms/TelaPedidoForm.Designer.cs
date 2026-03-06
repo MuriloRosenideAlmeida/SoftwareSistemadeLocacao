@@ -1143,9 +1143,9 @@
             designButtonEmitirNota.FlatAppearance.BorderSize = 0;
             designButtonEmitirNota.FlatStyle = FlatStyle.Flat;
             designButtonEmitirNota.ForeColor = Color.White;
-            designButtonEmitirNota.Location = new Point(500, 490);
+            designButtonEmitirNota.Location = new Point(500, 492);
             designButtonEmitirNota.Name = "designButtonEmitirNota";
-            designButtonEmitirNota.Size = new Size(130, 35);
+            designButtonEmitirNota.Size = new Size(130, 33);
             designButtonEmitirNota.TabIndex = 24;
             designButtonEmitirNota.Text = "Emitir Nota Fiscal";
             designButtonEmitirNota.TextColor = Color.White;

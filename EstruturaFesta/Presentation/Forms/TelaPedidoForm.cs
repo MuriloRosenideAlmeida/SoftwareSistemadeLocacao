@@ -158,12 +158,12 @@ namespace EstruturaFesta
         private void TelaPedidoForm_Load(object sender, EventArgs e)
         {
             SistemaUpperCase.AplicarMaiusculo(this);
-            dateTimePickerEntrega.Value = DateTime.Today;
-            dateTimePickerRetirada.Value = DateTime.Today.AddDays(1);
-            // Só define data atual se for um pedido NOVO
+
             if (!_pedidoId.HasValue)
             {
                 dateTimePickerDataPedido.Value = DateTime.Today;
+                dateTimePickerEntrega.Value = DateTime.Today;
+                dateTimePickerRetirada.Value = DateTime.Today.AddDays(1);
             }
         }
 
@@ -1014,7 +1014,7 @@ namespace EstruturaFesta
             decimal.TryParse(designTextBoxTotalValorQuebra.Text, out valorQuebra);
 
             // Calcula valor total
-            total = subTotal + acrescimo - desconto;
+            total = subTotal + acrescimo + valorQuebra - desconto;
 
             // Soma pagamentos marcados como "Pago"
             foreach (DataGridViewRow row in dataGridViewPagamentos.Rows)
@@ -1033,7 +1033,7 @@ namespace EstruturaFesta
             }
 
             // Calcula saldo
-            saldo = total - totalPago + valorQuebra;
+            saldo = total - totalPago;
 
             // Atualiza as TextBox
             designTextBoxSubTotal.Text = subTotal.ToString("N2");
@@ -2038,10 +2038,15 @@ namespace EstruturaFesta
                 int numeroNota = ObterProximoNumeroNota();
 
                 // Monta descrição genérica com período
-                string descricao =
-                    $"Prestação de serviços de locação de estrutura para eventos, " +
-                    $"compreendendo o fornecimento e logística dos itens locados. " +
-                    $"Período: {dateTimePickerEntrega.Value:dd/MM/yyyy} a {dateTimePickerRetirada.Value:dd/MM/yyyy}.";
+                string descricaoPadrao =
+                $"Prestação de serviços de locação de estrutura para eventos, " +
+                $"compreendendo o fornecimento e logística dos itens locados. " +
+                $"Período: {dateTimePickerEntrega.Value:dd/MM/yyyy} a {dateTimePickerRetirada.Value:dd/MM/yyyy}.";
+                using var formDesc = new DiscriminacaoServicoForm(descricaoPadrao);
+                if (formDesc.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                string descricao = formDesc.Descricao;
 
                 // Coleta dados do pedido (reutiliza o método que já existe)
                 var dadosPedido = ObterDadosParaImpressao();

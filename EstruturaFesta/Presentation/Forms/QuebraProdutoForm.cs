@@ -29,6 +29,7 @@ namespace EstruturaFesta.Presentation.Forms
         public QuebraProdutoForm(EstruturaDataBase db, List<ProdutoQuebra> produtos, int pedidoId)
         {
             InitializeComponent();
+            _db = db;
             ProdutosQuebra = produtos;
             _pedidoId = pedidoId;
 

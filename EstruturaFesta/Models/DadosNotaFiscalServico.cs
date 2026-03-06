@@ -40,6 +40,7 @@ namespace EstruturaFesta.Models
         public string ClienteUF { get; set; }
         public string ClienteCEP { get; set; }
         public string ClienteTelefone { get; set; }
+        
 
         // Serviço
         public string DescricaoServico { get; set; } // descrição genérica

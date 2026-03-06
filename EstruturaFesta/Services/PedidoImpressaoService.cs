@@ -15,7 +15,7 @@ namespace EstruturaFesta.Services
     /// </summary>
     public static class PedidoImpressaoService
     {
-        private const string CAMINHO_LOGO = @"Resources\logo.png";
+        private const string CAMINHO_LOGO = @"C:\Users\Murilo\Documents\Projetos\EstruturaFesta\EstruturaFesta\Resources\logo_estrutura.jpg";
 
         public static void Inicializar()
         {
@@ -70,7 +70,7 @@ namespace EstruturaFesta.Services
         // ===== CABEÇALHO (SEM CAIXA NO NÚMERO) =====
         private static void CriarCabecalho(IContainer container, DadosPedidoImpressao pedido)
         {
-            container.Border(0.5f).BorderColor(Colors.Black).Padding(8).Row(row =>
+            container.Padding(8).Row(row =>
             {
                 // Logo
                 row.ConstantItem(100).Column(col =>
@@ -93,7 +93,7 @@ namespace EstruturaFesta.Services
                     col.Item().Text("Estrutura Festa Comercio e Locação de Materiais para Festa Ltda ME")
                         .FontSize(12).Bold(); // Aumentado
 
-                    col.Item().PaddingTop(3).Text("Rua Jucelino Kubitschek de Oliveira, 04 - Jd. Europa")
+                    col.Item().PaddingTop(3).Text("Rua Jucelino Kubitschek de Oliveira, 22 - Jd. Europa")
                         .FontSize(11); // Aumentado
 
                     col.Item().Text("13460-000 - Nova Odessa - SP")
