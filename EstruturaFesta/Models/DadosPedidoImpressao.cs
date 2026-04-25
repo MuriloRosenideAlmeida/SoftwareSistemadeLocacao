@@ -64,6 +64,7 @@ namespace EstruturaFesta.Models
         public decimal ValorUnitario { get; set; }
         public decimal ValorTotal => Quantidade * ValorUnitario;
         public decimal ValorReposicao { get; set; }
+        public decimal ValorTotalReposicao => Quantidade * ValorReposicao;
     }
 
     /// <summary>

@@ -44,6 +44,7 @@ namespace EstruturaFesta.Presentation.Forms
             public static Color cor4 = Color.FromArgb(95, 77, 221);
             public static Color cor5 = Color.FromArgb(249, 88, 155);
             public static Color cor6 = Color.FromArgb(24, 161, 251);
+            public static Color cor7 = Color.FromArgb(50, 156, 59);
         }
         private void BotaoAtivado(object senderBtn, Color color)
         {
@@ -136,6 +137,11 @@ namespace EstruturaFesta.Presentation.Forms
             BotaoAtivado(sender, CoresRGB.cor6);
             AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<FiltroProdutoForm>());
         }
+        private void bntFiltrarRecibo_Click(object sender, EventArgs e)
+        {
+            BotaoAtivado(sender, CoresRGB.cor7);   // escolha a cor que preferir
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<FiltroRecibosForm>());
+        }
 
         private void bntLogo_Click(object sender, EventArgs e)
         {
@@ -147,6 +153,7 @@ namespace EstruturaFesta.Presentation.Forms
 
             Reset();
         }
+
         private void AbrirFormFilho(Form childForm)
         {
             //open only form

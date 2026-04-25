@@ -40,6 +40,7 @@ namespace EstruturaFesta
             services.AddTransient<FiltroPedidosForm>();
             services.AddTransient<FiltroProdutoForm>();
             services.AddTransient<QuebraProdutoForm>();
+            services.AddTransient<FiltroRecibosForm>();
 
             ServiceLocator.Provider = services.BuildServiceProvider();
 

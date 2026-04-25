@@ -178,7 +178,7 @@ namespace EstruturaFesta.Services
                                     rowContato.RelativeItem().AlignRight()
                                         .Text(contato.NomeContato).FontSize(9);
 
-                                    rowContato.ConstantItem(58).AlignRight()
+                                    rowContato.ConstantItem(70).AlignRight()
                                         .Text(contato.Telefone).FontSize(9);
                                 });
                             }
@@ -353,7 +353,7 @@ namespace EstruturaFesta.Services
                 table.Cell().ColumnSpan(1)
                     .Background(Colors.Grey.Lighten3)
                     .Padding(3).AlignRight()
-                    .Text(pedido.Itens.Sum(i => i.ValorReposicao).ToString("C2"))
+                    .Text(pedido.Itens.Sum(i => i.ValorTotalReposicao).ToString("C2"))
                     .FontSize(8).Bold();
             });
         }

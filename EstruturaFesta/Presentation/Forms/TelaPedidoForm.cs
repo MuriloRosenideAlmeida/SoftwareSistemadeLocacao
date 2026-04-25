@@ -300,14 +300,9 @@ namespace EstruturaFesta
                 // Ajusta a quantidade do pedido se estiver maior que o disponível
                 if (quantidadePedido > estoqueDisponivel)
                 {
-                    MessageBox.Show(
-                        $"A quantidade do produto {row.Cells["Produto"].Value} foi ajustada para o máximo disponível ({estoqueDisponivel}) para a nova data.",
-                        "Atenção",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-                    row.Cells["Quantidade"].Value = estoqueDisponivel;
-                    quantidadePedido = estoqueDisponivel;
+                    MessageBox.Show($"Atenção: o produto {row.Cells["Produto"].Value} tem apenas {estoqueDisponivel} unidade(s) disponível para a nova data.",
+                 "Estoque insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 }
 
                 // Recalcula o valor total
@@ -537,8 +532,7 @@ namespace EstruturaFesta
                 if (diferenca > 0 && diferenca > estoqueDisponivel)
                 {
                     MessageBox.Show($"Estoque insuficiente! Disponível: {estoqueDisponivel}", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    quantidadeNova = quantidadeAntiga + estoqueDisponivel;
-                    row.Cells["Quantidade"].Value = quantidadeNova;
+                    
                 }
             }
             else // Novo pedido
@@ -546,8 +540,7 @@ namespace EstruturaFesta
                 if (quantidadeNova > estoqueDisponivel)
                 {
                     MessageBox.Show($"Quantidade maior que disponível ({estoqueDisponivel})!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    quantidadeNova = estoqueDisponivel;
-                    row.Cells["Quantidade"].Value = quantidadeNova;
+                    
                 }
             }
 
@@ -653,11 +646,8 @@ namespace EstruturaFesta
                 .Where(s => s.ProdutoId == produtoId && s.Data.Date == data.Date)
                 .Sum(s => s.QuantidadeReservada);
 
-            // Calcula estoque disponível
-            int disponivel = estoqueTotal - quantidadeReservada;
+            return estoqueTotal - quantidadeReservada;
 
-            // Nunca retorna valor negativo
-            return Math.Max(0, disponivel);
         }
 
         private int ObterQuantidadeOriginalPedido(int produtoId)
@@ -1596,10 +1586,8 @@ namespace EstruturaFesta
 
                     if (diferenca > 0 && diferenca > estoqueDisponivel)
                     {
-                        MessageBox.Show($"Estoque insuficiente para o produto {row.Cells["Produto"].Value}. Disponível: {estoqueDisponivel}", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        quantidadeNova = (itemExistente?.Quantidade ?? 0) + estoqueDisponivel;
-                        row.Cells["Quantidade"].Value = quantidadeNova;
-                        diferenca = estoqueDisponivel;
+                        MessageBox.Show($"Atenção: o produto {row.Cells["Produto"].Value} tem apenas {estoqueDisponivel} unidade(s) disponível para esta data.",
+                    "Estoque insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
 
                     // Ajusta o saldo no banco apenas com a diferença
@@ -1744,9 +1732,8 @@ namespace EstruturaFesta
                     int estoqueDisponivel = CalcularEstoqueDisponivel(produtoId, dataPedido);
                     if (quantidade > estoqueDisponivel)
                     {
-                        MessageBox.Show($"Estoque insuficiente para o produto {row.Cells["Produto"].Value}. Disponível: {estoqueDisponivel}", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        quantidade = estoqueDisponivel;
-                        row.Cells["Quantidade"].Value = quantidade;
+                        MessageBox.Show($"Atenção: o produto {row.Cells["Produto"].Value} tem apenas {estoqueDisponivel} unidade(s) disponível para esta data.",
+                    "Estoque insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
 
                     listaProdutos.Add(new ProdutoPedido
@@ -2015,8 +2002,7 @@ namespace EstruturaFesta
 
         #endregion
 
-
-        private void designButtonEmitirNota_Click(object sender, EventArgs e)
+        private async void designButtonEmitirNota_Click(object sender, EventArgs e)
         {
             if (!_pedidoId.HasValue)
             {
@@ -2034,30 +2020,53 @@ namespace EstruturaFesta
 
             try
             {
-                // Busca ou incrementa o número sequencial da nota
-                int numeroNota = ObterProximoNumeroNota();
+                var reciboService = new ReciboGeradoService(_db);
 
-                // Monta descrição genérica com período
+                // ── Já existe recibo para este pedido? ─────────────────────────
+                var reciboExistente = await reciboService.BuscarPorPedidoAsync(_pedidoId.Value);
+
+                if (reciboExistente != null)
+                {
+                    var confirmar = MessageBox.Show(
+                        $"Este pedido já possui a Nota Fiscal Nº {reciboExistente.Id:D6} " +
+                        $"emitida em {reciboExistente.DataEmissao:dd/MM/yyyy HH:mm}.\n\n" +
+                        "Deseja visualizá-la?",
+                        "Nota já emitida",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information);
+
+                    if (confirmar == DialogResult.Yes)
+                    {
+                        var dadosExistente = ReciboGeradoService.ConverterParaDadosNota(reciboExistente);
+                        NotaFiscalServicoService.VisualizarPDF(dadosExistente);
+                    }
+
+                    return;
+                }
+
+                // ── Primeira emissão ───────────────────────────────────────────
                 string descricaoPadrao =
-                $"Prestação de serviços de locação de estrutura para eventos, " +
-                $"compreendendo o fornecimento e logística dos itens locados. " +
-                $"Período: {dateTimePickerEntrega.Value:dd/MM/yyyy} a {dateTimePickerRetirada.Value:dd/MM/yyyy}.";
+                    $"Prestação de serviços de locação de estrutura para eventos, " +
+                    $"compreendendo o fornecimento e logística dos itens locados. " +
+                    $"Período: {dateTimePickerEntrega.Value:dd/MM/yyyy} " +
+                    $"a {dateTimePickerRetirada.Value:dd/MM/yyyy}.";
+
                 using var formDesc = new DiscriminacaoServicoForm(descricaoPadrao);
                 if (formDesc.ShowDialog(this) != DialogResult.OK)
                     return;
 
                 string descricao = formDesc.Descricao;
-
-                // Coleta dados do pedido (reutiliza o método que já existe)
                 var dadosPedido = ObterDadosParaImpressao();
 
-                // Monta dados da nota
+                // Salva no banco → Id gerado = número da nota
+                var reciboParaSalvar = ReciboGeradoService.MontarParaSalvar(dadosPedido, descricao);
+                int numeroNota = await reciboService.SalvarAsync(reciboParaSalvar);
+
+                // Monta PDF com o número correto
                 var dadosNota = NotaFiscalServicoService.MontarDados(dadosPedido, numeroNota, descricao);
 
-                // Pergunta se quer visualizar ou salvar
                 var opcao = MessageBox.Show(
-                    "Deseja visualizar a nota antes de salvar?\n\n" +
-                    "Sim = Visualizar\nNão = Salvar direto",
+                    "Deseja visualizar a nota antes de salvar?\n\nSim = Visualizar\nNão = Salvar direto",
                     "Emitir Nota Fiscal",
                     MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Question);
@@ -2066,19 +2075,12 @@ namespace EstruturaFesta
                     return;
 
                 if (opcao == DialogResult.Yes)
-                {
-                    // Salva o número só depois que o usuário confirmou
-                    SalvarNumeroNota(numeroNota);
                     NotaFiscalServicoService.VisualizarPDF(dadosNota);
-                }
                 else
                 {
                     if (NotaFiscalServicoService.SalvarComDialogo(dadosNota, out string caminho))
-                    {
-                        SalvarNumeroNota(numeroNota);
-                        MessageBox.Show($"Nota fiscal salva em:\n{caminho}",
+                        MessageBox.Show($"Nota fiscal Nº {numeroNota:D6} salva em:\n{caminho}",
                             "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
                 }
             }
             catch (Exception ex)
@@ -2087,34 +2089,6 @@ namespace EstruturaFesta
                     "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private int ObterProximoNumeroNota()
-        {
-            var config = _db.Configuracoes
-                .FirstOrDefault(c => c.Chave == "UltimoNumeroNota");
-
-            int atual = config != null ? int.Parse(config.Valor) : 0;
-            return atual + 1;
-        }
-
-        private void SalvarNumeroNota(int numero)
-        {
-            var config = _db.Configuracoes
-                .FirstOrDefault(c => c.Chave == "UltimoNumeroNota");
-
-            if (config == null)
-            {
-                _db.Configuracoes.Add(new ConfiguracaoSistema
-                {
-                    Chave = "UltimoNumeroNota",
-                    Valor = numero.ToString()
-                });
-            }
-            else
-            {
-                config.Valor = numero.ToString();
-            }
-
-            _db.SaveChanges();
-        }
+       
     }
 }

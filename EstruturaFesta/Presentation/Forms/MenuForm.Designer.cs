@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panelMenu = new Panel();
+            bntFiltrarRecibo = new FontAwesome.Sharp.IconButton();
             bntFiltrarProduto = new FontAwesome.Sharp.IconButton();
             bntCadastrarProduto = new FontAwesome.Sharp.IconButton();
             bntFiltrarCliente = new FontAwesome.Sharp.IconButton();
@@ -61,6 +62,7 @@
             // panelMenu
             // 
             panelMenu.BackColor = Color.FromArgb(30, 31, 68);
+            panelMenu.Controls.Add(bntFiltrarRecibo);
             panelMenu.Controls.Add(bntFiltrarProduto);
             panelMenu.Controls.Add(bntCadastrarProduto);
             panelMenu.Controls.Add(bntFiltrarCliente);
@@ -72,8 +74,32 @@
             panelMenu.ForeColor = Color.FromArgb(30, 31, 68);
             panelMenu.Location = new Point(0, 0);
             panelMenu.Name = "panelMenu";
-            panelMenu.Size = new Size(220, 520);
+            panelMenu.Size = new Size(220, 600);
             panelMenu.TabIndex = 0;
+            // 
+            // bntFiltrarRecibo
+            // 
+            bntFiltrarRecibo.BackColor = Color.FromArgb(31, 30, 68);
+            bntFiltrarRecibo.Dock = DockStyle.Top;
+            bntFiltrarRecibo.FlatAppearance.BorderSize = 0;
+            bntFiltrarRecibo.FlatStyle = FlatStyle.Flat;
+            bntFiltrarRecibo.Font = new Font("Segoe UI", 9F);
+            bntFiltrarRecibo.ForeColor = Color.Gainsboro;
+            bntFiltrarRecibo.IconChar = FontAwesome.Sharp.IconChar.Receipt;
+            bntFiltrarRecibo.IconColor = Color.Gainsboro;
+            bntFiltrarRecibo.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            bntFiltrarRecibo.IconSize = 35;
+            bntFiltrarRecibo.ImageAlign = ContentAlignment.MiddleLeft;
+            bntFiltrarRecibo.Location = new Point(0, 500);
+            bntFiltrarRecibo.Name = "bntFiltrarRecibo";
+            bntFiltrarRecibo.Padding = new Padding(10, 0, 20, 0);
+            bntFiltrarRecibo.Size = new Size(220, 60);
+            bntFiltrarRecibo.TabIndex = 0;
+            bntFiltrarRecibo.Text = "Recibos Fiscais";
+            bntFiltrarRecibo.TextAlign = ContentAlignment.MiddleLeft;
+            bntFiltrarRecibo.TextImageRelation = TextImageRelation.ImageBeforeText;
+            bntFiltrarRecibo.UseVisualStyleBackColor = false;
+            bntFiltrarRecibo.Click += bntFiltrarRecibo_Click;
             // 
             // bntFiltrarProduto
             // 
@@ -338,7 +364,7 @@
             panelDesktop.Dock = DockStyle.Fill;
             panelDesktop.Location = new Point(220, 89);
             panelDesktop.Name = "panelDesktop";
-            panelDesktop.Size = new Size(782, 431);
+            panelDesktop.Size = new Size(782, 511);
             panelDesktop.TabIndex = 3;
             // 
             // pictureBox1
@@ -347,7 +373,7 @@
             pictureBox1.Image = Properties.Resources.LogoSemFundoPreto;
             pictureBox1.Location = new Point(0, 0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(782, 431);
+            pictureBox1.Size = new Size(782, 511);
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -356,7 +382,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1002, 520);
+            ClientSize = new Size(1002, 600);
             Controls.Add(panelDesktop);
             Controls.Add(panelSombra);
             Controls.Add(barraDeTitulo);
@@ -399,5 +425,6 @@
         private FontAwesome.Sharp.IconPictureBox bntMinimize;
         private FontAwesome.Sharp.IconPictureBox bntExit;
         private PictureBox pictureBox1;
+        private FontAwesome.Sharp.IconButton bntFiltrarRecibo;
     }
 }
