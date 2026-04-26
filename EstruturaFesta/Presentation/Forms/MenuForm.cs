@@ -22,7 +22,13 @@ namespace EstruturaFesta.Presentation.Forms
         private Panel bordaEsquerdaBotao;
         private Form formularioFilhoAtual;
 
+        // ── 1. Adicione esta constante no topo da classe MenuForm ────────────
+        //       (junto com os outros campos como botaoAtual, bordaEsquerdaBotao)
 
+        private const string ChaveCliente = "CLIENTE_XPTO_001";
+        // ↑ Troque pelo identificador único deste cliente
+        //   Ex: "CLIENTE_JOAO_001", "CLIENTE_MARIA_002"
+        //   Cada instalador entregue a um cliente diferente terá uma chave diferente
 
         public MenuForm()
         {
@@ -217,7 +223,15 @@ namespace EstruturaFesta.Presentation.Forms
         {
             Application.Exit();
         }
+        protected override async void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Deixa o form fechar normalmente primeiro
+            base.OnFormClosing(e);
 
+            // Faz o backup silenciosamente em segundo plano
+            // Se falhar por qualquer motivo, o sistema fecha mesmo assim
+            await EstruturaFesta.Services.BackupService.RealizarBackupAsync(ChaveCliente);
+        }
     }
 
 

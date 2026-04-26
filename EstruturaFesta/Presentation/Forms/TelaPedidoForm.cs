@@ -532,7 +532,7 @@ namespace EstruturaFesta
                 if (diferenca > 0 && diferenca > estoqueDisponivel)
                 {
                     MessageBox.Show($"Estoque insuficiente! Disponível: {estoqueDisponivel}", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    
+
                 }
             }
             else // Novo pedido
@@ -540,7 +540,7 @@ namespace EstruturaFesta
                 if (quantidadeNova > estoqueDisponivel)
                 {
                     MessageBox.Show($"Quantidade maior que disponível ({estoqueDisponivel})!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    
+
                 }
             }
 
@@ -2089,6 +2089,6 @@ namespace EstruturaFesta
                     "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-       
+
     }
 }
