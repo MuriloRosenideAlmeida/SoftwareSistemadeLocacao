@@ -1586,6 +1586,9 @@ namespace RentManager
                 pedido = db.Pedidos.Include(p => p.Produtos).FirstOrDefault(p => p.ID == _pedidoId.Value);
                 if (pedido == null) { MessageBox.Show("Pedido não encontrado."); return; }
 
+                DateTime dataOriginal = pedido.DataPedido.Date;
+                bool dataMudou = dataOriginal != dataPedido;
+
                 pedido.ClienteId = clienteId;
                 pedido.DataPedido = dataPedido;
                 pedido.DataEntrega = dataEntrega;
@@ -1600,46 +1603,64 @@ namespace RentManager
                 pedido.Desconto = desconto;
 
                 var produtosExistentes = pedido.Produtos.ToList();
+                var produtosExistentesBackup = produtosExistentes.ToList(); // cópia para limpar saldos antigos
 
                 foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
                 {
                     if (row.IsNewRow) continue;
 
-                    var cellProdutoId = row.Cells["ProdutoID"].Value;
-                    if (cellProdutoId == null || !int.TryParse(cellProdutoId.ToString(), out int produtoId) || produtoId <= 0)
-                        continue;
+                    int produtoId = Convert.ToInt32(row.Cells["ProdutoID"].Value);
+                    int quantidadeNova = Convert.ToInt32(row.Cells["Quantidade"].Value);
+                    decimal valorUnitario = Convert.ToDecimal(row.Cells["ValorUnitario"].Value);
 
-                    if (!int.TryParse(row.Cells["Quantidade"].Value?.ToString(), out int quantidadeNova))
-                        continue;
+                    var itemExistente = produtosExistentesBackup.FirstOrDefault(x => x.ProdutoId == produtoId);
 
-                    if (!decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal valorUnitario))
-                        continue;
-
-                    var itemExistente = produtosExistentes.FirstOrDefault(x => x.ProdutoId == produtoId);
-
-                    int estoqueDisponivel = CalcularEstoqueDisponivel(produtoId, dataPedido);
-                    int diferenca = quantidadeNova - (itemExistente?.Quantidade ?? 0);
-
-                    if (diferenca > 0 && diferenca > estoqueDisponivel)
+                    if (dataMudou)
                     {
-                        MessageBox.Show(
-                            $"Atenção: o produto {row.Cells["Produto"].Value} tem apenas {estoqueDisponivel} unidade(s) disponível para esta data.",
-                            "Estoque insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                        // LIBERA na data original
+                        int quantidadeAntiga = itemExistente?.Quantidade ?? 0;
+                        var saldoAntigo = db.SaldosPorData.FirstOrDefault(
+                            s => s.ProdutoId == produtoId && s.Data.Date == dataOriginal);
 
-                    var saldoAtual = db.SaldosPorData.FirstOrDefault(s => s.ProdutoId == produtoId && s.Data.Date == dataPedido);
-                    if (saldoAtual != null)
-                    {
-                        saldoAtual.QuantidadeReservada += diferenca;
+                        if (saldoAntigo != null)
+                        {
+                            saldoAntigo.QuantidadeReservada -= quantidadeAntiga;
+                            if (saldoAntigo.QuantidadeReservada <= 0)
+                                db.SaldosPorData.Remove(saldoAntigo);
+                        }
+
+                        // RESERVA na data nova do zero
+                        var saldoNovo = db.SaldosPorData.FirstOrDefault(
+                            s => s.ProdutoId == produtoId && s.Data.Date == dataPedido);
+
+                        if (saldoNovo != null)
+                            saldoNovo.QuantidadeReservada += quantidadeNova;
+                        else
+                            db.SaldosPorData.Add(new SaldoEstoqueData
+                            {
+                                ProdutoId = produtoId,
+                                Data = dataPedido,
+                                QuantidadeReservada = quantidadeNova
+                            });
                     }
                     else
                     {
-                        db.SaldosPorData.Add(new SaldoEstoqueData
-                        {
-                            ProdutoId = produtoId,
-                            Data = dataPedido,
-                            QuantidadeReservada = quantidadeNova
-                        });
+                        // DATA NÃO MUDOU — lógica original de diferença continua igual
+                        int quantidadeAntiga = ObterQuantidadeOriginalPedido(produtoId);
+                        int diferenca = quantidadeNova - quantidadeAntiga;
+
+                        var saldoAtual = db.SaldosPorData.FirstOrDefault(
+                            s => s.ProdutoId == produtoId && s.Data.Date == dataPedido);
+
+                        if (saldoAtual != null)
+                            saldoAtual.QuantidadeReservada += diferenca;
+                        else
+                            db.SaldosPorData.Add(new SaldoEstoqueData
+                            {
+                                ProdutoId = produtoId,
+                                Data = dataPedido,
+                                QuantidadeReservada = quantidadeNova
+                            });
                     }
 
                     if (itemExistente != null)
