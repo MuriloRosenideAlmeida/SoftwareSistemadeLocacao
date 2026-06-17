@@ -1,0 +1,575 @@
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using RentManager.Models;
+using RentManager.Utils;
+
+
+namespace RentManager.Services
+{
+    /// <summary>
+    /// Serviço responsável pela geração de PDFs de pedidos de locação
+    /// </summary>
+    public static class PedidoImpressaoService
+    {
+        private static readonly string CAMINHO_LOGO = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "Resources",
+            "LogoSemfundoBrancoRedimencionado.png"
+);
+        public static void Inicializar()
+        {
+            QuestPDF.Settings.License = LicenseType.Community;
+        }
+
+        public static void GerarPDF(DadosPedidoImpressao pedido, string caminhoArquivo)
+        {
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(20);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x.FontSize(9).FontFamily("Arial"));
+
+                    page.Header().Element(c => CriarCabecalho(c, pedido));
+
+                    page.Content().Column(col =>
+                    {
+                        if (!pedido.IsOrcamento)
+                            col.Item().Element(c => CriarBoxCliente(c, pedido));
+                        col.Item().Element(c => CriarBoxDatas(c, pedido));
+                        col.Item().Element(c => CriarBoxObservacao(c, pedido));
+                        col.Item().PaddingTop(8).AlignCenter();
+                        col.Item().PaddingTop(5).Element(c => CriarTabelaProdutos(c, pedido));
+
+                        // VALORES E PAGAMENTOS NA MESMA LINHA
+                        col.Item().PaddingTop(5).Row(row =>
+                        {
+                            // Condições de pagamento à ESQUERDA
+                            row.ConstantItem(250).Element(c => CriarCondicoesPagamento(c, pedido));
+
+                            row.ConstantItem(155); // Espaçamento
+
+                            // Resumo financeiro à DIREITA
+                            row.ConstantItem(150).Height(100).Element(c => CriarResumoFinanceiro(c, pedido));
+                        });
+
+                        col.Item().PaddingTop(5).Row(row =>
+                        {
+                            row.RelativeItem(1).Element(CriarObservacoesFinais);
+                            row.ConstantItem(20);
+                            row.RelativeItem(1).AlignRight().Element(CriarAssinatura);
+                        });
+                    });
+                });
+            })
+            .GeneratePdf(caminhoArquivo);
+        }
+
+        // ===== CABEÇALHO (SEM CAIXA NO NÚMERO) =====
+        private static void CriarCabecalho(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Padding(8).Row(row =>
+            {
+                // Logo
+                row.ConstantItem(100).Column(col =>
+                {
+                    if (File.Exists(CAMINHO_LOGO))
+                    {
+                        col.Item().Height(70).Width(97).Image(CAMINHO_LOGO, ImageScaling.FitArea);
+                    }
+                    else
+                    {
+                        col.Item().Height(70).Border(0.5f).BorderColor(Colors.Grey.Medium)
+                            .AlignCenter().AlignMiddle()
+                            .Text("LOGO").FontSize(10).FontColor(Colors.Grey.Medium);
+                    }
+                });
+
+                // Dados da empresa (LETRAS MAIORES)
+                row.RelativeItem().PaddingLeft(10).Column(col =>
+                {
+                    col.Item().Text(DadosEmpresa.RazaoSocial)
+                        .FontSize(12).Bold();
+                    col.Item().PaddingTop(3).Text($"{DadosEmpresa.Rua}, {DadosEmpresa.Numero} - {DadosEmpresa.Bairro}")
+                        .FontSize(11);
+                    col.Item().Text($"{DadosEmpresa.CEP} - {DadosEmpresa.Cidade} - {DadosEmpresa.UF}")
+                        .FontSize(11);
+                    col.Item().Text($"Fone: {DadosEmpresa.Telefone}")
+                        .FontSize(11);
+                });
+
+                // Número do pedido e data (SEM CAIXA, LETRAS MAIORES)
+                row.ConstantItem(90).Column(col =>
+                {
+                    if (pedido.IsOrcamento)
+                    {
+                        col.Item().PaddingTop(15).AlignCenter()
+                    .Text("ORÇAMENTO").FontSize(13).Bold();
+                    }
+                    else
+                    {
+                        col.Item().PaddingTop(3).AlignCenter()
+                            .Text("Numero do Pedido").FontSize(11);
+
+                        col.Item().AlignCenter()
+                            .Text(pedido.NumeroPedido.ToString())
+                            .FontSize(12).Bold();
+                    }
+
+                    col.Item().PaddingTop(10).AlignCenter()
+                        .Text("Data do Pedido").FontSize(10);
+
+                    col.Item().AlignCenter()
+                        .Text(DateTime.Now.ToString("dd/MM/yyyy"))
+                        .FontSize(11).Bold(); // Aumentado
+                });
+            });
+        }
+
+        // ===== DADOS DO CLIENTE (REFORMULADO) =====
+        private static void CriarBoxCliente(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(0.5f).BorderColor(Colors.Black).Padding(8).Column(col =>
+            {
+                // Título
+                col.Item().Text("DADOS DO CLIENTE").FontSize(10).Bold();
+
+                col.Item().PaddingTop(5).Row(row =>
+                {
+                    // COLUNA ESQUERDA - Dados principais
+                    row.RelativeItem().Column(colEsq =>
+                    {
+                        colEsq.Item().Text(txt =>
+                        {
+                            txt.Span("Nome: ").FontSize(9);
+                            txt.Span(pedido.NomeCliente).FontSize(9).Bold();
+                            txt.Span("  CPF/CNPJ: ").FontSize(9);
+                            txt.Span(pedido.DocumentoCliente).FontSize(9).Bold();
+                        });
+
+                        colEsq.Item().PaddingTop(3).Text(txt =>
+                        {
+                            txt.Span("Endereço: ").FontSize(10);
+                            txt.Span(pedido.EnderecoRua ?? "").FontSize(10);
+                            txt.Span("   Número: ").FontSize(10);
+                            txt.Span(pedido.EnderecoNumero?.ToString() ?? "").FontSize(10);
+                            txt.Span("  Bairro: ").FontSize(10);
+                            // Bairro e Complemento
+                            txt.Span($"{pedido.Bairro ?? ""} {pedido.Complemento ?? ""}".Trim()).FontSize(10);
+                        });
+
+                        colEsq.Item().PaddingTop(3).Text(txt =>
+                        {
+                            txt.Span("CEP: ").FontSize(10);
+                            txt.Span(pedido.CEP ?? "").FontSize(10);
+                            txt.Span("  Cidade: ").FontSize(10);
+                            txt.Span(pedido.Cidade ?? "").FontSize(10);
+                            txt.Span("  UF: ").FontSize(10);
+                            txt.Span(pedido.UF ?? "").FontSize(10);
+                        });
+                    });
+
+                    // COLUNA DIREITA - Contatos alinhados
+                    row.ConstantItem(120).Column(colDir =>
+                    {
+                        if (pedido.OutrosContatos.Any())
+                        {
+                            foreach (var contato in pedido.OutrosContatos.Take(5))
+                            {
+                                colDir.Item().Row(rowContato =>
+                                {
+                                    rowContato.RelativeItem().AlignRight()
+                                        .Text(contato.NomeContato).FontSize(9);
+
+                                    rowContato.ConstantItem(70).AlignRight()
+                                        .Text(contato.Telefone).FontSize(9);
+                                });
+                            }
+                        }
+                        // Exibe o contato principal (ContatoNome + ContatoNumero) abaixo dos demais
+                        if (!string.IsNullOrWhiteSpace(pedido.ContatoNome) || !string.IsNullOrWhiteSpace(pedido.ContatoNumero))
+                        {
+                            colDir.Item().PaddingTop(6).Row(rowContato =>
+                            {
+                                rowContato.RelativeItem().AlignRight()
+                                    .Text(pedido.ContatoNome ?? "").FontSize(9);
+
+                                rowContato.ConstantItem(70).AlignRight()
+                                    .Text(pedido.ContatoNumero ?? "").FontSize(9);
+                            });
+                        }
+                    });
+                });
+            });
+        }
+
+        // ===== DATAS E OBSERVAÇÕES =====
+        private static void CriarBoxDatas(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(0.5f).BorderColor(Colors.Black).Padding(4).Column(col =>
+            {
+                col.Item().Row(row =>
+                {
+                    row.RelativeItem().Text(txt =>
+                    {
+                        txt.Span("Evento: ").FontSize(9);
+                        txt.Span(pedido.DataPedido.ToString("dd/MM/yyyy")).FontSize(9).Bold();
+                    });
+
+                    row.RelativeItem().Text(txt =>
+                    {
+                        txt.Span("Entrega: ").FontSize(9);
+                        txt.Span(pedido.DataEntrega.ToString("dd/MM/yyyy")).FontSize(9).Bold();
+                    });
+
+                    row.RelativeItem().Text(txt =>
+                    {
+                        txt.Span("Devolução: ").FontSize(9);
+                        txt.Span(pedido.DataRetirada.ToString("dd/MM/yyyy")).FontSize(9).Bold();
+                    });
+                });
+
+
+            });
+        }
+        private static void CriarBoxObservacao(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(0.5f).BorderColor(Colors.Black).PaddingLeft(3).PaddingTop(2).Height(30).Column(col =>
+            {
+                col.Item().Text(txt =>
+                {
+                    txt.Span("Observação: ").Bold();
+                    txt.Span(pedido.Observacoes ?? "");
+                });
+            });
+        }
+
+        // ===== TABELA DE PRODUTOS (NOVA ORDEM, SEM GRADES INTERNAS) =====
+        private static void CriarTabelaProdutos(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(0.5f).BorderColor(Colors.Black).Table(table =>
+            {
+                // Ordem: Item, Código, Produto, Faltas, Quantidade, Valor Unit., Valor Total, Reposição
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.ConstantColumn(25);   // Item
+                    columns.ConstantColumn(30);   // Código
+                    columns.RelativeColumn(5);    // Produto (sem grade)
+                    columns.ConstantColumn(35);   // Faltas (COM grade)
+                    columns.ConstantColumn(40);   // Quantidade
+                    columns.ConstantColumn(50);   // Valor Unitário
+                    columns.ConstantColumn(50);   // Valor Total
+                    columns.ConstantColumn(50);   // Reposição
+                });
+
+                // Cabeçalho
+                table.Header(header =>
+                {
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Item").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Cod.").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Produto").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Faltas").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Qtd.").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Valor Unit.").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Valor Total").FontSize(8).Bold();
+
+                    header.Cell().Background(Colors.Grey.Lighten3)
+                        .Border(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text("Reposição").FontSize(8).Bold();
+                });
+
+                // Linhas dos produtos
+                int itemNumero = 1;
+                foreach (var item in pedido.Itens)
+                {
+                    var corLinha = itemNumero % 2 == 0 ? Colors.White : Colors.Grey.Lighten4;
+
+                    // Item
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text(itemNumero.ToString()).FontSize(8);
+
+                    // Código
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text(item.ProdutoId.ToString()).FontSize(8);
+
+                    // Produto (SEM grade lateral)
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).Text(item.DescricaoProduto).FontSize(8);
+
+                    // Faltas (COM grade)
+                    table.Cell().Background(Colors.White)
+                        .Border(0.25f).BorderColor(Colors.Black)
+                        .Padding(3).Text("").FontSize(8);
+
+                    // Quantidade
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignCenter().Text(item.Quantidade.ToString()).FontSize(8);
+
+                    // Valor Unitário
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignRight().Text(item.ValorUnitario.ToString("C2")).FontSize(8);
+
+                    // Valor Total
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignRight().Text(item.ValorTotal.ToString("C2")).FontSize(8);
+
+                    // Reposição
+                    table.Cell().Background(corLinha)
+                        .BorderBottom(0.5f).BorderColor(Colors.Black)
+                        .Padding(3).AlignRight().Text(item.ValorReposicao.ToString("C2")).FontSize(8);
+
+                    itemNumero++;
+                }
+
+                // Linha do total
+
+
+                table.Cell().ColumnSpan(4)
+                    .Border(0.5f).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignLeft().Text($"Total Itens: {pedido.Itens.Count}")
+                    .FontSize(8).Bold();
+
+                table.Cell().ColumnSpan(2)
+                    .Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignRight().Text("Valor Total:")
+                    .FontSize(8).Bold();
+
+                table.Cell().ColumnSpan(1)
+                    .Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignRight().Text(pedido.SubTotal.ToString("C2"))
+                    .FontSize(8).Bold();
+
+                table.Cell().ColumnSpan(1)
+                    .Background(Colors.Grey.Lighten3)
+                    .Padding(3).AlignRight()
+                    .Text(pedido.Itens.Sum(i => i.ValorTotalReposicao).ToString("C2"))
+                    .FontSize(8).Bold();
+            });
+        }
+
+        // ===== CONDIÇÕES DE PAGAMENTO (À ESQUERDA) =====
+        private static void CriarCondicoesPagamento(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Column(col =>
+            {
+                col.Item().Text("Condições de Pagamento").FontSize(9).Bold();
+
+                col.Item().PaddingTop(3).Border(0.25f).BorderColor(Colors.Black).Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.RelativeColumn(2);    // Tipo
+                        columns.ConstantColumn(60);   // Vencimento
+                        columns.ConstantColumn(60);   // Valor
+                    });
+
+                    // Cabeçalho
+                    table.Header(header =>
+                    {
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Tipo").FontSize(8).Bold();
+
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Pago").FontSize(8).Bold();
+
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Valor").FontSize(8).Bold();
+                    });
+                    foreach (var pag in pedido.Pagamentos.Where(p => p.Pago))
+                    {
+                        // Tipo com "PAGO" se estiver pago
+                        table.Cell().Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).Text(pag.FormaPagamento).FontSize(8);
+                        table.Cell().Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text(pag.DataPagamento.ToString("dd/MM/yyyy")).FontSize(8);
+
+                        table.Cell().Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignRight().Text(pag.Valor.ToString("C2")).FontSize(8);
+
+                    }
+
+                    // Total
+                    table.Cell().ColumnSpan(2)
+                        .Border(0.25f).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                        .Padding(3).AlignLeft().Text("Total....:").FontSize(9).Bold();
+
+                    table.Cell().Border(0.25f).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+                        .Padding(3).AlignRight().Text(pedido.TotalPago.ToString("C2")).FontSize(9).Bold();
+                });
+            });
+        }
+
+        // ===== RESUMO FINANCEIRO (À DIREITA) =====
+        private static void CriarResumoFinanceiro(IContainer container, DadosPedidoImpressao pedido)
+        {
+            container.Border(0.5f).BorderColor(Colors.Black).Padding(8).Column(col =>
+            {
+                col.Item().Row(row =>
+                {
+                    row.RelativeItem().Text("Sub Total...:").FontSize(9);
+                    row.ConstantItem(60).AlignRight().Text(pedido.SubTotal.ToString("C2")).FontSize(9);
+                });
+
+                col.Item().PaddingTop(3).Row(row =>
+                {
+                    row.RelativeItem().Text("Acréscimo..:").FontSize(9);
+                    row.ConstantItem(60).AlignRight().Text(pedido.Acrescimo.ToString("C2")).FontSize(9);
+                });
+
+                col.Item().PaddingTop(3).Row(row =>
+                {
+                    row.RelativeItem().Text("Desconto...:").FontSize(9);
+                    row.ConstantItem(60).AlignRight().Text(pedido.Desconto.ToString("C2"))
+                        .FontSize(9);
+                });
+
+                col.Item().PaddingTop(3).Row(row =>
+                {
+                    row.RelativeItem().Text("Faltas........:").FontSize(9);
+                    row.ConstantItem(60).AlignRight().Text("").FontSize(9);
+                });
+
+                col.Item().PaddingTop(3).Row(row =>
+                {
+                    row.RelativeItem().Text("Saldo.......:").FontSize(10);
+                    row.ConstantItem(60).AlignRight().Text(pedido.SaldoPedido.ToString("C2"))
+                        .FontSize(9);
+                });
+
+                col.Item().PaddingTop(3).Row(row =>
+                {
+                    row.RelativeItem().Text("Total.........:").FontSize(10);
+                    row.ConstantItem(80).AlignRight().Text(pedido.ValorTotal.ToString("C2"))
+                        .FontSize(9);
+                });
+            });
+        }
+
+        // ===== OBSERVAÇÕES FINAIS =====
+        private static void CriarObservacoesFinais(IContainer container)
+        {
+            container.Text(t =>
+            {
+                t.DefaultTextStyle(x => x.FontSize(8).LineHeight(1.2f));
+                t.Span(
+                    "Ps. As quebras e danos correrão por conta do Locatário. Pede-se conferir o Material " +
+                    "no ato da entrega ou retirada, não se atendem reclamações posteriores. As mercadorias " +
+                    "deverão ser devolvidas limpas e embaladas, caso contrário incidirá um novo aluguel a " +
+                    "cada dia. Aos materiais não devolvidos no prazo marcado incidem novos aluguéis. O " +
+                    "Valor desta locação se refere a um dia de aluguel. Nos objetos de Prata não utilizar " +
+                    "Bom Bril ou outro material abrasivo, nem levar ao fogo."
+                );
+            });
+        }
+
+        // ===== ASSINATURA =====
+        private static void CriarAssinatura(IContainer container)
+        {
+            container.Border(0.5f).BorderColor(Colors.Black).Padding(8).Column(col =>
+            {
+                col.Item().Text("Conferi(mos) e Recebi(mos) os Materiais Relacionados.").FontSize(8);
+                col.Item().PaddingTop(2).Text("De acordo e ciente.").FontSize(8);
+                col.Item().PaddingTop(8).Text("Data.: ______/______/_________").FontSize(8);
+
+                col.Item().PaddingTop(45)
+                    .BorderTop(0.5f)
+                    .BorderColor(Colors.Black)
+                    .Text("Assinatura");
+            });
+        }
+
+        // ===== MÉTODOS PÚBLICOS =====
+
+        public static void VisualizarPDF(DadosPedidoImpressao pedido)
+        {
+            try
+            {
+                string caminhoTemp = Path.Combine(
+                    Path.GetTempPath(),
+                    $"Pedido_{pedido.NumeroPedido}_{DateTime.Now:yyyyMMddHHmmss}.pdf"
+                );
+
+                GerarPDF(pedido, caminhoTemp);
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = caminhoTemp,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao visualizar PDF:\n{ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public static bool SalvarPDFComDialogo(DadosPedidoImpressao pedido, out string caminhoSalvo)
+        {
+            caminhoSalvo = string.Empty;
+
+            using (var saveDialog = new SaveFileDialog())
+            {
+                saveDialog.Filter = "Arquivo PDF|*.pdf";
+                saveDialog.Title = "Salvar Pedido em PDF";
+                saveDialog.FileName = $"Pedido_{pedido.NumeroPedido}.pdf";
+                saveDialog.DefaultExt = "pdf";
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        GerarPDF(pedido, saveDialog.FileName);
+                        caminhoSalvo = saveDialog.FileName;
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Erro ao salvar PDF:\n{ex.Message}", "Erro",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+}
