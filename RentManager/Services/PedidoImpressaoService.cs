@@ -439,7 +439,7 @@ namespace RentManager.Services
 
                 col.Item().PaddingTop(3).Row(row =>
                 {
-                    row.RelativeItem().Text("Acréscimo..:").FontSize(9);
+                    row.RelativeItem().Text("Entrega e Retira.:").FontSize(9);
                     row.ConstantItem(60).AlignRight().Text(pedido.Acrescimo.ToString("C2")).FontSize(9);
                 });
 

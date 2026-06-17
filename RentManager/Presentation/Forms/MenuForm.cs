@@ -13,7 +13,7 @@ namespace RentManager.Presentation.Forms
         private Form formularioFilhoAtual;
         private bool _backupRealizado = false;
 
-        private const string ChaveCliente = "ESTRUTURA_FESTA_001";
+        private const string ChaveCliente = "CLIENTE_JOAO_001";
         // ↑ Troque pelo identificador único deste cliente
         //   Ex: "CLIENTE_JOAO_001", "CLIENTE_MARIA_002"
         //   Cada instalador entregue a um cliente diferente terá uma chave diferente
