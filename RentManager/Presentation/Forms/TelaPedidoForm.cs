@@ -1881,6 +1881,14 @@ namespace RentManager
             _pedidoId = pedido.ID;
             designTextBoxIDPedido.Text = pedido.ID.ToString();
             this.Text = "pedido.ID";
+            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+            {
+                if (row.IsNewRow) continue;
+                if (!int.TryParse(row.Cells["ProdutoID"].Value?.ToString(), out int produtoId)) continue;
+
+                int estoqueAtualizado = CalcularEstoqueDisponivel(produtoId, dataPedido);
+                row.Cells["Estoque"].Value = estoqueAtualizado;
+            }
 
             if (decimal.TryParse(designTextBoxSaldoPedido.Text, out decimal saldo))
             {
