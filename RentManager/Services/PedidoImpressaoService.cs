@@ -7,7 +7,6 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using RentManager.Models;
-using RentManager.Utils;
 
 
 namespace RentManager.Services
@@ -20,7 +19,7 @@ namespace RentManager.Services
         private static readonly string CAMINHO_LOGO = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,
             "Resources",
-            "LogoSemfundoBrancoRedimencionado.png"
+            "logo_cortado.jpg"
 );
         public static void Inicializar()
         {
@@ -83,7 +82,7 @@ namespace RentManager.Services
                 {
                     if (File.Exists(CAMINHO_LOGO))
                     {
-                        col.Item().Height(70).Width(97).Image(CAMINHO_LOGO, ImageScaling.FitArea);
+                        col.Item().Height(70).Image(CAMINHO_LOGO);
                     }
                     else
                     {
@@ -96,14 +95,17 @@ namespace RentManager.Services
                 // Dados da empresa (LETRAS MAIORES)
                 row.RelativeItem().PaddingLeft(10).Column(col =>
                 {
-                    col.Item().Text(DadosEmpresa.RazaoSocial)
-                        .FontSize(12).Bold();
-                    col.Item().PaddingTop(3).Text($"{DadosEmpresa.Rua}, {DadosEmpresa.Numero} - {DadosEmpresa.Bairro}")
-                        .FontSize(11);
-                    col.Item().Text($"{DadosEmpresa.CEP} - {DadosEmpresa.Cidade} - {DadosEmpresa.UF}")
-                        .FontSize(11);
-                    col.Item().Text($"Fone: {DadosEmpresa.Telefone}")
-                        .FontSize(11);
+                    col.Item().Text("Estrutura Festa Comercio e Locação de Materiais para Festa Ltda ME")
+                        .FontSize(12).Bold(); // Aumentado
+
+                    col.Item().PaddingTop(3).Text("Rua Jucelino Kubitschek de Oliveira, 22 - Jd. Europa")
+                        .FontSize(11); // Aumentado
+
+                    col.Item().Text("13460-000 - Nova Odessa - SP")
+                        .FontSize(11); // Aumentado
+
+                    col.Item().Text("Fone: (19) 3476-5005")
+                        .FontSize(11); // Aumentado
                 });
 
                 // Número do pedido e data (SEM CAIXA, LETRAS MAIORES)
@@ -128,7 +130,7 @@ namespace RentManager.Services
                         .Text("Data do Pedido").FontSize(10);
 
                     col.Item().AlignCenter()
-                        .Text(DateTime.Now.ToString("dd/MM/yyyy"))
+                        .Text(pedido.DataPedido.ToString("dd/MM/yyyy"))
                         .FontSize(11).Bold(); // Aumentado
                 });
             });
@@ -158,9 +160,9 @@ namespace RentManager.Services
                         colEsq.Item().PaddingTop(3).Text(txt =>
                         {
                             txt.Span("Endereço: ").FontSize(10);
-                            txt.Span(pedido.EnderecoRua ?? "").FontSize(10);
+                            txt.Span(pedido.EnderecoRua ?? "").FontSize(10).Bold();
                             txt.Span("   Número: ").FontSize(10);
-                            txt.Span(pedido.EnderecoNumero?.ToString() ?? "").FontSize(10);
+                            txt.Span(pedido.EnderecoNumero?.ToString() ?? "").FontSize(10).Bold();
                             txt.Span("  Bairro: ").FontSize(10);
                             // Bairro e Complemento
                             txt.Span($"{pedido.Bairro ?? ""} {pedido.Complemento ?? ""}".Trim()).FontSize(10);
@@ -193,18 +195,6 @@ namespace RentManager.Services
                                         .Text(contato.Telefone).FontSize(9);
                                 });
                             }
-                        }
-                        // Exibe o contato principal (ContatoNome + ContatoNumero) abaixo dos demais
-                        if (!string.IsNullOrWhiteSpace(pedido.ContatoNome) || !string.IsNullOrWhiteSpace(pedido.ContatoNumero))
-                        {
-                            colDir.Item().PaddingTop(6).Row(rowContato =>
-                            {
-                                rowContato.RelativeItem().AlignRight()
-                                    .Text(pedido.ContatoNome ?? "").FontSize(9);
-
-                                rowContato.ConstantItem(70).AlignRight()
-                                    .Text(pedido.ContatoNumero ?? "").FontSize(9);
-                            });
                         }
                     });
                 });

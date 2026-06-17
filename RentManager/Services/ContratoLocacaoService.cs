@@ -18,7 +18,7 @@ namespace RentManager.Services
         private static readonly string CAMINHO_LOGO = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,
             "Resources",
-            "LogoSemfundoBrancoRedimencionado.png"
+            "logo_cortado.jpg"
         );
 
         public static void GerarPDF(DadosPedidoImpressao pedido, string caminhoArquivo)
@@ -58,18 +58,17 @@ namespace RentManager.Services
                             // Dados empresa (centro)
                             row.RelativeItem().Column(c =>
                             {
-                                //c.Item().AlignCenter().Text(DadosEmpresa.RazaoSocial).FontSize(12).Bold();
+                                c.Item().AlignCenter().Text(DadosEmpresa.RazaoSocial).FontSize(12).Bold();
 
                                 c.Item().PaddingTop(0).Row(row =>
                                 {
                                     row.RelativeItem().AlignCenter().Column(end =>
                                     {
-                                        end.Item().AlignCenter().Text(DadosEmpresa.RazaoSocial).FontSize(12).Bold();
-                                        end.Item().PaddingTop(10).AlignCenter().Text($"{DadosEmpresa.Rua}, {DadosEmpresa.Numero} - {DadosEmpresa.Bairro}").FontSize(9);
+                                        end.Item().PaddingTop(10).AlignCenter().Text($"{DadosEmpresa.Rua},").FontSize(9);
+                                        end.Item().AlignCenter().Text($"{DadosEmpresa.Numero} - {DadosEmpresa.Bairro}").FontSize(9);
                                         end.Item().AlignCenter().Text($"{DadosEmpresa.CEP} - {DadosEmpresa.Cidade} - {DadosEmpresa.UF}").FontSize(9);
                                         end.Item().AlignCenter().Text($"Fone: {DadosEmpresa.Telefone}").FontSize(9);
-                                        //end.Item().AlignCenter().Text($"Fone: {DadosEmpresa.Telefone} | WhatsApp: {DadosEmpresa.WhatsApp}").FontSize(9);
-                                        end.Item().AlignCenter().Text($"{DadosEmpresa.EmpresaEmail}").FontSize(9);
+                                        end.Item().AlignCenter().Text($"WhatsApp: {DadosEmpresa.WhatsApp}").FontSize(9);
                                     });
 
 

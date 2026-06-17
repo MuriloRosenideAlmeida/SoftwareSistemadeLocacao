@@ -90,7 +90,7 @@ namespace RentManager.Services
                 EmpresaCEP = DadosEmpresa.CEP,
                 EmpresaTelefone = DadosEmpresa.Telefone,
                 EmpresaEmail = DadosEmpresa.EmpresaEmail,
-                LogoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "LogoSemfundoBrancoRedimencionado.png"),
+                LogoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "logo_cortado.jpg"),
 
                 // Identificação — Id do banco = número da nota
                 NumeroNota = r.Id,

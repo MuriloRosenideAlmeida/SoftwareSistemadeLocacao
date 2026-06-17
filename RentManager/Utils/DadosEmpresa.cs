@@ -9,18 +9,18 @@ namespace RentManager.Utils
 {
     public static class DadosEmpresa
     {
-        public const string RazaoSocial = "Byte Code Systems LTDA ME";
-        public const string NomeCurto = "Byte Code Systems LTDA ME";
-        public const string NomeFantasia = "Byte Code Systems";
-        public const string CNPJ = "61.602.036/0001-30";
-        public const string Rua = "Rua Ibitinga";
-        public const string Numero = "1979";
-        public const string Bairro = "Parque Novo Mundo";
-        public const string CEP = "13467-530";
-        public const string Cidade = "Americana";
+        public const string RazaoSocial = "Estrutura Festa Comercio e Locação de Materiais para Festa LTDA ME";
+        public const string NomeCurto = "Estrutura Festa Comercio e Locação de Materiais para Festa LTDA ME";
+        public const string NomeFantasia = "Estrutura Festa";
+        public const string CNPJ = "10.427.554/0001-23";
+        public const string Rua = "Rua Jucelino Kubitschek de Oliveira";
+        public const string Numero = "22";
+        public const string Bairro = "Jd. Europa";
+        public const string CEP = "13380-112";
+        public const string Cidade = "Nova Odessa";
         public const string UF = "SP";
-        public const string EmpresaEmail = "systems.bytecode@gmail.com";
-        public const string Telefone = "(19) 95327-7551";
-        public const string WhatsApp = "(19) 95327-7551";
+        public const string EmpresaEmail = "estruturafesta@hotmail.com";
+        public const string Telefone = "(19) 3476-5005";
+        public const string WhatsApp = "(19) 99299-7658";
     }
 }
