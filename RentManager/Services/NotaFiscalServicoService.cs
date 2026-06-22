@@ -27,7 +27,7 @@ namespace RentManager.Services
                 EmpresaCEP = DadosEmpresa.CEP,
                 EmpresaTelefone = DadosEmpresa.Telefone,
                 EmpresaEmail = DadosEmpresa.EmpresaEmail,
-                LogoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "LogoSemfundoBrancoRedimencionado.png"),
+                LogoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "ToqueDeClasseLogo.PNG"),
 
                 // Identificação
                 NumeroNota = numeroNota,

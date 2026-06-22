@@ -20,7 +20,7 @@ namespace RentManager.Services
         private static readonly string CAMINHO_LOGO = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,
             "Resources",
-            "LogoSemfundoBrancoRedimencionado.png"
+            "ToqueDeClasseLogo.PNG"
 );
         public static void Inicializar()
         {

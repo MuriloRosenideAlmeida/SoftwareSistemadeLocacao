@@ -9,7 +9,7 @@ namespace RentManager
 {
     internal static class Program
     {
-        private const string ChaveCliente = "CLIENTE_JOAO_001";
+        private const string ChaveCliente = "TOQUE_DE_CLASSE_002";
 
         [STAThread]
         static void Main()
