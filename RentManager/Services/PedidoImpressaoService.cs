@@ -1,12 +1,13 @@
-﻿using System;
+﻿using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using RentManager.Models;
+using RentManager.Utils;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
-using RentManager.Models;
 
 
 namespace RentManager.Services
@@ -95,17 +96,14 @@ namespace RentManager.Services
                 // Dados da empresa (LETRAS MAIORES)
                 row.RelativeItem().PaddingLeft(10).Column(col =>
                 {
-                    col.Item().Text("Estrutura Festa Comercio e Locação de Materiais para Festa Ltda ME")
-                        .FontSize(12).Bold(); // Aumentado
-
-                    col.Item().PaddingTop(3).Text("Rua Jucelino Kubitschek de Oliveira, 22 - Jd. Europa")
-                        .FontSize(11); // Aumentado
-
-                    col.Item().Text("13460-000 - Nova Odessa - SP")
-                        .FontSize(11); // Aumentado
-
-                    col.Item().Text("Fone: (19) 3476-5005")
-                        .FontSize(11); // Aumentado
+                    col.Item().Text(DadosEmpresa.RazaoSocial)
+                        .FontSize(12).Bold();
+                    col.Item().PaddingTop(3).Text($"{DadosEmpresa.Rua}, {DadosEmpresa.Numero} - {DadosEmpresa.Bairro}")
+                        .FontSize(11);
+                    col.Item().Text($"{DadosEmpresa.CEP} - {DadosEmpresa.Cidade} - {DadosEmpresa.UF}")
+                        .FontSize(11);
+                    col.Item().Text($"Fone: {DadosEmpresa.Telefone}")
+                        .FontSize(11);
                 });
 
                 // Número do pedido e data (SEM CAIXA, LETRAS MAIORES)
