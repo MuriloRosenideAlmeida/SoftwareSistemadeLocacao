@@ -1767,6 +1767,10 @@ namespace RentManager
                         db.Pagamentos.Remove(pagRemover);
                     }
                 }
+                db.SaveChanges();
+                MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CarregarSaldoDoCliente();
+                AtualizarTotais();
             }
             //========== NOVO PEDIDO ==========
             else

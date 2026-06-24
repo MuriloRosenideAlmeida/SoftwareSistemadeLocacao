@@ -392,9 +392,10 @@ namespace RentManager.Services
                 {
                     table.ColumnsDefinition(columns =>
                     {
-                        columns.RelativeColumn(2);    // Tipo
-                        columns.ConstantColumn(60);   // Vencimento
-                        columns.ConstantColumn(60);   // Valor
+                        columns.RelativeColumn(1f);  // Tipo (menor que antes)
+                        columns.ConstantColumn(60);    // Data
+                        columns.ConstantColumn(55);    // Valor
+                        columns.ConstantColumn(45);    // Pago (coluna nova)
                     });
 
                     // Cabeçalho
@@ -406,32 +407,44 @@ namespace RentManager.Services
 
                         header.Cell().Background(Colors.Grey.Lighten3)
                             .Border(0.25f).BorderColor(Colors.Black)
-                            .Padding(3).AlignCenter().Text("Pago").FontSize(8).Bold();
+                            .Padding(3).AlignCenter().Text("Data").FontSize(8).Bold();
 
                         header.Cell().Background(Colors.Grey.Lighten3)
                             .Border(0.25f).BorderColor(Colors.Black)
                             .Padding(3).AlignCenter().Text("Valor").FontSize(8).Bold();
+
+                        header.Cell().Background(Colors.Grey.Lighten3)
+                            .Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter().Text("Pago").FontSize(8).Bold();
                     });
-                    foreach (var pag in pedido.Pagamentos.Where(p => p.Pago))
+
+                    foreach (var pag in pedido.Pagamentos)
                     {
-                        // Tipo com "PAGO" se estiver pago
                         table.Cell().Border(0.25f).BorderColor(Colors.Black)
                             .Padding(3).Text(pag.FormaPagamento).FontSize(8);
-                        table.Cell().Border(0.25f).BorderColor(Colors.Black)
-                            .Padding(3).AlignCenter().Text(pag.DataPagamento.ToString("dd/MM/yyyy")).FontSize(8);
 
                         table.Cell().Border(0.25f).BorderColor(Colors.Black)
-                            .Padding(3).AlignRight().Text(pag.Valor.ToString("C2")).FontSize(8);
+                            .Padding(3).AlignCenter()
+                            .Text(pag.DataPagamento.ToString("dd/MM/yyyy")).FontSize(8);
 
+                        table.Cell().Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignRight()
+                            .Text(pag.Valor.ToString("C2")).FontSize(8);
+
+                        // Coluna Pago: escreve "PAGO" se pago, vazio se pendente
+                        table.Cell().Border(0.25f).BorderColor(Colors.Black)
+                            .Padding(3).AlignCenter()
+                            .Text(pag.Pago ? "PAGO" : "").FontSize(7).Bold();
                     }
 
-                    // Total
-                    table.Cell().ColumnSpan(2)
-                        .Border(0.25f).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
-                        .Padding(3).AlignLeft().Text("Total....:").FontSize(9).Bold();
-
-                    table.Cell().Border(0.25f).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
-                        .Padding(3).AlignRight().Text(pedido.TotalPago.ToString("C2")).FontSize(9).Bold();
+                    // Linha de total — agora com ColumnSpan(3) para cobrir as 4 colunas
+                    table.Cell().ColumnSpan(4)
+     .Border(0.25f).BorderColor(Colors.Black).Background(Colors.Grey.Lighten3)
+     .Padding(3).Row(r =>
+     {
+         r.RelativeItem().AlignLeft().Text("Total....:").FontSize(9).Bold();
+         r.AutoItem().AlignRight().Text(pedido.TotalPago.ToString("C2")).FontSize(9).Bold();
+     });
                 });
             });
         }
