@@ -1707,30 +1707,22 @@ namespace RentManager
                     // ========== VERIFICA SE FOI PAGO ==========
                     bool pago = row.Cells["Pago"].Value is bool b && b == true;
 
-                    if (!pago)
-                        continue;  // IGNORA SE NÃO FOI MARCADO
-
                     // ========== FORMA DE PAGAMENTO PADRÃO ==========
                     string forma = row.Cells["FormaPagamento"].Value?.ToString();
 
                     if (string.IsNullOrWhiteSpace(forma))
                     {
-                        forma = "DINHEIRO";                               // define valor padrão
-                        row.Cells["FormaPagamento"].Value = "DINHEIRO";   // mostra no grid
+                        forma = "DINHEIRO";
+                        row.Cells["FormaPagamento"].Value = "DINHEIRO";
                     }
 
-                    // ========== VERIFICA DATA OBRIGATÓRIA ==========
-                    if (row.Cells["DataPagamento"].Value == null ||
-                        !DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out DateTime dataPag))
-                    {
-                        MessageBox.Show("Informe a DATA do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return; // Para o salvamento inteiro
-                    }
+                    // Data e Valor: usa defaults se não preenchido; valida obrigatoriedade só se pago
+                    DateTime.TryParse(row.Cells["DataPagamento"].Value?.ToString(), out DateTime dataPag);
+                    if (dataPag == default) dataPag = DateTime.Today;
 
-                    // ========== VERIFICA VALOR OBRIGATÓRIO ==========
-                    if (row.Cells["Valor"].Value == null ||
-                        !decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valor) ||
-                        valor <= 0)
+                    decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out decimal valor);
+
+                    if (pago && valor <= 0)
                     {
                         MessageBox.Show("Informe o VALOR do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
@@ -1749,7 +1741,7 @@ namespace RentManager
                             pagExistente.FormaPagamento = forma;
                             pagExistente.DataPagamento = dataPag;
                             pagExistente.Valor = valor;
-                            pagExistente.Pago = true;
+                            pagExistente.Pago = pago;
 
                             idsMantidos.Add(pagamentoId);
                         }
@@ -1762,7 +1754,7 @@ namespace RentManager
                             FormaPagamento = forma,
                             DataPagamento = dataPag,
                             Valor = valor,
-                            Pago = true
+                            Pago = pago
                         });
                     }
                 }
@@ -1841,9 +1833,10 @@ namespace RentManager
                 {
                     if (row.IsNewRow) continue;
 
+                    // ========== VERIFICA SE FOI PAGO ==========
                     bool pago = row.Cells["Pago"].Value is bool b && b == true;
-                    if (!pago) continue;
 
+                    // ========== FORMA DE PAGAMENTO PADRÃO ==========
                     string forma = row.Cells["FormaPagamento"].Value?.ToString();
                     if (string.IsNullOrWhiteSpace(forma))
                     {
@@ -1851,83 +1844,83 @@ namespace RentManager
                         row.Cells["FormaPagamento"].Value = "DINHEIRO";
                     }
 
-                    if (row.Cells["DataPagamento"].Value == null ||
-                        !DateTime.TryParse(row.Cells["DataPagamento"].Value.ToString(), out DateTime dataPag))
-                    {
-                        MessageBox.Show("Informe a DATA do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+                    // Data e Valor: usa defaults se não preenchido; valida obrigatoriedade só se pago
+                    DateTime.TryParse(row.Cells["DataPagamento"].Value?.ToString(), out DateTime dataPag);
+                    if (dataPag == default) dataPag = DateTime.Today;
 
-                    if (row.Cells["Valor"].Value == null ||
-                        !decimal.TryParse(row.Cells["Valor"].Value.ToString(), out decimal valor) || valor <= 0)
+                    decimal.TryParse(row.Cells["Valor"].Value?.ToString(), out decimal valor);
+
+                    if (pago && valor <= 0)
                     {
                         MessageBox.Show("Informe o VALOR do pagamento.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
 
-                    db.Pagamentos.Add(new Pagamento
+                    // ========== CRIA PAGAMENTO NOVO ==========
+                    var pagamento = new Pagamento
                     {
                         Pedido = pedido,
                         FormaPagamento = forma,
                         DataPagamento = dataPag,
                         Valor = valor,
-                        Pago = true
-                    });
-                }
+                        Pago = pago  // ← valor real do checkbox
+                    };
 
-            }
-
-            db.SaveChanges();
-            _pedidoId = pedido.ID;
-            designTextBoxIDPedido.Text = pedido.ID.ToString();
-            this.Text = "pedido.ID";
-            foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
-            {
-                if (row.IsNewRow) continue;
-                if (!int.TryParse(row.Cells["ProdutoID"].Value?.ToString(), out int produtoId)) continue;
-
-                int estoqueAtualizado = CalcularEstoqueDisponivel(produtoId, dataPedido);
-                row.Cells["Estoque"].Value = estoqueAtualizado;
-            }
-
-            if (decimal.TryParse(designTextBoxSaldoPedido.Text, out decimal saldo))
-            {
-                var saldoExistente = db.SaldoPedidos
-                    .FirstOrDefault(s => s.PedidoId == pedido.ID);
-
-                if (saldoExistente == null)
-                {
-                    // Pedido novo COM saldo
-                    if (saldo > 0)
-                    {
-                        db.SaldoPedidos.Add(new SaldoPedido
-                        {
-                            PedidoId = pedido.ID,
-                            ClienteId = pedido.ClienteId,
-                            Saldo = saldo
-                        });
-                    }
-                }
-                else
-                {
-                    // Atualização do pedido existente
-                    if (saldo > 0)
-                    {
-                        saldoExistente.Saldo = saldo;
-                    }
-                    else
-                    {
-                        // Saldo zerado → remover o registro
-                        db.SaldoPedidos.Remove(saldoExistente);
-                    }
+                    db.Pagamentos.Add(pagamento);
                 }
 
                 db.SaveChanges();
-            }
-            MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            CarregarSaldoDoCliente();
-            AtualizarTotais();
+                _pedidoId = pedido.ID;
+                designTextBoxIDPedido.Text = pedido.ID.ToString();
+                this.Text = "pedido.ID";
+                foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
+                {
+                    if (row.IsNewRow) continue;
+                    if (!int.TryParse(row.Cells["ProdutoID"].Value?.ToString(), out int produtoId)) continue;
 
+                    int estoqueAtualizado = CalcularEstoqueDisponivel(produtoId, dataPedido);
+                    row.Cells["Estoque"].Value = estoqueAtualizado;
+                }
+
+                if (decimal.TryParse(designTextBoxSaldoPedido.Text, out decimal saldo))
+                {
+                    var saldoExistente = db.SaldoPedidos
+                        .FirstOrDefault(s => s.PedidoId == pedido.ID);
+
+                    if (saldoExistente == null)
+                    {
+                        // Pedido novo COM saldo
+                        if (saldo > 0)
+                        {
+                            db.SaldoPedidos.Add(new SaldoPedido
+                            {
+                                PedidoId = pedido.ID,
+                                ClienteId = pedido.ClienteId,
+                                Saldo = saldo
+                            });
+                        }
+                    }
+                    else
+                    {
+                        // Atualização do pedido existente
+                        if (saldo > 0)
+                        {
+                            saldoExistente.Saldo = saldo;
+                        }
+                        else
+                        {
+                            // Saldo zerado → remover o registro
+                            db.SaldoPedidos.Remove(saldoExistente);
+                        }
+                    }
+
+                    db.SaveChanges();
+                }
+                MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CarregarSaldoDoCliente();
+                AtualizarTotais();
+
+            }
         }
 
         private void designButtonQuebra_Click(object sender, EventArgs e)
