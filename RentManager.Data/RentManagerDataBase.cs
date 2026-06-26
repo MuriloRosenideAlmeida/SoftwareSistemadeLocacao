@@ -27,7 +27,8 @@ public class RentManagerDataBase : DbContext
     public DbSet<PerdaProduto> PerdaProdutos { get; set; }
     public DbSet<Pagamento> Pagamentos { get; set; }
     public DbSet<SaldoPedido> SaldoPedidos { get; set; }
-   public DbSet<ReciboGerado> ReciboGerados { get; set; }
+    public DbSet<ReciboGerado> ReciboGerados { get; set; }
+    public DbSet<ProdutoComponente> ProdutosComponentes { get; set; }
 
 
 
@@ -74,6 +75,22 @@ public class RentManagerDataBase : DbContext
         modelBuilder.Entity<Produto>()
             .Property(p => p.PrecoCompra)
             .HasColumnType("decimal(10,2)");
+
+        modelBuilder.Entity<ProdutoComponente>()
+    .HasOne(pc => pc.ProdutoPai)
+    .WithMany()
+    .HasForeignKey(pc => pc.ProdutoPaiId)
+    .OnDelete(DeleteBehavior.Cascade); // deletar pai remove os vínculos
+
+        modelBuilder.Entity<ProdutoComponente>()
+            .HasOne(pc => pc.ProdutoFilho)
+            .WithMany()
+            .HasForeignKey(pc => pc.ProdutoFilhoId)
+            .OnDelete(DeleteBehavior.Restrict); // protege o filho de ser deletado enquanto vinculado
+
+        modelBuilder.Entity<ProdutoComponente>()
+            .HasIndex(pc => new { pc.ProdutoPaiId, pc.ProdutoFilhoId })
+            .IsUnique(); // impede cadastrar o mesmo componente duas vezes no mesmo pai
     }
   
 }
