@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentManager.Data;
 
@@ -11,9 +12,11 @@ using RentManager.Data;
 namespace RentManager.Migrations.Migrations
 {
     [DbContext(typeof(RentManagerDataBase))]
-    partial class RentManagerDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260625225333_AdicionarProdutoComponente")]
+    partial class AdicionarProdutoComponente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
