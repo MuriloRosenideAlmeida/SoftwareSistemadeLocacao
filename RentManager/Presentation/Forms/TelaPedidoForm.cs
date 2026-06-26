@@ -559,6 +559,9 @@ namespace RentManager
 
                 }
             }
+            string erroComponentes = VerificarEstoqueComponentes(produtoId, quantidadeNova, dateTimePickerDataPedido.Value.Date);
+            if (erroComponentes != null)
+                MessageBox.Show(erroComponentes, "Componentes indisponíveis", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             // Recalcula valor total
             decimal.TryParse(row.Cells["ValorUnitario"].Value?.ToString(), out decimal preco);
@@ -666,7 +669,66 @@ namespace RentManager
                 .Sum(s => s.QuantidadeReservada);
 
             return estoqueTotal - quantidadeReservada;
+        }
+        private string VerificarEstoqueComponentes(int produtoPaiId, int quantidadeSolicitada, DateTime dataPedido)
+        {
+            var componentes = _db.ProdutosComponentes
+                .Include(pc => pc.ProdutoFilho)
+                .Where(pc => pc.ProdutoPaiId == produtoPaiId)
+                .ToList();
 
+            if (!componentes.Any()) return null; // produto simples, sem componentes
+
+            var erros = new List<string>();
+
+            foreach (var comp in componentes)
+            {
+                int necessario = comp.QuantidadePorUnidade * quantidadeSolicitada;
+                int disponivel = CalcularEstoqueDisponivel(comp.ProdutoFilhoId, dataPedido);
+
+                if (disponivel < necessario)
+                {
+                    string nome = $"{comp.ProdutoFilho.Nome} {comp.ProdutoFilho.Material} {comp.ProdutoFilho.Modelo}".Trim();
+                    erros.Add($"• {nome}: necessário {necessario}, disponível {disponivel}");
+                }
+            }
+
+            if (!erros.Any()) return null;
+
+            return "Componentes insuficientes para a data selecionada:\n\n" + string.Join("\n", erros);
+        }
+        private void AjustarReservaComponentes(int produtoPaiId, int quantidadeSolicitada, int quantidadeAntiga, DateTime dataPedido)
+        {
+            var componentes = _db.ProdutosComponentes
+                .Where(pc => pc.ProdutoPaiId == produtoPaiId)
+                .ToList();
+
+            foreach (var comp in componentes)
+            {
+                int diferenca = (comp.QuantidadePorUnidade * quantidadeSolicitada)
+                              - (comp.QuantidadePorUnidade * quantidadeAntiga);
+
+                if (diferenca == 0) continue;
+
+                var saldo = _db.SaldosPorData.FirstOrDefault(
+                    s => s.ProdutoId == comp.ProdutoFilhoId && s.Data.Date == dataPedido.Date);
+
+                if (saldo != null)
+                {
+                    saldo.QuantidadeReservada += diferenca;
+                    if (saldo.QuantidadeReservada <= 0)
+                        _db.SaldosPorData.Remove(saldo);
+                }
+                else if (diferenca > 0)
+                {
+                    _db.SaldosPorData.Add(new SaldoEstoqueData
+                    {
+                        ProdutoId = comp.ProdutoFilhoId,
+                        Data = dataPedido.Date,
+                        QuantidadeReservada = diferenca
+                    });
+                }
+            }
         }
 
         private int ObterQuantidadeOriginalPedido(int produtoId)
@@ -1661,6 +1723,7 @@ namespace RentManager
                                 Data = dataPedido,
                                 QuantidadeReservada = quantidadeNova
                             });
+                        AjustarReservaComponentes(produtoId, quantidadeNova, itemExistente?.Quantidade ?? 0, dataPedido);
                     }
 
                     if (itemExistente != null)
@@ -1813,6 +1876,7 @@ namespace RentManager
                         Data = dataPedido,
                         QuantidadeReservada = quantidade
                     });
+                    AjustarReservaComponentes(produtoId, quantidade, 0, dataPedido);
                 }
 
                 decimal.TryParse(designTextBoxAcrescimo.Text, out decimal acrescimo);
@@ -2034,6 +2098,7 @@ namespace RentManager
                         if (saldo.QuantidadeReservada <= 0)
                             db.SaldosPorData.Remove(saldo);
                     }
+                    AjustarReservaComponentes(item.ProdutoId, 0, item.Quantidade, dataPedido);
                 }
 
                 // 2. Remove o saldo de crédito do cliente gerado por este pedido

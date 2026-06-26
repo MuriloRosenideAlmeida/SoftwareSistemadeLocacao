@@ -4,6 +4,7 @@ using System.Data;
 using RentManager.Utils;
 using RentManager.Design;
 using Microsoft.EntityFrameworkCore;
+using RentManager.Presentation.Forms;
 
 
 namespace RentManager
@@ -237,5 +238,47 @@ namespace RentManager
                 }
             }
         }
+
+        private void designButtonComponentes_Click(object sender, EventArgs e)
+        {
+            // Se produto novo, salva primeiro para gerar o ID
+            if (_produto == null || _produto.ID == 0)
+            {
+                if (string.IsNullOrWhiteSpace(designTextBoxNome.Text))
+                {
+                    MessageBox.Show("Preencha o nome do produto antes de adicionar componentes.",
+                        "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Salva o produto automaticamente
+                if (_produto == null)
+                {
+                    _produto = new Produto();
+                    _db.Produtos.Add(_produto);
+                }
+
+                _produto.Nome = designTextBoxNome.Text;
+                _produto.Quantidade = (int)numericUpDownQuantidade.Value;
+                _produto.PrecoLocacao = Convert.ToDecimal(designTextBoxPrecoLocacao.Text.Replace("R$", "").Trim());
+                _produto.Especificacao = designTextBoxEspecificacao.Text;
+                _produto.Material = designTextBoxMaterial.Text;
+                _produto.Modelo = designTextBoxModelo.Text;
+                _produto.PrecoCompra = Convert.ToDecimal(designTextBoxPrecoCompra.Text.Replace("R$", "").Trim());
+                _produto.PrecoReposicao = Convert.ToDecimal(designTextBoxPrecoReposicao.Text.Replace("R$", "").Trim());
+                _produto.DataCompra = dateTimePicker1.Value;
+                _produto.NomeImagem = pictureBoxProduto.Tag?.ToString();
+
+                _db.SaveChanges();
+
+                MessageBox.Show("Produto salvo automaticamente para permitir o cadastro de componentes.",
+                    "Produto salvo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            // Abre a tela de componentes
+            using var form = new ComponentesProdutoForm(_db, _produto);
+            form.ShowDialog(this);
+        }
     }
+    
 }

@@ -41,17 +41,18 @@ namespace RentManager
             labelDataCompra = new Label();
             dateTimePicker1 = new DateTimePicker();
             numericUpDownQuantidade = new NumericUpDown();
-            designTextBoxNome = new Design.DesignTextBox();
+            designTextBoxNome = new RentManager.Design.DesignTextBox();
             labelNome = new Label();
-            designTextBoxMaterial = new Design.DesignTextBox();
-            designTextBoxModelo = new Design.DesignTextBox();
-            designTextBoxEspecificacao = new Design.DesignTextBox();
-            designTextBoxPrecoLocacao = new Design.DesignTextBox();
-            designTextBoxPrecoReposicao = new Design.DesignTextBox();
-            designTextBoxPrecoCompra = new Design.DesignTextBox();
-            designButtonAdicionar = new Design.DesignButton();
-            designButtonExcluir = new Design.DesignButton();
+            designTextBoxMaterial = new RentManager.Design.DesignTextBox();
+            designTextBoxModelo = new RentManager.Design.DesignTextBox();
+            designTextBoxEspecificacao = new RentManager.Design.DesignTextBox();
+            designTextBoxPrecoLocacao = new RentManager.Design.DesignTextBox();
+            designTextBoxPrecoReposicao = new RentManager.Design.DesignTextBox();
+            designTextBoxPrecoCompra = new RentManager.Design.DesignTextBox();
+            designButtonAdicionar = new RentManager.Design.DesignButton();
+            designButtonExcluir = new RentManager.Design.DesignButton();
             iconPictureBox = new FontAwesome.Sharp.IconPictureBox();
+            designButtonComponentes = new RentManager.Design.DesignButton();
             ((System.ComponentModel.ISupportInitialize)pictureBoxProduto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownQuantidade).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox).BeginInit();
@@ -173,6 +174,7 @@ namespace RentManager
             designTextBoxNome.BorderSize = 1;
             designTextBoxNome.CharacterCasing = CharacterCasing.Normal;
             designTextBoxNome.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxNome.ForceUpperCase = false;
             designTextBoxNome.ForeColor = SystemColors.WindowText;
             designTextBoxNome.Location = new Point(193, 41);
             designTextBoxNome.Multiline = false;
@@ -181,6 +183,7 @@ namespace RentManager
             designTextBoxNome.PasswordChar = false;
             designTextBoxNome.PlaceholderColor = Color.DarkGray;
             designTextBoxNome.PlaceholderText = "Nome do Produto";
+            designTextBoxNome.ReadOnly = false;
             designTextBoxNome.SelectionLength = 0;
             designTextBoxNome.SelectionStart = 0;
             designTextBoxNome.Size = new Size(346, 32);
@@ -205,6 +208,7 @@ namespace RentManager
             designTextBoxMaterial.BorderSize = 1;
             designTextBoxMaterial.CharacterCasing = CharacterCasing.Normal;
             designTextBoxMaterial.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxMaterial.ForceUpperCase = false;
             designTextBoxMaterial.ForeColor = SystemColors.WindowText;
             designTextBoxMaterial.Location = new Point(192, 141);
             designTextBoxMaterial.Multiline = false;
@@ -213,6 +217,7 @@ namespace RentManager
             designTextBoxMaterial.PasswordChar = false;
             designTextBoxMaterial.PlaceholderColor = Color.DarkGray;
             designTextBoxMaterial.PlaceholderText = "Tipo de Material";
+            designTextBoxMaterial.ReadOnly = false;
             designTextBoxMaterial.SelectionLength = 0;
             designTextBoxMaterial.SelectionStart = 0;
             designTextBoxMaterial.Size = new Size(347, 32);
@@ -228,6 +233,7 @@ namespace RentManager
             designTextBoxModelo.BorderSize = 1;
             designTextBoxModelo.CharacterCasing = CharacterCasing.Normal;
             designTextBoxModelo.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxModelo.ForceUpperCase = false;
             designTextBoxModelo.ForeColor = SystemColors.WindowText;
             designTextBoxModelo.Location = new Point(193, 207);
             designTextBoxModelo.Multiline = false;
@@ -236,6 +242,7 @@ namespace RentManager
             designTextBoxModelo.PasswordChar = false;
             designTextBoxModelo.PlaceholderColor = Color.DarkGray;
             designTextBoxModelo.PlaceholderText = "Nome do Modelo";
+            designTextBoxModelo.ReadOnly = false;
             designTextBoxModelo.SelectionLength = 0;
             designTextBoxModelo.SelectionStart = 0;
             designTextBoxModelo.Size = new Size(346, 32);
@@ -251,6 +258,7 @@ namespace RentManager
             designTextBoxEspecificacao.BorderSize = 1;
             designTextBoxEspecificacao.CharacterCasing = CharacterCasing.Normal;
             designTextBoxEspecificacao.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxEspecificacao.ForceUpperCase = false;
             designTextBoxEspecificacao.ForeColor = SystemColors.WindowText;
             designTextBoxEspecificacao.Location = new Point(193, 267);
             designTextBoxEspecificacao.Multiline = false;
@@ -259,6 +267,7 @@ namespace RentManager
             designTextBoxEspecificacao.PasswordChar = false;
             designTextBoxEspecificacao.PlaceholderColor = Color.DarkGray;
             designTextBoxEspecificacao.PlaceholderText = "Tipo de Especificação";
+            designTextBoxEspecificacao.ReadOnly = false;
             designTextBoxEspecificacao.SelectionLength = 0;
             designTextBoxEspecificacao.SelectionStart = 0;
             designTextBoxEspecificacao.Size = new Size(347, 32);
@@ -274,6 +283,7 @@ namespace RentManager
             designTextBoxPrecoLocacao.BorderSize = 1;
             designTextBoxPrecoLocacao.CharacterCasing = CharacterCasing.Normal;
             designTextBoxPrecoLocacao.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxPrecoLocacao.ForceUpperCase = false;
             designTextBoxPrecoLocacao.ForeColor = SystemColors.WindowText;
             designTextBoxPrecoLocacao.Location = new Point(193, 327);
             designTextBoxPrecoLocacao.Multiline = false;
@@ -282,6 +292,7 @@ namespace RentManager
             designTextBoxPrecoLocacao.PasswordChar = false;
             designTextBoxPrecoLocacao.PlaceholderColor = SystemColors.WindowText;
             designTextBoxPrecoLocacao.PlaceholderText = "R$";
+            designTextBoxPrecoLocacao.ReadOnly = false;
             designTextBoxPrecoLocacao.SelectionLength = 0;
             designTextBoxPrecoLocacao.SelectionStart = 0;
             designTextBoxPrecoLocacao.Size = new Size(123, 32);
@@ -299,6 +310,7 @@ namespace RentManager
             designTextBoxPrecoReposicao.BorderSize = 1;
             designTextBoxPrecoReposicao.CharacterCasing = CharacterCasing.Normal;
             designTextBoxPrecoReposicao.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxPrecoReposicao.ForceUpperCase = false;
             designTextBoxPrecoReposicao.ForeColor = SystemColors.WindowText;
             designTextBoxPrecoReposicao.Location = new Point(734, 216);
             designTextBoxPrecoReposicao.Multiline = false;
@@ -307,6 +319,7 @@ namespace RentManager
             designTextBoxPrecoReposicao.PasswordChar = false;
             designTextBoxPrecoReposicao.PlaceholderColor = SystemColors.WindowText;
             designTextBoxPrecoReposicao.PlaceholderText = "R$";
+            designTextBoxPrecoReposicao.ReadOnly = false;
             designTextBoxPrecoReposicao.SelectionLength = 0;
             designTextBoxPrecoReposicao.SelectionStart = 0;
             designTextBoxPrecoReposicao.Size = new Size(140, 32);
@@ -324,6 +337,7 @@ namespace RentManager
             designTextBoxPrecoCompra.BorderSize = 1;
             designTextBoxPrecoCompra.CharacterCasing = CharacterCasing.Normal;
             designTextBoxPrecoCompra.Font = new Font("Segoe UI", 9.5F);
+            designTextBoxPrecoCompra.ForceUpperCase = false;
             designTextBoxPrecoCompra.ForeColor = SystemColors.WindowText;
             designTextBoxPrecoCompra.Location = new Point(734, 260);
             designTextBoxPrecoCompra.Multiline = false;
@@ -332,6 +346,7 @@ namespace RentManager
             designTextBoxPrecoCompra.PasswordChar = false;
             designTextBoxPrecoCompra.PlaceholderColor = SystemColors.WindowText;
             designTextBoxPrecoCompra.PlaceholderText = "R$";
+            designTextBoxPrecoCompra.ReadOnly = false;
             designTextBoxPrecoCompra.SelectionLength = 0;
             designTextBoxPrecoCompra.SelectionStart = 0;
             designTextBoxPrecoCompra.Size = new Size(140, 32);
@@ -393,12 +408,32 @@ namespace RentManager
             iconPictureBox.TabStop = false;
             iconPictureBox.Click += iconPictureBox_Click;
             // 
+            // designButtonComponentes
+            // 
+            designButtonComponentes.BackColor = Color.RoyalBlue;
+            designButtonComponentes.BackgroundColor = Color.RoyalBlue;
+            designButtonComponentes.BorderColor = Color.PaleVioletRed;
+            designButtonComponentes.BorderRadius = 22;
+            designButtonComponentes.BorderSize = 0;
+            designButtonComponentes.FlatAppearance.BorderSize = 0;
+            designButtonComponentes.FlatStyle = FlatStyle.Flat;
+            designButtonComponentes.ForeColor = Color.White;
+            designButtonComponentes.Location = new Point(181, 374);
+            designButtonComponentes.Name = "designButtonComponentes";
+            designButtonComponentes.Size = new Size(150, 40);
+            designButtonComponentes.TabIndex = 13;
+            designButtonComponentes.Text = "Componente";
+            designButtonComponentes.TextColor = Color.White;
+            designButtonComponentes.UseVisualStyleBackColor = false;
+            designButtonComponentes.Click += designButtonComponentes_Click;
+            // 
             // CadastroProdutosForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(917, 463);
+            ClientSize = new Size(986, 531);
+            Controls.Add(designButtonComponentes);
             Controls.Add(iconPictureBox);
             Controls.Add(designButtonExcluir);
             Controls.Add(designButtonAdicionar);
@@ -456,5 +491,6 @@ namespace RentManager
         private Design.DesignButton designButtonAdicionar;
         private Design.DesignButton designButtonExcluir;
         private FontAwesome.Sharp.IconPictureBox iconPictureBox;
+        private Design.DesignButton designButtonComponentes;
     }
 }
