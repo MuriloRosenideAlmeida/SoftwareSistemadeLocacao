@@ -1831,6 +1831,9 @@ namespace RentManager
                     }
                 }
                 db.SaveChanges();
+                _quantidadesOriginais = pedido.Produtos
+                .ToDictionary(pp => pp.ProdutoId, pp => pp.Quantidade);
+
                 MessageBox.Show("Pedido salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 CarregarSaldoDoCliente();
                 AtualizarTotais();
@@ -1941,6 +1944,9 @@ namespace RentManager
                 _pedidoId = pedido.ID;
                 designTextBoxIDPedido.Text = pedido.ID.ToString();
                 this.Text = "pedido.ID";
+                _quantidadesOriginais = pedido.Produtos
+                .ToDictionary(pp => pp.ProdutoId, pp => pp.Quantidade);
+
                 foreach (DataGridViewRow row in dataGridViewProdutosLocacao.Rows)
                 {
                     if (row.IsNewRow) continue;
