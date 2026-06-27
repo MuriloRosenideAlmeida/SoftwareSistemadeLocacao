@@ -34,7 +34,8 @@ namespace RentManager
             {
                 options.UseMySql(
                     "server=localhost;database=rentmanagerdb;user=RentManager_user;password=Modoxclasher2004!",
-                    new MySqlServerVersion(new Version(9, 7, 0)));
+                    new MySqlServerVersion(new Version(9, 7, 0)),
+                    b => b.MigrationsAssembly("RentManager.Migrations"));
             });
 
             services.AddTransient<MenuForm>();
