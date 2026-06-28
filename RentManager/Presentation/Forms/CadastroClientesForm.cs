@@ -457,6 +457,7 @@ namespace RentManager
             if (!_isEditMode)
             {
                 _cliente = radioButtonPF.Checked ? (Cliente)new ClientePF() : new ClientePJ();
+                _cliente.DataCadastro = DateTime.Today;
                 _db.Clientes.Add(_cliente);
             }
             else

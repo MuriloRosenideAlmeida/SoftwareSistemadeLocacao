@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panelMenu = new Panel();
+            bntRelatorio = new FontAwesome.Sharp.IconButton();
             bntFiltrarRecibo = new FontAwesome.Sharp.IconButton();
             bntFiltrarProduto = new FontAwesome.Sharp.IconButton();
             bntCadastrarProduto = new FontAwesome.Sharp.IconButton();
@@ -62,6 +63,7 @@
             // panelMenu
             // 
             panelMenu.BackColor = Color.FromArgb(30, 31, 68);
+            panelMenu.Controls.Add(bntRelatorio);
             panelMenu.Controls.Add(bntFiltrarRecibo);
             panelMenu.Controls.Add(bntFiltrarProduto);
             panelMenu.Controls.Add(bntCadastrarProduto);
@@ -74,8 +76,30 @@
             panelMenu.ForeColor = Color.FromArgb(30, 31, 68);
             panelMenu.Location = new Point(0, 0);
             panelMenu.Name = "panelMenu";
-            panelMenu.Size = new Size(220, 600);
+            panelMenu.Size = new Size(220, 678);
             panelMenu.TabIndex = 0;
+            // 
+            // bntRelatorio
+            // 
+            bntRelatorio.Dock = DockStyle.Top;
+            bntRelatorio.FlatAppearance.BorderSize = 0;
+            bntRelatorio.FlatStyle = FlatStyle.Flat;
+            bntRelatorio.ForeColor = Color.Gainsboro;
+            bntRelatorio.IconChar = FontAwesome.Sharp.IconChar.ChartLine;
+            bntRelatorio.IconColor = Color.Gainsboro;
+            bntRelatorio.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            bntRelatorio.IconSize = 35;
+            bntRelatorio.ImageAlign = ContentAlignment.MiddleLeft;
+            bntRelatorio.Location = new Point(0, 560);
+            bntRelatorio.Name = "bntRelatorio";
+            bntRelatorio.Padding = new Padding(10, 0, 20, 0);
+            bntRelatorio.Size = new Size(220, 60);
+            bntRelatorio.TabIndex = 7;
+            bntRelatorio.Text = "Relatorio Financeiro";
+            bntRelatorio.TextAlign = ContentAlignment.MiddleLeft;
+            bntRelatorio.TextImageRelation = TextImageRelation.ImageBeforeText;
+            bntRelatorio.UseVisualStyleBackColor = false;
+            bntRelatorio.Click += bntRelatorio_Click;
             // 
             // bntFiltrarRecibo
             // 
@@ -364,7 +388,7 @@
             panelDesktop.Dock = DockStyle.Fill;
             panelDesktop.Location = new Point(220, 89);
             panelDesktop.Name = "panelDesktop";
-            panelDesktop.Size = new Size(782, 511);
+            panelDesktop.Size = new Size(782, 589);
             panelDesktop.TabIndex = 3;
             // 
             // pictureBoxPanel
@@ -373,7 +397,7 @@
             pictureBoxPanel.Image = Properties.Resources.LogoSemFundoPreto;
             pictureBoxPanel.Location = new Point(0, 0);
             pictureBoxPanel.Name = "pictureBoxPanel";
-            pictureBoxPanel.Size = new Size(782, 511);
+            pictureBoxPanel.Size = new Size(782, 589);
             pictureBoxPanel.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBoxPanel.TabIndex = 0;
             pictureBoxPanel.TabStop = false;
@@ -382,7 +406,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1002, 600);
+            ClientSize = new Size(1002, 678);
             Controls.Add(panelDesktop);
             Controls.Add(panelSombra);
             Controls.Add(barraDeTitulo);
@@ -426,5 +450,6 @@
         private FontAwesome.Sharp.IconPictureBox bntExit;
         private PictureBox pictureBoxPanel;
         private FontAwesome.Sharp.IconButton bntFiltrarRecibo;
+        private FontAwesome.Sharp.IconButton bntRelatorio;
     }
 }

@@ -35,6 +35,7 @@
     <PackageReference Include="System.Management" Version="10.0.7" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="ViaCep" Version="4.1.511" />
+    <PackageReference Include="WinForms.DataVisualization" Version="1.10.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -137,6 +137,11 @@ namespace RentManager.Presentation.Forms
             BotaoAtivado(sender, CoresRGB.cor7);   // escolha a cor que preferir
             AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<FiltroRecibosForm>());
         }
+        private void bntRelatorio_Click(object sender, EventArgs e)
+        {
+            BotaoAtivado(sender, CoresRGB.cor7); // escolha a cor
+            AbrirFormFilho(ServiceLocator.Provider.GetRequiredService<RelatorioForm>());
+        }
 
         private void bntLogo_Click(object sender, EventArgs e)
         {

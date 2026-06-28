@@ -49,6 +49,7 @@ namespace RentManager
             services.AddTransient<FiltroProdutoForm>();
             services.AddTransient<QuebraProdutoForm>();
             services.AddTransient<FiltroRecibosForm>();
+            services.AddTransient<RelatorioForm>();
 
             ServiceLocator.Provider = services.BuildServiceProvider();
 
