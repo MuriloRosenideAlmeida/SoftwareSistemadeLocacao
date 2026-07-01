@@ -250,5 +250,52 @@ namespace RentManager.Services
                 .OrderByDescending(x => x.ValorTotal)
                 .ToList();
         }
+        /// <summary>
+        /// Carrega a receita recebida dia a dia para um período de comparação,
+        /// normalizando os índices para que coincidam com o período principal.
+        /// </summary>
+        public ComparacaoPeriodo CarregarComparacao(DateTime inicioRef, DateTime fimRef,
+            DateTime inicioComp, DateTime fimComp, string nomeComp)
+        {
+            inicioComp = inicioComp.Date;
+            fimComp = fimComp.Date;
+
+            var pagamentos = _db.Pagamentos
+                .Include(pg => pg.Pedido)
+                .Where(pg => pg.Pago
+                          && pg.Pedido.DataPedido >= inicioComp
+                          && pg.Pedido.DataPedido <= new DateTime(fimComp.Year, fimComp.Month, fimComp.Day, 23, 59, 59)
+                          && pg.Pedido.Status != "CANCELADO")
+                .Select(pg => new { Data = pg.DataPagamento.Date, pg.Valor })
+                .ToList();
+
+            decimal receitaTotal = pagamentos.Sum(p => p.Valor);
+
+            // Número de dias do período de comparação
+            int numeroDias = (fimComp - inicioComp).Days + 1;
+            // Número de dias do período principal (para alinhar o eixo X)
+            int diasRef = (fimRef.Date - inicioRef.Date).Days + 1;
+            int diasParaIterar = Math.Min(numeroDias, diasRef);
+
+            var receitaPorDia = new List<ReceitaPorData>();
+            for (int i = 0; i < diasParaIterar; i++)
+            {
+                var dia = inicioComp.AddDays(i);
+                // Label usa o índice do período principal para alinhar no gráfico
+                var labelRef = inicioRef.Date.AddDays(i)
+                    .ToString("dd/MM", System.Globalization.CultureInfo.InvariantCulture);
+                decimal v = pagamentos.Where(p => p.Data == dia).Sum(p => p.Valor);
+                receitaPorDia.Add(new ReceitaPorData { Label = labelRef, Valor = v });
+            }
+
+            return new ComparacaoPeriodo
+            {
+                Nome = nomeComp,
+                Inicio = inicioComp,
+                Fim = fimComp,
+                ReceitaTotal = receitaTotal,
+                ReceitaPorDia = receitaPorDia
+            };
+        }
     }
 }

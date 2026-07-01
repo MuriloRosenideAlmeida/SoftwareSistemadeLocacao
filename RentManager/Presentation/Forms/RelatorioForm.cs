@@ -50,6 +50,19 @@ namespace RentManager.Presentation.Forms
         private Panel pnlTopProdutos;
         private Panel pnlTopClientes;
         private Panel pnlCadastroClientes;
+        // ── Comparações ───────────────────────────────────────────────────────────
+        private Panel pnlComparacoes;
+        private Panel pnlResultadoComparacoes;
+        private readonly List<ComparacaoPeriodo> _comparacoesAtivas = new();
+        private readonly List<CheckBox> _checkboxesComparacao = new();
+        private readonly Color[] _coresComparacao = new[]
+        {
+            Color.FromArgb(214, 39, 40),    // vermelho
+            Color.FromArgb(255, 127, 14),   // laranja
+            Color.FromArgb(148, 103, 189),  // roxo
+            Color.FromArgb(23, 190, 207),   // ciano
+            Color.FromArgb(188, 189, 34),   // amarelo-verde
+        };
 
         // ── Layout — posições Y de cada seção ────────────────────────────────
         // KPIs:          y=65   h=80
@@ -61,9 +74,11 @@ namespace RentManager.Presentation.Forms
         private const int H_PIZZAS = 250;
         private const int Y_RECEITA = 155;
         private const int H_RECEITA = 220;
-        private const int Y_TOPS = 645;
+        private const int Y_TOPS = 725;
         private const int H_TOPS = 610;
-        private const int Y_CADASTRO = 1265;
+        private const int Y_COMPARACOES = 645;
+        private const int H_COMPARACOES = 70;
+        private const int Y_CADASTRO = 1345;
 
         // ── Construtor ────────────────────────────────────────────────────────
         public RelatorioForm(RentManagerDataBase db)
@@ -91,6 +106,7 @@ namespace RentManager.Presentation.Forms
             CriarKPICards();
             CriarGraficosPizza();
             CriarGraficoReceita();
+            CriarPainelComparacoes();
             CriarListagens();
             CriarCardCadastroClientes();
         }
@@ -356,6 +372,8 @@ namespace RentManager.Presentation.Forms
             area.AxisX.LabelStyle.Font = new Font("Arial", 7f);
             area.AxisY.LabelStyle.Format = "C0";
             chartReceita.ChartAreas.Add(area);
+            area.AxisX.Interval = 1;
+            area.AxisX.IsMarginVisible = false;
 
             var legend = new Legend
             {
@@ -375,16 +393,285 @@ namespace RentManager.Presentation.Forms
 
             var serie = new Series("Receita Diária")
             {
-                ChartType = SeriesChartType.Column,
-                Color = Color.FromArgb(46, 125, 50),
+                ChartType = SeriesChartType.SplineArea,
+                Color = Color.FromArgb(120, 46, 125, 50),
                 BorderColor = Color.FromArgb(27, 94, 32),
-                BorderWidth = 1,
-                XValueMember = "Label",
-                YValueMembers = "Valor"
+                BorderWidth = 3,
+                MarkerStyle = MarkerStyle.Circle,
+                MarkerSize = 6,
+                IsXValueIndexed = true
             };
             chartReceita.Series.Add(serie);
 
             this.Controls.Add(chartReceita);
+        }
+        // ════════════════════════════════════════════════════════════
+        // PAINEL DE COMPARAÇÕES (abaixo do gráfico de receita)
+        // ════════════════════════════════════════════════════════════
+        private void CriarPainelComparacoes()
+        {
+            // ── Painel esquerdo: checkboxes ───────────────────────────────────────
+            pnlComparacoes = new Panel
+            {
+                Location = new Point(10, Y_COMPARACOES),
+                Size = new Size(520, H_COMPARACOES),
+                BackColor = Color.White
+            };
+            pnlComparacoes.Controls.Add(new Panel
+            {
+                Location = new Point(0, 0),
+                Size = new Size(520, 3),
+                BackColor = Color.FromArgb(27, 94, 32)
+            });
+            pnlComparacoes.Controls.Add(new Label
+            {
+                Text = "Comparar com períodos anteriores",
+                Location = new Point(10, 8),
+                Size = new Size(320, 16),
+                Font = new Font("Arial", 8f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(60, 60, 60)
+            });
+
+            var btnPersonalizada = new Button
+            {
+                Text = "+ Personalizada",
+                Location = new Point(355, 5),
+                Size = new Size(110, 22),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(25, 118, 210),
+                ForeColor = Color.White,
+                Font = new Font("Arial", 7.5f),
+                Cursor = Cursors.Hand
+            };
+            btnPersonalizada.FlatAppearance.BorderSize = 0;
+            btnPersonalizada.Click += BtnComparacaoPersonalizada_Click;
+            pnlComparacoes.Controls.Add(btnPersonalizada);
+
+            // Os checkboxes são criados dinamicamente em AtualizarCheckboxesComparacao
+            this.Controls.Add(pnlComparacoes);
+
+            // ── Painel direito: resultado percentual ──────────────────────────────
+            pnlResultadoComparacoes = new Panel
+            {
+                Location = new Point(540, Y_COMPARACOES),
+                Size = new Size(540, H_COMPARACOES),
+                BackColor = Color.White
+            };
+            pnlResultadoComparacoes.Controls.Add(new Panel
+            {
+                Location = new Point(0, 0),
+                Size = new Size(540, 3),
+                BackColor = Color.FromArgb(27, 94, 32)
+            });
+            pnlResultadoComparacoes.Controls.Add(new Label
+            {
+                Text = "Crescimento vs períodos selecionados",
+                Location = new Point(10, 8),
+                Size = new Size(380, 16),
+                Font = new Font("Arial", 8f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(60, 60, 60)
+            });
+            this.Controls.Add(pnlResultadoComparacoes);
+        }
+
+        private void AtualizarCheckboxesComparacao()
+        {
+            if (_dadosAtuais == null) return;
+
+            // Remove checkboxes antigos (mantém label e botão)
+            foreach (var cb in _checkboxesComparacao)
+                pnlComparacoes.Controls.Remove(cb);
+            _checkboxesComparacao.Clear();
+
+            DateTime inicio = _dadosAtuais.DataInicio;
+            DateTime fim = _dadosAtuais.DataFim;
+
+            // Gera os 3 anos anteriores com o mesmo intervalo
+            var candidatos = new List<(string Nome, DateTime Ini, DateTime Fi)>();
+            for (int anosAtras = 1; anosAtras <= 3; anosAtras++)
+            {
+                var ini = inicio.AddYears(-anosAtras);
+                var fi = fim.AddYears(-anosAtras);
+                // Label: se for o mesmo mês/ano, usa "Mês/Ano", senão usa datas
+                string nome;
+                if (inicio.Month == fim.Month && inicio.Year == fim.Year)
+                    nome = ini.ToString("MMMM/yyyy",
+                        System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+                else
+                    nome = $"{ini:dd/MM/yy} – {fi:dd/MM/yy}";
+                candidatos.Add((nome, ini, fi));
+            }
+
+            int x = 10;
+            int y = 28;
+            int corIdx = 0;
+
+            foreach (var (nome, ini, fi) in candidatos)
+            {
+                var cor = _coresComparacao[corIdx % _coresComparacao.Length];
+                var cb = new CheckBox
+                {
+                    Text = nome,
+                    Location = new Point(x, y),
+                    Size = new Size(160, 20),
+                    Font = new Font("Arial", 8f),
+                    ForeColor = cor,
+                    Cursor = Cursors.Hand,
+                    Tag = (ini, fi, nome, corIdx)   // guarda metadados
+                };
+                cb.CheckedChanged += CheckboxComparacao_Changed;
+                pnlComparacoes.Controls.Add(cb);
+                _checkboxesComparacao.Add(cb);
+                x += 165;
+                corIdx++;
+            }
+
+            // Adiciona checkboxes personalizados (que sobrevivem à troca de período)
+            foreach (var comp in _comparacoesAtivas.Where(c => c.EhPersonalizada))
+            {
+                var cor = _coresComparacao[corIdx % _coresComparacao.Length];
+                var cb = new CheckBox
+                {
+                    Text = comp.Nome,
+                    Location = new Point(x, y),
+                    Size = new Size(155, 20),
+                    Font = new Font("Arial", 8f),
+                    ForeColor = cor,
+                    Cursor = Cursors.Hand,
+                    Checked = true,   // já estava ativa
+                    Tag = (comp.Inicio, comp.Fim, comp.Nome, corIdx)
+                };
+                cb.CheckedChanged += CheckboxComparacao_Changed;
+                pnlComparacoes.Controls.Add(cb);
+                _checkboxesComparacao.Add(cb);
+                x += 160;
+                corIdx++;
+            }
+        }
+
+        private void CheckboxComparacao_Changed(object sender, EventArgs e)
+        {
+            if (sender is not CheckBox cb) return;
+            var (ini, fi, nome, corIdx) = ((DateTime, DateTime, string, int))cb.Tag;
+
+            if (cb.Checked)
+            {
+                // Carrega e adiciona se não existe ainda
+                if (!_comparacoesAtivas.Any(c => c.Nome == nome))
+                {
+                    var comp = _service.CarregarComparacao(
+                        _dadosAtuais!.DataInicio, _dadosAtuais.DataFim,
+                        ini, fi, nome);
+                    comp.EhPersonalizada = false;
+                    _comparacoesAtivas.Add(comp);
+                }
+            }
+            else
+            {
+                _comparacoesAtivas.RemoveAll(c => c.Nome == nome && !c.EhPersonalizada);
+            }
+
+            AtualizarGraficoReceita();
+            AtualizarResultadoComparacoes();
+        }
+
+        private void BtnComparacaoPersonalizada_Click(object sender, EventArgs e)
+        {
+            using var form = new Form
+            {
+                Text = "Nova Comparação Personalizada",
+                Size = new Size(360, 200),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false
+            };
+
+            form.Controls.Add(new Label { Text = "Nome:", Location = new Point(15, 18), AutoSize = true });
+            var txtNome = new TextBox { Location = new Point(80, 15), Size = new Size(255, 22) };
+            form.Controls.Add(txtNome);
+
+            form.Controls.Add(new Label { Text = "De:", Location = new Point(15, 55), AutoSize = true });
+            var dtpDe = new DateTimePicker { Location = new Point(80, 52), Size = new Size(130, 22), Format = DateTimePickerFormat.Short };
+            form.Controls.Add(dtpDe);
+
+            form.Controls.Add(new Label { Text = "Até:", Location = new Point(15, 90), AutoSize = true });
+            var dtpAte = new DateTimePicker { Location = new Point(80, 87), Size = new Size(130, 22), Format = DateTimePickerFormat.Short };
+            form.Controls.Add(dtpAte);
+
+            var btnOk = new Button
+            {
+                Text = "Adicionar",
+                Location = new Point(190, 130),
+                Size = new Size(90, 28),
+                BackColor = Color.FromArgb(46, 125, 50),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                DialogResult = DialogResult.OK
+            };
+            btnOk.FlatAppearance.BorderSize = 0;
+            form.Controls.Add(btnOk);
+            form.AcceptButton = btnOk;
+
+            if (form.ShowDialog(this) != DialogResult.OK) return;
+
+            string nome = txtNome.Text.Trim();
+            if (string.IsNullOrWhiteSpace(nome)) nome = $"{dtpDe.Value:dd/MM/yy}–{dtpAte.Value:dd/MM/yy}";
+
+            var comp = _service.CarregarComparacao(
+                _dadosAtuais!.DataInicio, _dadosAtuais.DataFim,
+                dtpDe.Value.Date, dtpAte.Value.Date, nome);
+            comp.EhPersonalizada = true;
+            _comparacoesAtivas.Add(comp);
+
+            AtualizarCheckboxesComparacao();
+            AtualizarGraficoReceita();
+            AtualizarResultadoComparacoes();
+        }
+
+        private void AtualizarResultadoComparacoes()
+        {
+            // Remove labels antigos (mantém apenas os 2 primeiros controles: barra + título)
+            var paraRemover = pnlResultadoComparacoes.Controls
+                .OfType<Label>()
+                .Where(l => l.Name == "lblComp")
+                .ToList();
+            foreach (var l in paraRemover)
+                pnlResultadoComparacoes.Controls.Remove(l);
+
+            if (!_comparacoesAtivas.Any()) return;
+
+            decimal receitaAtual = _dadosAtuais!.KPIs.ReceitaRecebida;
+            int x = 10;
+            int y = 28;
+            int corIdx = 0;
+
+            foreach (var comp in _comparacoesAtivas)
+            {
+                decimal varPct = comp.ReceitaTotal == 0
+                    ? (receitaAtual > 0 ? 100m : 0m)
+                    : Math.Round((receitaAtual - comp.ReceitaTotal) / comp.ReceitaTotal * 100, 2);
+
+                string seta = varPct >= 0 ? "▲" : "▼";
+                string sinal = varPct >= 0 ? "+" : "";
+                Color cor = varPct >= 0
+                    ? Color.FromArgb(46, 125, 50)
+                    : Color.FromArgb(198, 40, 40);
+
+                var lbl = new Label
+                {
+                    Text = $"{seta} {sinal}{varPct:N2}% vs {comp.Nome}",
+                    Location = new Point(x, y),
+                    Size = new Size(260, 20),
+                    Font = new Font("Arial", 9f, FontStyle.Bold),
+                    ForeColor = cor,
+                    Name = "lblComp",
+                    AutoSize = false
+                };
+                pnlResultadoComparacoes.Controls.Add(lbl);
+                y += 22;
+                corIdx++;
+            }
         }
 
         // ════════════════════════════════════════════════════════════
@@ -564,9 +851,15 @@ namespace RentManager.Presentation.Forms
                 if (novosDados == null) return;
 
                 _dadosAtuais = novosDados;
+
+                // Limpa comparações não-personalizadas ao trocar o período
+                _comparacoesAtivas.RemoveAll(c => !c.EhPersonalizada);
+
                 AtualizarKPICards();
                 AtualizarGraficosPizza();
                 AtualizarGraficoReceita();
+                AtualizarCheckboxesComparacao();
+                AtualizarResultadoComparacoes();
                 AtualizarListagens();
                 AtualizarCardCadastroClientes();
             }
@@ -625,13 +918,49 @@ namespace RentManager.Presentation.Forms
         // ════════════════════════════════════════════════════════════
         private void AtualizarGraficoReceita()
         {
+            // Remove todas as séries exceto a principal
+            var seriesParaRemover = chartReceita.Series
+                .Cast<Series>()
+                .Where(s => s.Name != "Receita Diária")
+                .ToList();
+            foreach (var s in seriesParaRemover)
+                chartReceita.Series.Remove(s);
+
+            // Atualiza série principal
             var serie = chartReceita.Series["Receita Diária"];
             serie.Points.Clear();
-
             foreach (var ponto in _dadosAtuais!.ReceitaPorPeriodo)
             {
                 int idx = serie.Points.AddXY(ponto.Label, ponto.Valor);
                 serie.Points[idx].ToolTip = $"{ponto.Label}: {ponto.Valor:C2}";
+            }
+
+            // Adiciona séries de comparação
+            int corIdx = 0;
+            foreach (var comp in _comparacoesAtivas)
+            {
+                var cor = _coresComparacao[corIdx % _coresComparacao.Length];
+                var serieComp = new Series(comp.Nome)
+                {
+                    ChartType = SeriesChartType.Spline,
+                    Color = cor,
+                    BorderColor = cor,
+                    BorderWidth = 2,
+                    BorderDashStyle = ChartDashStyle.Dash,
+                    MarkerStyle = MarkerStyle.Diamond,
+                    MarkerSize = 5,
+                    IsXValueIndexed = true,
+                    LegendText = comp.Nome
+                };
+
+                foreach (var ponto in comp.ReceitaPorDia)
+                {
+                    int idx = serieComp.Points.AddXY(ponto.Label, ponto.Valor);
+                    serieComp.Points[idx].ToolTip = $"{comp.Nome} – {ponto.Label}: {ponto.Valor:C2}";
+                }
+
+                chartReceita.Series.Add(serieComp);
+                corIdx++;
             }
         }
 

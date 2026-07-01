@@ -62,4 +62,13 @@ namespace RentManager.AppServices.DTOs
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
     }
+    public class ComparacaoPeriodo
+    {
+        public string Nome { get; set; }
+        public DateTime Inicio { get; set; }
+        public DateTime Fim { get; set; }
+        public decimal ReceitaTotal { get; set; }
+        public List<ReceitaPorData> ReceitaPorDia { get; set; } = new();
+        public bool EhPersonalizada { get; set; } = false;
+    }
 }
